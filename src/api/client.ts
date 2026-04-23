@@ -36,7 +36,7 @@ export type SheetsSnapshot = {
   settings: { [k: string]: string };
 };
 
-const TOKEN_KEY = 'thailand-tracker.token';
+const TOKEN_KEY = 'travel-tracker.token';
 
 // API base — set via env for production, defaults to relative ("" means same-origin on web)
 const API_BASE =

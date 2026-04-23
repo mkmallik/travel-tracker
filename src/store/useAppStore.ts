@@ -24,7 +24,7 @@ type CachePayload = {
   fxInrPerThb: number;
 };
 
-const CACHE_KEY = 'thailand-tracker.cache.v2';
+const CACHE_KEY = 'travel-tracker.cache.v1';
 
 let state: State = {
   trip: SEED_TRIP,

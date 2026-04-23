@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "thailand-tracker",
-    "slug": "thailand-tracker",
+    "name": "travel-tracker",
+    "slug": "travel-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
