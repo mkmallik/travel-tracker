@@ -21,6 +21,7 @@ import {
   todayIso,
 } from '../utils/date';
 import { themeForCity, CATEGORY_ICONS } from '../data/theme';
+import { DatePicker } from '../components/DatePicker';
 
 type Props = {
   route?: { params?: { dayNum?: number } };
@@ -41,7 +42,7 @@ export function LogExpenseScreen({ route }: Props) {
     if (findDayNumForIso(today, days)) return today;
     return firstDayIso ?? today;
   });
-  const [customDate, setCustomDate] = useState('');
+  const [customDate, setCustomDate] = useState(() => todayIso());
   const [mode, setMode] = useState<'trip' | 'other'>('trip');
 
   useEffect(() => {
@@ -191,15 +192,7 @@ export function LogExpenseScreen({ route }: Props) {
           }}
         />
       ) : (
-        <TextInput
-          style={styles.dateInput}
-          placeholder="YYYY-MM-DD"
-          placeholderTextColor="#CBD5E1"
-          value={customDate}
-          onChangeText={setCustomDate}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+        <DatePicker value={customDate} onChange={setCustomDate} />
       )}
 
       <Text style={styles.label}>NOTE (OPTIONAL)</Text>
