@@ -5,7 +5,8 @@
 // Usage:
 //   1. Place your service-account JSON key at scripts/service-account.json
 //      (this file is gitignored — do NOT commit it)
-//   2. Set SHEET_ID env or edit DEFAULT_SHEET_ID below
+//   2. Set the SHEET_ID env var to the ID of your Google Sheet (from the URL
+//      https://docs.google.com/spreadsheets/d/<SHEET_ID>/edit)
 //   3. node scripts/seedSheet.js
 //
 // Requires: googleapis (already installed)
@@ -50,8 +51,13 @@ function loadSeedDays() {
 }
 const SEED_DAYS = loadSeedDays();
 
-const DEFAULT_SHEET_ID = '13grSBTA59EmnK9x7IFJ7vZrMw2-xuCic_BDf0f1oqr8';
-const SHEET_ID = process.env.SHEET_ID || DEFAULT_SHEET_ID;
+const SHEET_ID = process.env.SHEET_ID;
+if (!SHEET_ID) {
+  console.error('\n❌ Missing SHEET_ID env var.');
+  console.error('   Set it to the ID of your Google Sheet, e.g.:');
+  console.error('   SHEET_ID=abcdef12345 npm run seed\n');
+  process.exit(1);
+}
 const KEY_PATH = path.join(__dirname, 'service-account.json');
 
 const TRIP_HEADERS = [

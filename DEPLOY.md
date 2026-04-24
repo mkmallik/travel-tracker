@@ -12,8 +12,9 @@ Runs locally once, from your machine.
 # 1. Place your service-account JSON key here (gitignored)
 mv ~/Downloads/travel-tracker-*.json scripts/service-account.json
 
-# 2. Seed the Thailand itinerary + default settings
-npm run seed
+# 2. Seed the trips + itinerary + default settings
+#    (set SHEET_ID to your Google Sheet's ID from its URL)
+SHEET_ID=<YOUR_SHEET_ID> npm run seed
 ```
 
 You should now see the 13 days in the `itinerary` tab and defaults in `settings`.
@@ -41,8 +42,8 @@ vercel --prod
 
 | Name | Value | Notes |
 |---|---|---|
-| `GOOGLE_SHEET_ID` | `13grSBTA59EmnK9x7IFJ7vZrMw2-xuCic_BDf0f1oqr8` | the ID from the sheet URL |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | `sheets-proxy@travel-tracker-494217.iam.gserviceaccount.com` | from the service-account JSON file |
+| `GOOGLE_SHEET_ID` | `<YOUR_SHEET_ID>` | the ID from the sheet URL — `docs.google.com/spreadsheets/d/<THIS>/edit` |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | `<YOUR_SERVICE_ACCOUNT>@<project>.iam.gserviceaccount.com` | the `client_email` field from the service-account JSON file |
 | `GOOGLE_PRIVATE_KEY` | *(paste the `private_key` field from the JSON — include the `-----BEGIN PRIVATE KEY-----` lines and all `\n` escapes)* | Vercel's textarea handles multiline fine |
 | `APP_PASSWORD` | *(the password you want to gate the app with)* | min 8 chars recommended |
 | `JWT_SECRET` | *(any long random string)* | e.g. `openssl rand -hex 32` output |
