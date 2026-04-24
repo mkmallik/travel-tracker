@@ -17,6 +17,9 @@ import {
   budgetedTotalThb,
 } from '../utils/expenseHelpers';
 import { themeForCity, CATEGORY_ICONS } from '../data/theme';
+import { bookingsForIso, BOOKING_ICONS, BOOKING_LABELS, flightStopsLabel, hotelNights } from '../utils/bookings';
+import { dayIsoFromSeed } from '../utils/date';
+import type { Booking, FlightExtras, HotelExtras, ActivityExtras, TransferExtras } from '../data/types';
 
 type Props = {
   navigation: { goBack: () => void; navigate: (n: string, p: any) => void };
@@ -25,7 +28,7 @@ type Props = {
 
 export function DayDetailScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
-  const { days, expenses, fxInrPerThb } = useAppStore();
+  const { days, expenses, bookings, fxInrPerThb, removeBooking } = useAppStore();
   const day = days.find((d) => d.dayNum === route.params.dayNum);
 
   if (!day) {
@@ -43,6 +46,13 @@ export function DayDetailScreen({ navigation, route }: Props) {
   const transit = day.fromCity && day.toCity ? `${day.fromCity} → ${day.toCity}` : null;
   const travelLines = day.travelDetails.split('\n').filter(Boolean);
   const budgetPct = budgetThb > 0 ? Math.min(100, (spendThb / budgetThb) * 100) : 0;
+
+  const dayIso = dayIsoFromSeed(day);
+  const dayBookings = dayIso ? bookingsForIso(bookings, dayIso) : [];
+  const flights = dayBookings.filter((b) => b.type === 'flight');
+  const hotels = dayBookings.filter((b) => b.type === 'hotel');
+  const activities = dayBookings.filter((b) => b.type === 'activity');
+  const transfers = dayBookings.filter((b) => b.type === 'transfer');
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 48 }}>
@@ -110,9 +120,45 @@ export function DayDetailScreen({ navigation, route }: Props) {
             style={[styles.logBtn, { backgroundColor: theme.accent }]}
             onPress={() => navigation.navigate('LogTab', { dayNum: day.dayNum })}
           >
-            <Text style={styles.logBtnTxt}>＋ Log expense for this day</Text>
+            <Text style={styles.logBtnTxt}>＋ Log expense / booking</Text>
           </Pressable>
         </View>
+
+        {flights.length > 0 ? (
+          <View style={styles.card}>
+            <Text style={styles.cardLabel}>{BOOKING_ICONS.flight}  Flights</Text>
+            {flights.map((b) => (
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onRemove={() => removeBooking(b.id)} />
+            ))}
+          </View>
+        ) : null}
+
+        {hotels.length > 0 ? (
+          <View style={styles.card}>
+            <Text style={styles.cardLabel}>{BOOKING_ICONS.hotel}  Hotels</Text>
+            {hotels.map((b) => (
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onRemove={() => removeBooking(b.id)} />
+            ))}
+          </View>
+        ) : null}
+
+        {activities.length > 0 ? (
+          <View style={styles.card}>
+            <Text style={styles.cardLabel}>{BOOKING_ICONS.activity}  Activities</Text>
+            {activities.map((b) => (
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onRemove={() => removeBooking(b.id)} />
+            ))}
+          </View>
+        ) : null}
+
+        {transfers.length > 0 ? (
+          <View style={styles.card}>
+            <Text style={styles.cardLabel}>{BOOKING_ICONS.transfer}  Transfers</Text>
+            {transfers.map((b) => (
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onRemove={() => removeBooking(b.id)} />
+            ))}
+          </View>
+        ) : null}
 
         <View style={styles.card}>
           <Text style={styles.cardLabel}>🏨  Stay</Text>
@@ -163,6 +209,71 @@ export function DayDetailScreen({ navigation, route }: Props) {
       </View>
     </ScrollView>
   );
+}
+
+function BookingRow({
+  booking, accent, onRemove,
+}: {
+  booking: Booking; accent: string; onRemove: () => void;
+}) {
+  const subline = subtitleFor(booking);
+  const timeLabel = formatTimeLabel(booking);
+  return (
+    <View style={styles.bkRow}>
+      <View style={{ flex: 1 }}>
+        <View style={styles.bkHeader}>
+          <Text style={styles.bkTitle}>{booking.title || BOOKING_LABELS[booking.type]}</Text>
+          {timeLabel ? (
+            <View style={[styles.bkTimePill, { backgroundColor: accent + '22' }]}>
+              <Text style={[styles.bkTimeTxt, { color: accent }]}>{timeLabel}</Text>
+            </View>
+          ) : null}
+        </View>
+        {subline ? <Text style={styles.bkSub}>{subline}</Text> : null}
+        {booking.bookingRef ? <Text style={styles.bkMeta}>Ref: {booking.bookingRef}</Text> : null}
+        {booking.agent ? <Text style={styles.bkMeta}>via {booking.agent}</Text> : null}
+      </View>
+      <View style={styles.bkRight}>
+        {booking.amount > 0 ? (
+          <Money amount={booking.amount} currency={booking.currency} style={styles.bkAmt} />
+        ) : null}
+        <Pressable onPress={onRemove} style={styles.bkDel}>
+          <Text style={styles.bkDelTxt}>×</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+function subtitleFor(b: Booking): string {
+  if (b.type === 'flight') {
+    const x = (b.extras || {}) as FlightExtras;
+    return flightStopsLabel(x);
+  }
+  if (b.type === 'hotel') {
+    const nights = hotelNights(b);
+    const x = (b.extras || {}) as HotelExtras;
+    return [`${nights} night${nights === 1 ? '' : 's'}`, x.room_type].filter(Boolean).join(' · ');
+  }
+  if (b.type === 'activity') {
+    const x = (b.extras || {}) as ActivityExtras;
+    return [x.location, x.operator].filter(Boolean).join(' · ');
+  }
+  if (b.type === 'transfer') {
+    const x = (b.extras || {}) as TransferExtras;
+    const route = [x.from_place, x.to_place].filter(Boolean).join(' → ');
+    return [route, x.mode].filter(Boolean).join(' · ');
+  }
+  return '';
+}
+
+function formatTimeLabel(b: Booking): string {
+  if (b.startTime && b.endTime) return `${b.startTime} – ${b.endTime}`;
+  if (b.startTime) return b.startTime;
+  if (b.type === 'hotel' && b.endDate && b.endDate !== b.startDate) {
+    return `${b.startDate.slice(5)} → ${b.endDate.slice(5)}`;
+  }
+  return '';
 }
 
 const styles = StyleSheet.create({
@@ -235,4 +346,16 @@ const styles = StyleSheet.create({
   expCat: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
   expNote: { fontSize: 12, color: '#64748B', marginTop: 2 },
   expAmt: { fontSize: 13, color: '#0F172A', fontWeight: '600' },
+
+  bkRow: { flexDirection: 'row', paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth, borderColor: '#E5E7EB' },
+  bkHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 as any, flexWrap: 'wrap' },
+  bkTitle: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
+  bkTimePill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 999 },
+  bkTimeTxt: { fontSize: 10, fontWeight: '700' },
+  bkSub: { fontSize: 12, color: '#475569', marginTop: 3 },
+  bkMeta: { fontSize: 11, color: '#94A3B8', marginTop: 2 },
+  bkRight: { alignItems: 'flex-end', gap: 8 as any },
+  bkAmt: { fontSize: 13, color: '#0F172A', fontWeight: '700' },
+  bkDel: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#F1F5F9', alignItems: 'center', justifyContent: 'center' },
+  bkDelTxt: { fontSize: 14, color: '#94A3B8' },
 });

@@ -30,10 +30,30 @@ type DayRow = {
   };
 };
 
+type ServerBooking = {
+  id: string;
+  type: 'hotel' | 'flight' | 'activity' | 'transfer';
+  title: string;
+  booking_ref: string;
+  agent: string;
+  address: string;
+  start_date: string;
+  end_date: string;
+  start_time: string;
+  end_time: string;
+  amount: number;
+  currency: 'THB' | 'INR';
+  note: string;
+  cost_on: 'start' | 'end';
+  extras: any;
+  created_at: number;
+};
+
 export type SheetsSnapshot = {
   itinerary: DayRow[];
   expenses: Exp[];
   settings: { [k: string]: string };
+  bookings: ServerBooking[];
 };
 
 const TOKEN_KEY = 'travel-tracker.token';
@@ -125,5 +145,29 @@ export function updateSetting(key: string, value: string): Promise<any> {
   return request('/api/sheets/setting', {
     method: 'PATCH',
     body: JSON.stringify({ key, value }),
+  });
+}
+
+// --- bookings ---
+
+type BookingInput = Omit<ServerBooking, 'id' | 'created_at'>;
+
+export function addBooking(b: BookingInput): Promise<{ booking: ServerBooking }> {
+  return request<{ booking: ServerBooking }>('/api/sheets/booking', {
+    method: 'POST',
+    body: JSON.stringify(b),
+  });
+}
+
+export function updateBooking(b: ServerBooking): Promise<{ booking: ServerBooking }> {
+  return request<{ booking: ServerBooking }>('/api/sheets/booking', {
+    method: 'PATCH',
+    body: JSON.stringify(b),
+  });
+}
+
+export function deleteBooking(id: string): Promise<{ deleted: true }> {
+  return request<{ deleted: true }>('/api/sheets/booking?id=' + encodeURIComponent(id), {
+    method: 'DELETE',
   });
 }

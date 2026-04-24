@@ -1,7 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { applyCors, requireAuth } from '../lib/auth';
 import { readRange } from '../lib/sheets';
-import { EXPENSE_COLS, ITINERARY_COLS, SETTING_COLS, SHEETS } from '../lib/schema';
+import {
+  EXPENSE_COLS, ITINERARY_COLS, SETTING_COLS, BOOKING_COLS, SHEETS,
+} from '../lib/schema';
 
 type Record = { [k: string]: string };
 
@@ -23,10 +25,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const [itinRows, expRows, settingsRows] = await Promise.all([
+    const [itinRows, expRows, settingsRows, bookingRows] = await Promise.all([
       readRange(`${SHEETS.itinerary}!A:R`),
       readRange(`${SHEETS.expenses}!A:J`),
       readRange(`${SHEETS.settings}!A:B`),
+      readRange(`${SHEETS.bookings}!A:R`).catch(() => [] as string[][]),
     ]);
 
     const itinerary = toRecords(itinRows, ITINERARY_COLS).map((r) => ({
@@ -68,7 +71,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (r.key) settings[r.key] = r.value;
     }
 
-    res.status(200).json({ itinerary, expenses, settings });
+    const bookings = toRecords(bookingRows, BOOKING_COLS).map((r) => {
+      let extras: any = {};
+      try { extras = r.extras ? JSON.parse(r.extras) : {}; } catch { extras = {}; }
+      return {
+        id: r.id,
+        type: r.type,
+        title: r.title || '',
+        booking_ref: r.booking_ref || '',
+        agent: r.agent || '',
+        address: r.address || '',
+        start_date: r.start_date || '',
+        end_date: r.end_date || r.start_date || '',
+        start_time: r.start_time || '',
+        end_time: r.end_time || '',
+        amount: parseFloat(r.amount || '0') || 0,
+        currency: (r.currency || 'THB') as 'THB' | 'INR',
+        note: r.note || '',
+        cost_on: (r.cost_on === 'end' ? 'end' : 'start') as 'start' | 'end',
+        extras,
+        created_at: r.created_at ? parseInt(r.created_at, 10) || 0 : 0,
+      };
+    }).filter((b) => !!b.id && !!b.type);
+
+    res.status(200).json({ itinerary, expenses, settings, bookings });
   } catch (e: any) {
     res.status(500).json({ error: 'Sheets read failed', details: e?.message ?? String(e) });
   }

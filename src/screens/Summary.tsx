@@ -33,11 +33,14 @@ import {
   CATEGORY_COLORS,
   themeForCity,
 } from '../data/theme';
+import { CATEGORY_FOR_BOOKING_TYPE } from '../data/types';
+import { costIsoForBooking } from '../utils/bookings';
+import { findDayNumForIso } from '../utils/date';
 
 export function SummaryScreen() {
   const insets = useSafeAreaInsets();
   const {
-    expenses, days, fxInrPerThb,
+    expenses, days, bookings, fxInrPerThb,
     setFxRate, replaceExpenses, appendExpenses, replaceDays,
     refresh, logout, syncing, lastSyncedAt, syncError,
   } = useAppStore();
@@ -131,14 +134,13 @@ export function SummaryScreen() {
   };
 
   const totals = useMemo(() => {
-    const totalThb = expenses.reduce(
-      (s, e) => s + toThb(e.amount, e.currency, fxInrPerThb),
-      0
-    );
-    const totalInr = expenses.reduce(
-      (s, e) => s + toInr(e.amount, e.currency, fxInrPerThb),
-      0
-    );
+    const expThb = expenses.reduce((s, e) => s + toThb(e.amount, e.currency, fxInrPerThb), 0);
+    const bookingsThb = bookings.reduce((s, b) => s + toThb(b.amount, b.currency, fxInrPerThb), 0);
+    const totalThb = expThb + bookingsThb;
+
+    const expInr = expenses.reduce((s, e) => s + toInr(e.amount, e.currency, fxInrPerThb), 0);
+    const bookingsInr = bookings.reduce((s, b) => s + toInr(b.amount, b.currency, fxInrPerThb), 0);
+    const totalInr = expInr + bookingsInr;
 
     const byCategory: Record<ExpenseCategory, number> = Object.fromEntries(
       EXPENSE_CATEGORIES.map((c) => [c, 0])
@@ -146,19 +148,26 @@ export function SummaryScreen() {
     for (const e of expenses) {
       byCategory[e.category] += toThb(e.amount, e.currency, fxInrPerThb);
     }
+    for (const b of bookings) {
+      const cat = CATEGORY_FOR_BOOKING_TYPE[b.type];
+      byCategory[cat] += toThb(b.amount, b.currency, fxInrPerThb);
+    }
 
     const maxCat = Math.max(1, ...EXPENSE_CATEGORIES.map((c) => byCategory[c]));
 
     const byDay = days.map((d) => {
-      const thb = expenses
+      const dayExpThb = expenses
         .filter((e) => e.dayNum === d.dayNum)
         .reduce((s, e) => s + toThb(e.amount, e.currency, fxInrPerThb), 0);
-      return { dayNum: d.dayNum, city: d.stayCity, thb };
+      const dayBookingThb = bookings
+        .filter((b) => findDayNumForIso(costIsoForBooking(b), days) === d.dayNum)
+        .reduce((s, b) => s + toThb(b.amount, b.currency, fxInrPerThb), 0);
+      return { dayNum: d.dayNum, city: d.stayCity, thb: dayExpThb + dayBookingThb };
     });
     const maxDay = Math.max(1, ...byDay.map((d) => d.thb));
 
-    return { totalThb, totalInr, byCategory, maxCat, byDay, maxDay };
-  }, [expenses, days, fxInrPerThb]);
+    return { totalThb, totalInr, byCategory, maxCat, byDay, maxDay, entriesCount: expenses.length + bookings.length };
+  }, [expenses, bookings, days, fxInrPerThb]);
 
   const saveFx = () => {
     const n = parseFloat(fxInput);
@@ -204,7 +213,7 @@ export function SummaryScreen() {
         <View style={styles.totalFooter}>
           <View style={styles.totalFoot}>
             <Text style={styles.totalFootLabel}>Entries</Text>
-            <Text style={styles.totalFootValue}>{expenses.length}</Text>
+            <Text style={styles.totalFootValue}>{totals.entriesCount}</Text>
           </View>
           {topCategory ? (
             <View style={styles.totalFoot}>

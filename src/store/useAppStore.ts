@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Expense, SeedDay, SeedTrip } from '../data/types';
+import type { Booking, Expense, SeedDay, SeedTrip } from '../data/types';
 import { SEED_TRIP, SEED_DAYS } from '../data/seedTrip';
 import { DEFAULT_INR_PER_THB } from '../utils/fx';
 import * as api from '../api/client';
@@ -9,6 +9,7 @@ type State = {
   trip: SeedTrip;
   days: SeedDay[];
   expenses: Expense[];
+  bookings: Booking[];
   fxInrPerThb: number;
   hydrated: boolean;
   syncing: boolean;
@@ -21,15 +22,17 @@ type CachePayload = {
   trip: SeedTrip;
   days: SeedDay[];
   expenses: Expense[];
+  bookings: Booking[];
   fxInrPerThb: number;
 };
 
-const CACHE_KEY = 'travel-tracker.cache.v1';
+const CACHE_KEY = 'travel-tracker.cache.v2';
 
 let state: State = {
   trip: SEED_TRIP,
   days: SEED_DAYS,
   expenses: [],
+  bookings: [],
   fxInrPerThb: DEFAULT_INR_PER_THB,
   hydrated: false,
   syncing: false,
@@ -52,6 +55,7 @@ async function saveCache() {
     trip: state.trip,
     days: state.days,
     expenses: state.expenses,
+    bookings: state.bookings,
     fxInrPerThb: state.fxInrPerThb,
   };
   try {
@@ -103,6 +107,46 @@ function serverToExpense(s: any): Expense {
   };
 }
 
+function serverToBooking(s: any): Booking {
+  return {
+    id: s.id,
+    type: s.type,
+    title: s.title || '',
+    bookingRef: s.booking_ref || '',
+    agent: s.agent || '',
+    address: s.address || '',
+    startDate: s.start_date || '',
+    endDate: s.end_date || s.start_date || '',
+    startTime: s.start_time || '',
+    endTime: s.end_time || '',
+    amount: s.amount ?? 0,
+    currency: (s.currency || 'THB') as 'THB' | 'INR',
+    note: s.note || '',
+    costOn: s.cost_on === 'end' ? 'end' : 'start',
+    extras: s.extras || {},
+    createdAt: Number(s.created_at) || 0,
+  };
+}
+
+function bookingToServer(b: Booking | Omit<Booking, 'id' | 'createdAt'>) {
+  return {
+    type: b.type,
+    title: b.title,
+    booking_ref: b.bookingRef,
+    agent: b.agent,
+    address: b.address,
+    start_date: b.startDate,
+    end_date: b.endDate,
+    start_time: b.startTime,
+    end_time: b.endTime,
+    amount: b.amount,
+    currency: b.currency,
+    note: b.note,
+    cost_on: b.costOn,
+    extras: b.extras,
+  };
+}
+
 function settingsToTripPatch(settings: { [k: string]: string }): Partial<SeedTrip> {
   const patch: Partial<SeedTrip> = {};
   if (settings.trip_title) patch.title = settings.trip_title;
@@ -121,6 +165,7 @@ export async function bootstrapStore(): Promise<void> {
       trip: cached.trip || SEED_TRIP,
       days: cached.days?.length ? cached.days : SEED_DAYS,
       expenses: cached.expenses || [],
+      bookings: cached.bookings || [],
       fxInrPerThb: cached.fxInrPerThb || DEFAULT_INR_PER_THB,
     });
   }
@@ -137,6 +182,7 @@ export async function syncFromServer(): Promise<void> {
     const snap = await api.fetchSnapshot();
     const days = snap.itinerary.map(serverToDay).sort((a, b) => a.dayNum - b.dayNum);
     const expenses = snap.expenses.map(serverToExpense);
+    const bookings = (snap.bookings || []).map(serverToBooking);
     const fxRaw = parseFloat(snap.settings['fx_inr_per_thb'] || '');
     const fxInrPerThb = Number.isFinite(fxRaw) && fxRaw > 0 ? fxRaw : state.fxInrPerThb;
     const tripPatch = settingsToTripPatch(snap.settings);
@@ -145,6 +191,7 @@ export async function syncFromServer(): Promise<void> {
       trip: { ...s.trip, ...tripPatch },
       days: days.length ? days : s.days,
       expenses,
+      bookings,
       fxInrPerThb,
       lastSyncedAt: Date.now(),
       syncing: false,
@@ -237,10 +284,53 @@ export const actions = {
     await syncFromServer();
   },
 
+  async addBooking(input: Omit<Booking, 'id' | 'createdAt'>) {
+    const optimistic: Booking = { ...input, id: genId(), createdAt: Date.now() };
+    setState((s) => ({ bookings: [...s.bookings, optimistic] }));
+    void saveCache();
+    try {
+      const { booking } = await api.addBooking(bookingToServer(input) as any);
+      setState((s) => ({
+        bookings: s.bookings.map((x) => (x.id === optimistic.id ? serverToBooking(booking) : x)),
+      }));
+      await saveCache();
+    } catch (e: any) {
+      console.warn('addBooking failed:', e?.message);
+      setState({ syncError: e?.message ?? 'Save failed' });
+    }
+  },
+
+  async updateBooking(b: Booking) {
+    const snapshot = state.bookings;
+    setState((s) => ({ bookings: s.bookings.map((x) => (x.id === b.id ? b : x)) }));
+    void saveCache();
+    try {
+      const { booking } = await api.updateBooking({ ...bookingToServer(b), id: b.id, created_at: b.createdAt } as any);
+      setState((s) => ({
+        bookings: s.bookings.map((x) => (x.id === b.id ? serverToBooking(booking) : x)),
+      }));
+      await saveCache();
+    } catch (e: any) {
+      setState({ bookings: snapshot, syncError: e?.message ?? 'Update failed' });
+    }
+  },
+
+  async removeBooking(id: string) {
+    const snapshot = state.bookings;
+    setState((s) => ({ bookings: s.bookings.filter((x) => x.id !== id) }));
+    void saveCache();
+    try {
+      await api.deleteBooking(id);
+    } catch (e: any) {
+      setState({ bookings: snapshot, syncError: e?.message ?? 'Delete failed' });
+    }
+  },
+
   async logout() {
     await api.logout();
     setState({
       expenses: [],
+      bookings: [],
       fxInrPerThb: DEFAULT_INR_PER_THB,
       lastSyncedAt: null,
       syncError: null,

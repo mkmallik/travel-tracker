@@ -67,3 +67,67 @@ export type Expense = {
   note: string;
   createdAt: number;
 };
+
+export type BookingType = 'hotel' | 'flight' | 'activity' | 'transfer';
+
+export const BOOKING_TYPES: BookingType[] = ['hotel', 'flight', 'activity', 'transfer'];
+
+export type FlightStop = {
+  airport: string;
+  arrive?: string;
+  depart?: string;
+};
+
+export type FlightExtras = {
+  from?: string;
+  to?: string;
+  stops?: FlightStop[];
+};
+
+export type HotelExtras = {
+  room_type?: string;
+  nights?: number;
+};
+
+export type ActivityExtras = {
+  location?: string;
+  operator?: string;
+};
+
+export type TransferExtras = {
+  from_place?: string;
+  to_place?: string;
+  mode?: string;
+};
+
+export type BookingExtras =
+  | FlightExtras
+  | HotelExtras
+  | ActivityExtras
+  | TransferExtras;
+
+export type Booking = {
+  id: string;
+  type: BookingType;
+  title: string;
+  bookingRef: string;
+  agent: string;
+  address: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  amount: number;
+  currency: Currency;
+  note: string;
+  costOn: 'start' | 'end';
+  extras: BookingExtras;
+  createdAt: number;
+};
+
+export const CATEGORY_FOR_BOOKING_TYPE: Record<BookingType, ExpenseCategory> = {
+  hotel: 'Hotels',
+  flight: 'Flights',
+  activity: 'Activities',
+  transfer: 'Cabs',
+};

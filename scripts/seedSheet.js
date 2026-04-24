@@ -64,6 +64,12 @@ const EXPENSE_HEADERS = [
   'amount_thb', 'amount_inr', 'note', 'created_at',
 ];
 const SETTING_HEADERS = ['key', 'value'];
+const BOOKING_HEADERS = [
+  'id', 'type', 'title', 'booking_ref', 'agent', 'address',
+  'start_date', 'end_date', 'start_time', 'end_time',
+  'amount', 'currency', 'amount_thb', 'amount_inr', 'note',
+  'cost_on', 'extras', 'created_at',
+];
 
 async function main() {
   if (!fs.existsSync(KEY_PATH)) {
@@ -80,11 +86,15 @@ async function main() {
   });
   const sheets = google.sheets({ version: 'v4', auth });
 
-  // Ensure headers in all three tabs
+  // Ensure bookings tab exists (adds it if missing — the other tabs you created manually)
+  await ensureTabExists(sheets, 'bookings');
+
+  // Ensure headers in all four tabs
   console.log('→ Writing headers...');
   await setRange(sheets, 'itinerary!A1:R1', [ITINERARY_HEADERS]);
   await setRange(sheets, 'expenses!A1:J1', [EXPENSE_HEADERS]);
   await setRange(sheets, 'settings!A1:B1', [SETTING_HEADERS]);
+  await setRange(sheets, 'bookings!A1:R1', [BOOKING_HEADERS]);
 
   // Clear + write itinerary rows
   console.log(`→ Uploading ${SEED_DAYS.length} itinerary rows...`);
@@ -150,6 +160,17 @@ async function appendRows(sheets, range, values) {
     insertDataOption: 'INSERT_ROWS',
     requestBody: { values },
   });
+}
+
+async function ensureTabExists(sheets, title) {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+  const exists = meta.data.sheets?.some((s) => s.properties?.title === title);
+  if (exists) return;
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: SHEET_ID,
+    requestBody: { requests: [{ addSheet: { properties: { title } } }] },
+  });
+  console.log(`  · created new tab '${title}'`);
 }
 
 main().catch((e) => {

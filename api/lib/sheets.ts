@@ -52,7 +52,7 @@ export async function appendRow(tab: string, row: (string | number)[]): Promise<
 
 export async function updateRow(tab: string, rowNumber: number, row: (string | number)[]): Promise<void> {
   const sheets = getClient();
-  const endCol = String.fromCharCode('A'.charCodeAt(0) + row.length - 1);
+  const endCol = colLetter(row.length);
   const range = `${tab}!A${rowNumber}:${endCol}${rowNumber}`;
   await sheets.spreadsheets.values.update({
     spreadsheetId: getSheetId(),
@@ -95,7 +95,7 @@ export async function ensureHeaders(tab: string, headers: readonly string[]): Pr
   const need = headers.join('\n');
   const have = haveRow.join('\n');
   if (need !== have) {
-    const endCol = String.fromCharCode('A'.charCodeAt(0) + headers.length - 1);
+    const endCol = colLetter(headers.length);
     await sheets.spreadsheets.values.update({
       spreadsheetId: getSheetId(),
       range: `${tab}!A1:${endCol}1`,
@@ -103,6 +103,31 @@ export async function ensureHeaders(tab: string, headers: readonly string[]): Pr
       requestBody: { values: [Array.from(headers)] },
     });
   }
+}
+
+export async function ensureSheetTab(tab: string): Promise<void> {
+  const sheets = getClient();
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: getSheetId() });
+  const exists = meta.data.sheets?.some((s) => s.properties?.title === tab);
+  if (exists) return;
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: getSheetId(),
+    requestBody: {
+      requests: [{ addSheet: { properties: { title: tab } } }],
+    },
+  });
+}
+
+// Convert a 1-based column count to its letter (1 -> A, 18 -> R, 26 -> Z, 27 -> AA).
+function colLetter(n: number): string {
+  let s = '';
+  let x = n;
+  while (x > 0) {
+    const rem = (x - 1) % 26;
+    s = String.fromCharCode('A'.charCodeAt(0) + rem) + s;
+    x = Math.floor((x - 1) / 26);
+  }
+  return s || 'A';
 }
 
 export { SHEETS };

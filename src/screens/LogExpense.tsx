@@ -22,6 +22,11 @@ import {
 } from '../utils/date';
 import { themeForCity, CATEGORY_ICONS } from '../data/theme';
 import { DatePicker } from '../components/DatePicker';
+import { BookingForm } from './BookingForm';
+import type { BookingType } from '../data/types';
+import { BOOKING_ICONS, BOOKING_LABELS } from '../utils/bookings';
+
+type LogMode = 'expense' | BookingType;
 
 type Props = {
   route?: { params?: { dayNum?: number } };
@@ -31,6 +36,7 @@ type Props = {
 export function LogExpenseScreen({ route }: Props) {
   const insets = useSafeAreaInsets();
   const { days, expenses, addExpense, removeExpense } = useAppStore();
+  const [logMode, setLogMode] = useState<LogMode>('expense');
 
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState<Currency>('THB');
@@ -93,12 +99,63 @@ export function LogExpenseScreen({ route }: Props) {
 
   const recent = [...expenses].sort((a, b) => b.createdAt - a.createdAt).slice(0, 8);
 
+  const modeTabs: Array<{ key: LogMode; icon: string; label: string }> = [
+    { key: 'expense', icon: '💸', label: 'Expense' },
+    { key: 'hotel', icon: BOOKING_ICONS.hotel, label: BOOKING_LABELS.hotel },
+    { key: 'flight', icon: BOOKING_ICONS.flight, label: BOOKING_LABELS.flight },
+    { key: 'activity', icon: BOOKING_ICONS.activity, label: BOOKING_LABELS.activity },
+    { key: 'transfer', icon: BOOKING_ICONS.transfer, label: BOOKING_LABELS.transfer },
+  ];
+
+  const modeStrip = (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.modeTabStrip}
+      style={styles.modeTabScroll}
+    >
+      {modeTabs.map((item) => {
+        const on = logMode === item.key;
+        return (
+          <Pressable
+            key={item.key}
+            style={[styles.modeTab, on && styles.modeTabOn]}
+            onPress={() => setLogMode(item.key)}
+          >
+            <Text style={styles.modeTabIcon}>{item.icon}</Text>
+            <Text style={[styles.modeTabLabel, on && styles.modeTabLabelOn]}>{item.label}</Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+
+  if (logMode !== 'expense') {
+    const paramDay = route?.params?.dayNum
+      ? days.find((d) => d.dayNum === route.params!.dayNum)
+      : undefined;
+    const initDate = paramDay ? dayIsoFromSeed(paramDay) ?? undefined : undefined;
+    return (
+      <View style={{ flex: 1, paddingTop: insets.top + 16, backgroundColor: '#F3F4F6' }}>
+        {modeStrip}
+        <BookingForm
+          key={logMode}
+          initialType={logMode}
+          initialDate={initDate}
+          onSaved={() => setLogMode('expense')}
+          onCancel={() => setLogMode('expense')}
+        />
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       style={styles.scroll}
       contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 56, paddingHorizontal: 18 }}
       keyboardShouldPersistTaps="handled"
     >
+      {modeStrip}
       <Text style={styles.kicker}>NEW ENTRY</Text>
       <Text style={styles.h1}>Log expense</Text>
 
@@ -342,4 +399,19 @@ const styles = StyleSheet.create({
     borderRadius: 14, backgroundColor: '#F1F5F9',
   },
   delTxt: { fontSize: 18, color: '#94A3B8', lineHeight: 20 },
+
+  modeTabScroll: { flexGrow: 0, maxHeight: 48, marginBottom: 12 },
+  modeTabStrip: { paddingHorizontal: 4, alignItems: 'center' },
+  modeTab: {
+    backgroundColor: '#fff', borderRadius: 999,
+    paddingHorizontal: 14, paddingVertical: 8,
+    flexDirection: 'row', alignItems: 'center',
+    borderWidth: 1, borderColor: '#E2E8F0',
+    marginRight: 8,
+    height: 36,
+  },
+  modeTabOn: { backgroundColor: '#0F172A', borderColor: '#0F172A' },
+  modeTabIcon: { fontSize: 15, marginRight: 6 },
+  modeTabLabel: { fontSize: 13, color: '#334155', fontWeight: '600' },
+  modeTabLabelOn: { color: '#fff' },
 });

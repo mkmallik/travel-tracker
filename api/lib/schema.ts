@@ -37,8 +37,30 @@ export const ITINERARY_COLS = [
 
 export const SETTING_COLS = ['key', 'value'] as const;
 
+export const BOOKING_COLS = [
+  'id',
+  'type',
+  'title',
+  'booking_ref',
+  'agent',
+  'address',
+  'start_date',
+  'end_date',
+  'start_time',
+  'end_time',
+  'amount',
+  'currency',
+  'amount_thb',
+  'amount_inr',
+  'note',
+  'cost_on',
+  'extras',
+  'created_at',
+] as const;
+
 export const SHEETS = {
   itinerary: 'itinerary',
   expenses: 'expenses',
   settings: 'settings',
+  bookings: 'bookings',
 } as const;
