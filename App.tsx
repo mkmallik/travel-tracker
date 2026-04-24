@@ -33,7 +33,39 @@ function ItineraryStack() {
 }
 
 function TabIcon({ name, focused, color }: { name: IconName; focused: boolean; color: string }) {
-  return <Icon name={name} size={22} color={color} strokeWidth={focused ? 2.4 : 1.8} />;
+  // Active tab gets a translucent accent pill behind the icon — makes the
+  // selection state impossible to miss at a glance.
+  return (
+    <View
+      style={{
+        paddingHorizontal: 14,
+        paddingVertical: 6,
+        borderRadius: 12,
+        backgroundColor: focused ? hexWithAlpha(color, 0.15) : 'transparent',
+      }}
+    >
+      <Icon name={name} size={22} color={color} strokeWidth={focused ? 2.5 : 2} />
+    </View>
+  );
+}
+
+function hexWithAlpha(hex: string, alpha: number): string {
+  // Accept #RRGGBB and #RGB forms; fall back to inline rgba otherwise.
+  const m6 = /^#([0-9a-f]{6})$/i.exec(hex);
+  const m3 = /^#([0-9a-f]{3})$/i.exec(hex);
+  let r = 0, g = 0, b = 0;
+  if (m6) {
+    r = parseInt(m6[1].slice(0, 2), 16);
+    g = parseInt(m6[1].slice(2, 4), 16);
+    b = parseInt(m6[1].slice(4, 6), 16);
+  } else if (m3) {
+    r = parseInt(m3[1][0] + m3[1][0], 16);
+    g = parseInt(m3[1][1] + m3[1][1], 16);
+    b = parseInt(m3[1][2] + m3[1][2], 16);
+  } else {
+    return hex;
+  }
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 function MainApp() {
@@ -44,14 +76,18 @@ function MainApp() {
         screenOptions={{
           headerShown: false,
           tabBarActiveTintColor: colors.accent,
-          tabBarInactiveTintColor: colors.textSubtle,
+          tabBarInactiveTintColor: colors.textMuted,
           tabBarStyle: {
             paddingVertical: 6,
-            height: 60,
+            paddingBottom: 8,
+            paddingTop: 6,
+            height: 64,
             backgroundColor: colors.bgElevated,
             borderTopColor: colors.border,
+            borderTopWidth: 1,
           },
-          tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+          tabBarLabelStyle: { fontSize: 11, fontWeight: '700', marginTop: 2 },
+          tabBarIconStyle: { height: 34 },
         }}
       >
         <Tab.Screen
