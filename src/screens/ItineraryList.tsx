@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   FlatList,
   Pressable,
@@ -21,7 +21,7 @@ import { formatTHB } from '../utils/fx';
 import { useThemedStyles } from '../theme/styles';
 import type { ThemeColors } from '../theme/colors';
 import { TripSwitcher } from '../components/TripSwitcher';
-import { parseSeedDate, toIsoDate } from '../utils/date';
+import { dayIsoFromSeed, todayIso } from '../utils/date';
 
 type Props = {
   navigation: { navigate: (screen: string, params: object) => void };
@@ -31,6 +31,7 @@ export function ItineraryListScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
   const { trip, days, trips, activeTripId } = useAppStore();
+  const listRef = useRef<FlatList<SeedDay>>(null);
 
   const cities = Array.from(new Set(days.map((d) => d.stayCity).filter(Boolean)));
   const firstDay = days[0];
@@ -41,10 +42,46 @@ export function ItineraryListScreen({ navigation }: Props) {
     ? formatRange(activeTrip.startDate, activeTrip.endDate)
     : 'Apr 27 – May 9, 2026';
 
+  // If today falls on one of the trip days, we highlight it and
+  // scroll the list so that card lands at the top of the viewport
+  // (the hero scrolls off above it).
+  const today = todayIso();
+  const todayIndex = days.findIndex((d) => dayIsoFromSeed(d) === today);
+  const todayDayNum = todayIndex >= 0 ? days[todayIndex].dayNum : null;
+
+  useEffect(() => {
+    if (todayIndex < 0 || !listRef.current) return;
+    // Small delay so first paint (with hero visible) is what the user sees.
+    const t = setTimeout(() => {
+      try {
+        listRef.current?.scrollToIndex({
+          index: todayIndex,
+          viewPosition: 0,
+          animated: true,
+        });
+      } catch {
+        /* ignore; see onScrollToIndexFailed */
+      }
+    }, 600);
+    return () => clearTimeout(t);
+    // We intentionally only run this when the target index changes
+  }, [todayIndex]);
+
   return (
     <FlatList
+      ref={listRef}
       style={styles.list}
       contentContainerStyle={{ paddingBottom: 32 }}
+      onScrollToIndexFailed={(info) => {
+        // Fallback — the list isn't laid out yet. Try again after a beat.
+        setTimeout(() => {
+          listRef.current?.scrollToIndex({
+            index: info.index,
+            viewPosition: 0,
+            animated: true,
+          });
+        }, 250);
+      }}
       ListHeaderComponent={
         <View>
           <HeroImage
@@ -89,6 +126,7 @@ export function ItineraryListScreen({ navigation }: Props) {
       renderItem={({ item }) => (
         <DayCard
           day={item}
+          isToday={item.dayNum === todayDayNum}
           onPress={() =>
             navigation.navigate('DayDetail', { dayNum: item.dayNum })
           }
@@ -128,7 +166,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function DayCard({ day, onPress }: { day: SeedDay; onPress: () => void }) {
+function DayCard({ day, isToday, onPress }: { day: SeedDay; isToday?: boolean; onPress: () => void }) {
   const styles = useThemedStyles(makeStyles);
   const { expenses, fxInrPerThb } = useAppStore();
   const theme = themeForCity(day.stayCity);
@@ -138,15 +176,28 @@ function DayCard({ day, onPress }: { day: SeedDay; onPress: () => void }) {
   const transit = day.fromCity && day.toCity ? `${day.fromCity} → ${day.toCity}` : null;
 
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <Pressable
+      style={[
+        styles.card,
+        isToday && { borderWidth: 2, borderColor: theme.accent, shadowOpacity: 0.2 },
+      ]}
+      onPress={onPress}
+    >
       <HeroImage
         uri={day.imageUrl}
         gradient={theme.gradient}
         style={styles.cardHero}
       >
         <View style={styles.cardHeroTop}>
-          <View style={[styles.dayBadge, { backgroundColor: theme.accent }]}>
-            <Text style={styles.dayBadgeTxt}>DAY {day.dayNum}</Text>
+          <View style={styles.topBadgeCol}>
+            <View style={[styles.dayBadge, { backgroundColor: theme.accent }]}>
+              <Text style={styles.dayBadgeTxt}>DAY {day.dayNum}</Text>
+            </View>
+            {isToday ? (
+              <View style={styles.todayBadge}>
+                <Text style={styles.todayBadgeTxt}>TODAY</Text>
+              </View>
+            ) : null}
           </View>
           {transit ? (
             <View style={styles.transitBadge}>
@@ -218,12 +269,18 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     shadowColor: c.shadow, shadowOpacity: 0.09, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 3,
   },
   cardHero: { height: 170, justifyContent: 'space-between' },
-  cardHeroTop: { flexDirection: 'row', justifyContent: 'space-between', padding: 12 },
+  cardHeroTop: { flexDirection: 'row', justifyContent: 'space-between', padding: 12, alignItems: 'flex-start' },
   cardHeroBottom: { padding: 14 },
+  topBadgeCol: { flexDirection: 'row', gap: 6 as any, flexWrap: 'wrap' },
   dayBadge: {
     paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999,
   },
   dayBadgeTxt: { color: '#fff', fontSize: 11, fontWeight: '800', letterSpacing: 1 },
+  todayBadge: {
+    backgroundColor: '#FBBF24',
+    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999,
+  },
+  todayBadgeTxt: { color: '#0F172A', fontSize: 11, fontWeight: '800', letterSpacing: 1 },
   transitBadge: {
     backgroundColor: 'rgba(0,0,0,0.45)',
     paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999,
