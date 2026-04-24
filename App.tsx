@@ -16,6 +16,7 @@ import { BookingsScreen } from './src/screens/Bookings';
 import { bootstrapStore, useAppStore } from './src/store/useAppStore';
 import { isLoggedIn } from './src/api/client';
 import { useTheme } from './src/theme/useTheme';
+import { Icon, type IconName } from './src/components/Icon';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -31,8 +32,8 @@ function ItineraryStack() {
   );
 }
 
-function TabIcon({ label, focused }: { label: string; focused: boolean }) {
-  return <Text style={{ fontSize: 18, opacity: focused ? 1 : 0.4 }}>{label}</Text>;
+function TabIcon({ name, focused, color }: { name: IconName; focused: boolean; color: string }) {
+  return <Icon name={name} size={22} color={color} strokeWidth={focused ? 2.4 : 1.8} />;
 }
 
 function MainApp() {
@@ -56,22 +57,31 @@ function MainApp() {
         <Tab.Screen
           name="Itinerary"
           component={ItineraryStack}
-          options={{ tabBarIcon: ({ focused }) => <TabIcon label="🗺️" focused={focused} /> }}
+          options={{
+            tabBarIcon: ({ focused, color }) => <TabIcon name="map" focused={focused} color={color} />,
+          }}
         />
         <Tab.Screen
           name="Bookings"
           component={BookingsScreen}
-          options={{ tabBarIcon: ({ focused }) => <TabIcon label="🧳" focused={focused} /> }}
+          options={{
+            tabBarIcon: ({ focused, color }) => <TabIcon name="luggage" focused={focused} color={color} />,
+          }}
         />
         <Tab.Screen
           name="LogTab"
           component={LogExpenseScreen}
-          options={{ title: 'Log', tabBarIcon: ({ focused }) => <TabIcon label="＋" focused={focused} /> }}
+          options={{
+            title: 'Log',
+            tabBarIcon: ({ focused, color }) => <TabIcon name="plus" focused={focused} color={color} />,
+          }}
         />
         <Tab.Screen
           name="Summary"
           component={SummaryScreen}
-          options={{ tabBarIcon: ({ focused }) => <TabIcon label="📊" focused={focused} /> }}
+          options={{
+            tabBarIcon: ({ focused, color }) => <TabIcon name="chart" focused={focused} color={color} />,
+          }}
         />
       </Tab.Navigator>
     </NavigationContainer>

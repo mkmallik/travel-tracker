@@ -15,7 +15,7 @@ import { useTheme } from '../theme/useTheme';
 import type { ThemeColors } from '../theme/colors';
 import type { Currency, Expense, ExpenseCategory } from '../data/types';
 import { EXPENSE_CATEGORIES } from '../data/types';
-import { CATEGORY_ICONS } from '../data/theme';
+import { Icon, CATEGORY_ICON_NAME } from '../components/Icon';
 import { findDayNumForIso, todayIso } from '../utils/date';
 
 type Props = {
@@ -125,7 +125,7 @@ export function ExpenseForm({ existing, initialDate, onSaved, onCancel }: Props)
               style={[styles.catChip, on && styles.catChipOn]}
               onPress={() => setCategory(c)}
             >
-              <Text style={styles.catIcon}>{CATEGORY_ICONS[c]}</Text>
+              <Icon name={CATEGORY_ICON_NAME[c] ?? 'sparkles'} size={14} color={on ? colors.bg : colors.textMuted} strokeWidth={2.1} />
               <Text style={[styles.catTxt, on && styles.catTxtOn]}>{c}</Text>
             </Pressable>
           );

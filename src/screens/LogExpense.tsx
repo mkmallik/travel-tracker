@@ -20,12 +20,13 @@ import {
   shortDate,
   todayIso,
 } from '../utils/date';
-import { themeForCity, CATEGORY_ICONS } from '../data/theme';
+import { themeForCity } from '../data/theme';
 import { DatePicker } from '../components/DatePicker';
 import { BookingForm } from './BookingForm';
 import { ExpenseForm } from './ExpenseForm';
 import type { BookingType, Expense } from '../data/types';
-import { BOOKING_ICONS, BOOKING_LABELS } from '../utils/bookings';
+import { BOOKING_LABELS } from '../utils/bookings';
+import { Icon, BOOKING_ICON_NAME, CATEGORY_ICON_NAME, type IconName } from '../components/Icon';
 import { useThemedStyles } from '../theme/styles';
 import { useTheme } from '../theme/useTheme';
 import type { ThemeColors } from '../theme/colors';
@@ -107,12 +108,12 @@ export function LogExpenseScreen({ route }: Props) {
 
   const recent = [...expenses].sort((a, b) => b.createdAt - a.createdAt).slice(0, 8);
 
-  const modeTabs: Array<{ key: LogMode; icon: string; label: string }> = [
-    { key: 'expense', icon: '💸', label: 'Expense' },
-    { key: 'hotel', icon: BOOKING_ICONS.hotel, label: BOOKING_LABELS.hotel },
-    { key: 'flight', icon: BOOKING_ICONS.flight, label: BOOKING_LABELS.flight },
-    { key: 'activity', icon: BOOKING_ICONS.activity, label: BOOKING_LABELS.activity },
-    { key: 'transfer', icon: BOOKING_ICONS.transfer, label: BOOKING_LABELS.transfer },
+  const modeTabs: Array<{ key: LogMode; icon: IconName; label: string }> = [
+    { key: 'expense', icon: 'wallet', label: 'Expense' },
+    { key: 'hotel', icon: BOOKING_ICON_NAME.hotel, label: BOOKING_LABELS.hotel },
+    { key: 'flight', icon: BOOKING_ICON_NAME.flight, label: BOOKING_LABELS.flight },
+    { key: 'activity', icon: BOOKING_ICON_NAME.activity, label: BOOKING_LABELS.activity },
+    { key: 'transfer', icon: BOOKING_ICON_NAME.transfer, label: BOOKING_LABELS.transfer },
   ];
 
   const modeStrip = (
@@ -130,7 +131,7 @@ export function LogExpenseScreen({ route }: Props) {
             style={[styles.modeTab, on && styles.modeTabOn]}
             onPress={() => setLogMode(item.key)}
           >
-            <Text style={styles.modeTabIcon}>{item.icon}</Text>
+            <Icon name={item.icon} size={14} color={on ? colors.bg : colors.textMuted} strokeWidth={2.1} />
             <Text style={[styles.modeTabLabel, on && styles.modeTabLabelOn]}>{item.label}</Text>
           </Pressable>
         );
@@ -204,7 +205,7 @@ export function LogExpenseScreen({ route }: Props) {
               style={[styles.catChip, on && styles.catChipOn]}
               onPress={() => setCategory(c)}
             >
-              <Text style={styles.catIcon}>{CATEGORY_ICONS[c]}</Text>
+              <Icon name={CATEGORY_ICON_NAME[c] ?? 'sparkles'} size={14} color={on ? colors.bg : colors.textMuted} strokeWidth={2.1} />
               <Text style={[styles.catTxt, on && styles.catTxtOn]}>{c}</Text>
             </Pressable>
           );
@@ -294,7 +295,9 @@ export function LogExpenseScreen({ route }: Props) {
           <Text style={styles.label}>RECENT</Text>
           {recent.map((e) => (
             <Pressable key={e.id} style={styles.recentRow} onPress={() => setEditingExpense(e)}>
-              <Text style={styles.recentIcon}>{CATEGORY_ICONS[e.category]}</Text>
+              <View style={styles.recentIconWrap}>
+                <Icon name={CATEGORY_ICON_NAME[e.category] ?? 'sparkles'} size={16} color={colors.textMuted} strokeWidth={2} />
+              </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.recentCat}>
                   {e.category}
@@ -310,7 +313,7 @@ export function LogExpenseScreen({ route }: Props) {
                 onPress={(ev) => { ev.stopPropagation?.(); removeExpense(e.id); }}
                 style={styles.delBtn}
               >
-                <Text style={styles.delTxt}>×</Text>
+                <Icon name="close" size={14} color={colors.textMuted} strokeWidth={2.2} />
               </Pressable>
             </Pressable>
           ))}
@@ -424,6 +427,10 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     shadowColor: c.shadow, shadowOpacity: 0.04, shadowRadius: 4, shadowOffset: { width: 0, height: 1 },
   },
   recentIcon: { fontSize: 22, marginRight: 10 },
+  recentIconWrap: {
+    width: 34, height: 34, borderRadius: 17, backgroundColor: c.cardBgAlt,
+    alignItems: 'center', justifyContent: 'center', marginRight: 10,
+  },
   recentCat: { fontSize: 14, fontWeight: '700', color: c.text },
   recentSub: { fontSize: 11, color: c.textMuted, marginTop: 2 },
   recentAmt: { fontSize: 13, color: c.text, marginRight: 10, fontWeight: '600' },

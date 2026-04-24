@@ -11,11 +11,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
 import { Money } from '../components/Money';
 import {
-  BOOKING_ICONS,
   BOOKING_LABELS,
   flightStopsLabel,
   hotelNights,
 } from '../utils/bookings';
+import { Icon, BOOKING_ICON_NAME } from '../components/Icon';
 import { useThemedStyles } from '../theme/styles';
 import { useTheme } from '../theme/useTheme';
 import type { ThemeColors } from '../theme/colors';
@@ -84,9 +84,10 @@ export function BookingsScreen() {
         return (
           <View key={t} style={styles.group}>
             <View style={styles.groupHeader}>
-              <Text style={styles.groupHeaderTxt}>
-                {BOOKING_ICONS[t]}  {BOOKING_LABELS[t]}s
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 as any }}>
+                <Icon name={BOOKING_ICON_NAME[t]} size={18} color={colors.text} strokeWidth={2} />
+                <Text style={styles.groupHeaderTxt}>{BOOKING_LABELS[t]}s</Text>
+              </View>
               <Text style={styles.groupCount}>{rows.length}</Text>
             </View>
             {rows.map((b) => (
@@ -139,7 +140,7 @@ function BookingCard({ booking, onPress, onRemove }: { booking: Booking; onPress
           onPress={(e) => { e.stopPropagation?.(); onRemove(); }}
           style={styles.delBtn}
         >
-          <Text style={styles.delTxt}>×</Text>
+          <Icon name="close" size={14} color="#94A3B8" strokeWidth={2.2} />
         </Pressable>
       </View>
       {subtitle ? <Text style={styles.cardSub}>{subtitle}</Text> : null}

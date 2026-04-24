@@ -17,8 +17,9 @@ import {
   sumExpensesInThb,
   budgetedTotalThb,
 } from '../utils/expenseHelpers';
-import { themeForCity, CATEGORY_ICONS } from '../data/theme';
-import { bookingsForIso, BOOKING_ICONS, BOOKING_LABELS, flightStopsLabel, hotelNights } from '../utils/bookings';
+import { themeForCity } from '../data/theme';
+import { bookingsForIso, BOOKING_LABELS, flightStopsLabel, hotelNights } from '../utils/bookings';
+import { Icon, BOOKING_ICON_NAME, CATEGORY_ICON_NAME } from '../components/Icon';
 import { dayIsoFromSeed } from '../utils/date';
 import type { Booking, Expense, FlightExtras, HotelExtras, ActivityExtras, TransferExtras } from '../data/types';
 import { useThemedStyles } from '../theme/styles';
@@ -148,7 +149,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
 
         {flights.length > 0 ? (
           <View style={styles.card}>
-            <Text style={styles.cardLabel}>{BOOKING_ICONS.flight}  Flights</Text>
+            <SectionLabel icon="flight" color={colors.textSubtle}>Flights</SectionLabel>
             {flights.map((b) => (
               <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
             ))}
@@ -157,7 +158,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
 
         {hotels.length > 0 ? (
           <View style={styles.card}>
-            <Text style={styles.cardLabel}>{BOOKING_ICONS.hotel}  Hotels</Text>
+            <SectionLabel icon="hotel" color={colors.textSubtle}>Hotels</SectionLabel>
             {hotels.map((b) => (
               <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
             ))}
@@ -166,7 +167,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
 
         {activities.length > 0 ? (
           <View style={styles.card}>
-            <Text style={styles.cardLabel}>{BOOKING_ICONS.activity}  Activities</Text>
+            <SectionLabel icon="activity" color={colors.textSubtle}>Activities</SectionLabel>
             {activities.map((b) => (
               <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
             ))}
@@ -175,7 +176,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
 
         {transfers.length > 0 ? (
           <View style={styles.card}>
-            <Text style={styles.cardLabel}>{BOOKING_ICONS.transfer}  Transfers</Text>
+            <SectionLabel icon="transfer" color={colors.textSubtle}>Transfers</SectionLabel>
             {transfers.map((b) => (
               <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
             ))}
@@ -186,7 +187,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           style={styles.card}
           onPress={stayBooking ? () => setEditingBooking(stayBooking) : undefined}
         >
-          <Text style={styles.cardLabel}>🏨  Stay</Text>
+          <SectionLabel icon="hotel" color={colors.textSubtle}>Stay</SectionLabel>
           <Text style={styles.stayName}>{stayName}</Text>
 
           {stayAddress ? (
@@ -194,8 +195,12 @@ export function DayDetailScreen({ navigation, route }: Props) {
               style={styles.addrRow}
               onPress={(e) => { e.stopPropagation?.(); openInMaps(stayAddress); }}
             >
-              <Text style={styles.stayAddr}>📍  {stayAddress}</Text>
+              <View style={styles.addrTextRow}>
+                <Icon name="pin" size={14} color={theme.accent} strokeWidth={2} />
+                <Text style={styles.stayAddr}>{stayAddress}</Text>
+              </View>
               <View style={[styles.mapBtn, { backgroundColor: theme.light }]}>
+                <Icon name="map" size={12} color={theme.accent} strokeWidth={2.2} />
                 <Text style={[styles.mapBtnTxt, { color: theme.accent }]}>Open map</Text>
               </View>
             </Pressable>
@@ -209,7 +214,8 @@ export function DayDetailScreen({ navigation, route }: Props) {
                   style={[styles.phonePill, { backgroundColor: theme.light }]}
                   onPress={(e) => { e.stopPropagation?.(); dialNumber(p); }}
                 >
-                  <Text style={[styles.phonePillTxt, { color: theme.accent }]}>📞  {p}</Text>
+                  <Icon name="phone" size={12} color={theme.accent} strokeWidth={2.2} />
+                  <Text style={[styles.phonePillTxt, { color: theme.accent }]}>{p}</Text>
                 </Pressable>
               ))}
             </View>
@@ -232,14 +238,14 @@ export function DayDetailScreen({ navigation, route }: Props) {
 
         {day.summary ? (
           <View style={styles.card}>
-            <Text style={styles.cardLabel}>📝  Plan for the day</Text>
+            <SectionLabel icon="receipt" color={colors.textSubtle}>Plan for the day</SectionLabel>
             <Text style={styles.summary}>{day.summary}</Text>
           </View>
         ) : null}
 
         {travelLines.length > 0 ? (
           <View style={styles.card}>
-            <Text style={styles.cardLabel}>🧭  Travel details</Text>
+            <SectionLabel icon="map" color={colors.textSubtle}>Travel details</SectionLabel>
             {travelLines.map((line, i) => (
               <View key={i} style={styles.travelLineRow}>
                 <View style={[styles.bullet, { backgroundColor: theme.accent }]} />
@@ -251,10 +257,12 @@ export function DayDetailScreen({ navigation, route }: Props) {
 
         {dayExp.length > 0 ? (
           <View style={styles.card}>
-            <Text style={styles.cardLabel}>💸  Logged expenses</Text>
+            <SectionLabel icon="wallet" color={colors.textSubtle}>Logged expenses</SectionLabel>
             {dayExp.map((e) => (
               <Pressable key={e.id} style={styles.expRow} onPress={() => setEditingExpense(e)}>
-                <Text style={styles.expIcon}>{CATEGORY_ICONS[e.category]}</Text>
+                <View style={styles.expIconWrap}>
+                  <Icon name={CATEGORY_ICON_NAME[e.category] ?? 'sparkles'} size={16} color={colors.textMuted} strokeWidth={2} />
+                </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.expCat}>{e.category}</Text>
                   {e.note ? <Text style={styles.expNote}>{e.note}</Text> : null}
@@ -264,7 +272,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
                   onPress={(ev) => { ev.stopPropagation?.(); removeExpense(e.id); }}
                   style={styles.expDelBtn}
                 >
-                  <Text style={styles.expDelTxt}>×</Text>
+                  <Icon name="close" size={14} color={colors.textMuted} strokeWidth={2.2} />
                 </Pressable>
               </Pressable>
             ))}
@@ -310,6 +318,16 @@ export function DayDetailScreen({ navigation, route }: Props) {
         </View>
       </Modal>
     </ScrollView>
+  );
+}
+
+function SectionLabel({ icon, color, children }: { icon: any; color: string; children: React.ReactNode }) {
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 as any, marginBottom: 10 }}>
+      <Icon name={icon} size={14} color={color} strokeWidth={2} />
+      <Text style={styles.cardLabel}>{children}</Text>
+    </View>
   );
 }
 
@@ -433,11 +451,12 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
 
   stayName: { fontSize: 17, fontWeight: '700', color: c.text },
   addrRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 as any, marginTop: 8 },
+  addrTextRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 as any, flex: 1 },
   stayAddr: { flex: 1, fontSize: 13, color: c.textMuted, lineHeight: 18 },
-  mapBtn: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, alignSelf: 'flex-start' },
+  mapBtn: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 5 as any },
   mapBtnTxt: { fontSize: 11, fontWeight: '700', letterSpacing: 0.2 },
   phonesWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 as any, marginTop: 8 },
-  phonePill: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999 },
+  phonePill: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, flexDirection: 'row', alignItems: 'center', gap: 6 as any },
   phonePillTxt: { fontSize: 12, fontWeight: '700' },
   stayNote: { fontSize: 12, color: c.textMuted, marginTop: 8, fontStyle: 'italic' },
   tapHint: { fontSize: 10, color: c.textSubtle, marginTop: 10, fontStyle: 'italic' },
@@ -458,6 +477,10 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth, borderColor: c.border,
   },
   expIcon: { fontSize: 20, marginRight: 10 },
+  expIconWrap: {
+    width: 32, height: 32, borderRadius: 16, backgroundColor: c.cardBgAlt,
+    alignItems: 'center', justifyContent: 'center', marginRight: 10,
+  },
   expCat: { fontSize: 14, fontWeight: '700', color: c.text },
   expNote: { fontSize: 12, color: c.textMuted, marginTop: 2 },
   expAmt: { fontSize: 13, color: c.text, fontWeight: '600' },

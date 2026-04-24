@@ -29,10 +29,10 @@ import {
 } from '../utils/csv';
 import { exportCsv, importCsv, confirm, alertMessage } from '../utils/fileIo';
 import {
-  CATEGORY_ICONS,
   CATEGORY_COLORS,
   themeForCity,
 } from '../data/theme';
+import { Icon, CATEGORY_ICON_NAME } from '../components/Icon';
 import { CATEGORY_FOR_BOOKING_TYPE } from '../data/types';
 import { costIsoForBooking } from '../utils/bookings';
 import { findDayNumForIso } from '../utils/date';
@@ -224,9 +224,10 @@ export function SummaryScreen() {
           {topCategory ? (
             <View style={styles.totalFoot}>
               <Text style={styles.totalFootLabel}>Top category</Text>
-              <Text style={styles.totalFootValue}>
-                {CATEGORY_ICONS[topCategory.cat]}  {topCategory.cat}
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 as any, marginTop: 3 }}>
+                <Icon name={CATEGORY_ICON_NAME[topCategory.cat] ?? 'sparkles'} size={14} color="#fff" strokeWidth={2} />
+                <Text style={styles.totalFootValue}>{topCategory.cat}</Text>
+              </View>
             </View>
           ) : null}
           <View style={styles.totalFoot}>
@@ -246,7 +247,7 @@ export function SummaryScreen() {
             <View key={c} style={[styles.catRow, i === 0 && { marginTop: 0 }]}>
               <View style={styles.catLabelRow}>
                 <View style={styles.catHeader}>
-                  <Text style={styles.catIcon}>{CATEGORY_ICONS[c]}</Text>
+                  <Icon name={CATEGORY_ICON_NAME[c] ?? 'sparkles'} size={15} color={color} strokeWidth={2} />
                   <Text style={styles.catName}>{c}</Text>
                 </View>
                 <Text style={styles.catAmt}>{formatDual(amt, 'THB', fxInrPerThb)}</Text>
@@ -310,7 +311,8 @@ export function SummaryScreen() {
             onPress={refresh}
             disabled={syncing}
           >
-            <Text style={styles.syncBtnTxt}>↻ Refresh</Text>
+            <Icon name="refresh" size={14} color={colors.bg} strokeWidth={2.4} />
+            <Text style={styles.syncBtnTxt}>Refresh</Text>
           </Pressable>
         </View>
       </View>
@@ -319,9 +321,9 @@ export function SummaryScreen() {
       <View style={styles.card}>
         <View style={styles.themeRow}>
           {([
-            { key: 'auto', label: '🌓  Auto' },
-            { key: 'light', label: '☀︎  Light' },
-            { key: 'dark', label: '☾  Dark' },
+            { key: 'auto', label: 'Auto', icon: 'auto' as const },
+            { key: 'light', label: 'Light', icon: 'sun' as const },
+            { key: 'dark', label: 'Dark', icon: 'moon' as const },
           ] as const).map((opt) => {
             const on = themePref === opt.key;
             return (
@@ -330,6 +332,7 @@ export function SummaryScreen() {
                 style={[styles.themeBtn, on && styles.themeBtnOn]}
                 onPress={() => setThemePref(opt.key)}
               >
+                <Icon name={opt.icon} size={14} color={on ? colors.bg : colors.text} strokeWidth={2} />
                 <Text style={[styles.themeBtnTxt, on && styles.themeBtnTxtOn]}>{opt.label}</Text>
               </Pressable>
             );
@@ -488,6 +491,7 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   syncBtn: {
     backgroundColor: c.borderStrong, borderRadius: 10,
     paddingHorizontal: 14, paddingVertical: 10,
+    flexDirection: 'row', alignItems: 'center', gap: 6 as any,
   },
   syncBtnTxt: { color: c.bg, fontSize: 13, fontWeight: '700' },
 
@@ -504,6 +508,7 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     backgroundColor: c.cardBgAlt, borderRadius: 10,
     borderWidth: 1, borderColor: c.border,
     alignItems: 'center',
+    flexDirection: 'row', justifyContent: 'center', gap: 6 as any,
   },
   themeBtnOn: { backgroundColor: c.borderStrong, borderColor: c.borderStrong },
   themeBtnTxt: { fontSize: 13, color: c.text, fontWeight: '600' },

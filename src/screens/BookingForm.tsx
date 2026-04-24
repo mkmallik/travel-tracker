@@ -10,7 +10,8 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { DatePicker } from '../components/DatePicker';
 import { useAppStore } from '../store/useAppStore';
-import { BOOKING_ICONS, BOOKING_LABELS } from '../utils/bookings';
+import { BOOKING_LABELS } from '../utils/bookings';
+import { Icon, BOOKING_ICON_NAME } from '../components/Icon';
 import { todayIso, findDayNumForIso, dayIsoFromSeed } from '../utils/date';
 import type {
   Booking,
@@ -161,7 +162,7 @@ export function BookingForm({
               style={[styles.typeBtn, on && styles.typeBtnOn]}
               onPress={() => setType(t)}
             >
-              <Text style={styles.typeIcon}>{BOOKING_ICONS[t]}</Text>
+              <Icon name={BOOKING_ICON_NAME[t]} size={22} color={on ? colors.bg : colors.text} strokeWidth={1.9} />
               <Text style={[styles.typeLabel, on && styles.typeLabelOn]}>{BOOKING_LABELS[t]}</Text>
             </Pressable>
           );
