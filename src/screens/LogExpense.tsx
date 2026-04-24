@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Pressable,
@@ -46,19 +46,26 @@ export function LogExpenseScreen({ route }: Props) {
   const { days, expenses, addExpense, removeExpense } = useAppStore();
   const [logMode, setLogMode] = useState<LogMode>('expense');
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const chipListRef = useRef<FlatList<{ iso: string; [k: string]: any }>>(null);
 
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState<Currency>('THB');
   const [category, setCategory] = useState<ExpenseCategory>('Food');
   const [note, setNote] = useState('');
+
+  // Defaults: always start with today's date.
+  // - If today is a trip day, show chip strip with today's chip highlighted.
+  // - Otherwise, default to "Other date" mode with today pre-filled in the
+  //   calendar so users aren't nudged to pick a random trip day.
+  const todayOnMount = todayIso();
+  const todayIsTripDay = !!findDayNumForIso(todayOnMount, days);
   const [selectedIso, setSelectedIso] = useState<string>(() => {
-    const today = todayIso();
-    const firstDayIso = days[0] ? dayIsoFromSeed(days[0]) : null;
-    if (findDayNumForIso(today, days)) return today;
-    return firstDayIso ?? today;
+    if (todayIsTripDay) return todayOnMount;
+    const firstIso = days[0] ? dayIsoFromSeed(days[0]) : null;
+    return firstIso ?? todayOnMount;
   });
-  const [customDate, setCustomDate] = useState(() => todayIso());
-  const [mode, setMode] = useState<'trip' | 'other'>('trip');
+  const [customDate, setCustomDate] = useState(() => todayOnMount);
+  const [mode, setMode] = useState<'trip' | 'other'>(todayIsTripDay ? 'trip' : 'other');
 
   useEffect(() => {
     const param = route?.params?.dayNum;
@@ -71,6 +78,22 @@ export function LogExpenseScreen({ route }: Props) {
       }
     }
   }, [route?.params?.dayNum, days]);
+
+  // Auto-scroll the chip strip to the selected chip (keeps today's chip
+  // or the param-supplied day visible without user scrolling).
+  useEffect(() => {
+    if (mode !== 'trip' || !chipListRef.current) return;
+    const idx = days.findIndex((d) => dayIsoFromSeed(d) === selectedIso);
+    if (idx < 0) return;
+    const t = setTimeout(() => {
+      try {
+        chipListRef.current?.scrollToIndex({ index: idx, animated: true, viewPosition: 0.15 });
+      } catch {
+        /* onScrollToIndexFailed retries */
+      }
+    }, 250);
+    return () => clearTimeout(t);
+  }, [mode, selectedIso, days]);
 
   const chips = useMemo(
     () =>
@@ -230,11 +253,17 @@ export function LogExpenseScreen({ route }: Props) {
 
       {mode === 'trip' ? (
         <FlatList
+          ref={chipListRef as any}
           horizontal
           data={chips}
           keyExtractor={(c) => c.iso}
           contentContainerStyle={styles.chipStrip}
           showsHorizontalScrollIndicator={false}
+          onScrollToIndexFailed={(info) => {
+            setTimeout(() => {
+              chipListRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.1 });
+            }, 200);
+          }}
           renderItem={({ item }) => {
             const on = selectedIso === item.iso;
             const theme = themeForCity(item.city);
