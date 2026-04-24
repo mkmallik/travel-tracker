@@ -23,11 +23,13 @@ import {
 import { themeForCity, CATEGORY_ICONS } from '../data/theme';
 import { DatePicker } from '../components/DatePicker';
 import { BookingForm } from './BookingForm';
-import type { BookingType } from '../data/types';
+import { ExpenseForm } from './ExpenseForm';
+import type { BookingType, Expense } from '../data/types';
 import { BOOKING_ICONS, BOOKING_LABELS } from '../utils/bookings';
 import { useThemedStyles } from '../theme/styles';
 import { useTheme } from '../theme/useTheme';
 import type { ThemeColors } from '../theme/colors';
+import { Modal } from 'react-native';
 
 type LogMode = 'expense' | BookingType;
 
@@ -42,6 +44,7 @@ export function LogExpenseScreen({ route }: Props) {
   const { colors } = useTheme();
   const { days, expenses, addExpense, removeExpense } = useAppStore();
   const [logMode, setLogMode] = useState<LogMode>('expense');
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState<Currency>('THB');
@@ -290,7 +293,7 @@ export function LogExpenseScreen({ route }: Props) {
         <View style={styles.recentWrap}>
           <Text style={styles.label}>RECENT</Text>
           {recent.map((e) => (
-            <View key={e.id} style={styles.recentRow}>
+            <Pressable key={e.id} style={styles.recentRow} onPress={() => setEditingExpense(e)}>
               <Text style={styles.recentIcon}>{CATEGORY_ICONS[e.category]}</Text>
               <View style={{ flex: 1 }}>
                 <Text style={styles.recentCat}>
@@ -303,13 +306,35 @@ export function LogExpenseScreen({ route }: Props) {
                 </Text>
               </View>
               <Money amount={e.amount} currency={e.currency} style={styles.recentAmt} />
-              <Pressable onPress={() => removeExpense(e.id)} style={styles.delBtn}>
+              <Pressable
+                onPress={(ev) => { ev.stopPropagation?.(); removeExpense(e.id); }}
+                style={styles.delBtn}
+              >
                 <Text style={styles.delTxt}>×</Text>
               </Pressable>
-            </View>
+            </Pressable>
           ))}
         </View>
       ) : null}
+
+      <Modal
+        visible={!!editingExpense}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setEditingExpense(null)}
+      >
+        <View style={[styles.editBackdrop, { backgroundColor: colors.overlay }]}>
+          <View style={[styles.editSheet, { backgroundColor: colors.bg }]}>
+            {editingExpense ? (
+              <ExpenseForm
+                existing={editingExpense}
+                onSaved={() => setEditingExpense(null)}
+                onCancel={() => setEditingExpense(null)}
+              />
+            ) : null}
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -422,4 +447,7 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   modeTabIcon: { fontSize: 15, marginRight: 6 },
   modeTabLabel: { fontSize: 13, color: c.textMuted, fontWeight: '600' },
   modeTabLabelOn: { color: c.bg },
+
+  editBackdrop: { flex: 1, justifyContent: 'flex-end' },
+  editSheet: { height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden' },
 });

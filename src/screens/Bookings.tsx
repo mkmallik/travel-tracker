@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,6 +17,7 @@ import {
   hotelNights,
 } from '../utils/bookings';
 import { useThemedStyles } from '../theme/styles';
+import { useTheme } from '../theme/useTheme';
 import type { ThemeColors } from '../theme/colors';
 import type {
   ActivityExtras,
@@ -27,13 +29,16 @@ import type {
 } from '../data/types';
 import { toThb, toInr, formatTHB, formatINR } from '../utils/fx';
 import { shortDate } from '../utils/date';
+import { BookingForm } from './BookingForm';
 
 const ORDER: BookingType[] = ['flight', 'hotel', 'activity', 'transfer'];
 
 export function BookingsScreen() {
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
   const { bookings, fxInrPerThb, removeBooking } = useAppStore();
+  const [editing, setEditing] = useState<Booking | null>(null);
 
   const grouped = useMemo(() => {
     const g: Record<BookingType, Booking[]> = { flight: [], hotel: [], activity: [], transfer: [] };
@@ -88,29 +93,52 @@ export function BookingsScreen() {
               <BookingCard
                 key={b.id}
                 booking={b}
+                onPress={() => setEditing(b)}
                 onRemove={() => removeBooking(b.id)}
               />
             ))}
           </View>
         );
       })}
+
+      <Modal
+        visible={!!editing}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setEditing(null)}
+      >
+        <View style={[styles.modalBackdrop, { backgroundColor: colors.overlay }]}>
+          <View style={[styles.modalSheet, { backgroundColor: colors.bg }]}>
+            {editing ? (
+              <BookingForm
+                existingBooking={editing}
+                onSaved={() => setEditing(null)}
+                onCancel={() => setEditing(null)}
+              />
+            ) : null}
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
 
-function BookingCard({ booking, onRemove }: { booking: Booking; onRemove: () => void }) {
+function BookingCard({ booking, onPress, onRemove }: { booking: Booking; onPress: () => void; onRemove: () => void }) {
   const styles = useThemedStyles(makeStyles);
   const subtitle = describe(booking);
   const dateLabel = dateRange(booking);
   const timeLabel = timeRange(booking);
 
   return (
-    <View style={styles.card}>
+    <Pressable style={styles.card} onPress={onPress}>
       <View style={styles.cardHeader}>
         <Text style={styles.cardTitle} numberOfLines={1}>
           {booking.title || BOOKING_LABELS[booking.type]}
         </Text>
-        <Pressable onPress={onRemove} style={styles.delBtn}>
+        <Pressable
+          onPress={(e) => { e.stopPropagation?.(); onRemove(); }}
+          style={styles.delBtn}
+        >
           <Text style={styles.delTxt}>×</Text>
         </Pressable>
       </View>
@@ -140,8 +168,9 @@ function BookingCard({ booking, onRemove }: { booking: Booking; onRemove: () => 
       {booking.note ? <Text style={styles.note}>{booking.note}</Text> : null}
       <View style={styles.amountRow}>
         <Money amount={booking.amount} currency={booking.currency} style={styles.amount} />
+        <Text style={styles.tapHint}>tap to edit</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -235,12 +264,16 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   metaPillTxt: { fontSize: 11, color: c.textMuted, fontWeight: '600' },
   faintMeta: { fontSize: 11, color: c.textSubtle },
   note: { fontSize: 12, color: c.textMuted, marginTop: 8, fontStyle: 'italic' },
-  amountRow: { marginTop: 10, alignItems: 'flex-end' },
+  amountRow: { marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   amount: { fontSize: 14, color: c.text, fontWeight: '800' },
+  tapHint: { fontSize: 10, color: c.textSubtle, fontStyle: 'italic' },
   delBtn: {
     width: 26, height: 26, borderRadius: 13,
     backgroundColor: c.cardBgAlt,
     alignItems: 'center', justifyContent: 'center',
   },
   delTxt: { fontSize: 16, color: c.textMuted, lineHeight: 18 },
+
+  modalBackdrop: { flex: 1, justifyContent: 'flex-end' },
+  modalSheet: { height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden' },
 });

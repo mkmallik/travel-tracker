@@ -117,7 +117,7 @@ function toRecords(rows: string[][]): Record<string, string>[] {
 const isValidCategory = (v: string) =>
   (EXPENSE_CATEGORIES as string[]).includes(v);
 
-export type ParsedExpense = Omit<Expense, 'id' | 'createdAt'>;
+export type ParsedExpense = Omit<Expense, 'id' | 'createdAt' | 'tripId'>;
 
 export function csvToExpenses(text: string): ParsedExpense[] {
   const records = toRecords(parseCsv(text));

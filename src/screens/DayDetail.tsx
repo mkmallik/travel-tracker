@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -19,9 +20,12 @@ import {
 import { themeForCity, CATEGORY_ICONS } from '../data/theme';
 import { bookingsForIso, BOOKING_ICONS, BOOKING_LABELS, flightStopsLabel, hotelNights } from '../utils/bookings';
 import { dayIsoFromSeed } from '../utils/date';
-import type { Booking, FlightExtras, HotelExtras, ActivityExtras, TransferExtras } from '../data/types';
+import type { Booking, Expense, FlightExtras, HotelExtras, ActivityExtras, TransferExtras } from '../data/types';
 import { useThemedStyles } from '../theme/styles';
+import { useTheme } from '../theme/useTheme';
 import type { ThemeColors } from '../theme/colors';
+import { BookingForm } from './BookingForm';
+import { ExpenseForm } from './ExpenseForm';
 
 type Props = {
   navigation: { goBack: () => void; navigate: (n: string, p: any) => void };
@@ -31,8 +35,11 @@ type Props = {
 export function DayDetailScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
-  const { days, expenses, bookings, fxInrPerThb, removeBooking } = useAppStore();
+  const { colors } = useTheme();
+  const { days, expenses, bookings, fxInrPerThb, removeBooking, removeExpense } = useAppStore();
   const day = days.find((d) => d.dayNum === route.params.dayNum);
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
   if (!day) {
     return (
@@ -131,7 +138,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <Text style={styles.cardLabel}>{BOOKING_ICONS.flight}  Flights</Text>
             {flights.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onRemove={() => removeBooking(b.id)} />
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
             ))}
           </View>
         ) : null}
@@ -140,7 +147,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <Text style={styles.cardLabel}>{BOOKING_ICONS.hotel}  Hotels</Text>
             {hotels.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onRemove={() => removeBooking(b.id)} />
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
             ))}
           </View>
         ) : null}
@@ -149,7 +156,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <Text style={styles.cardLabel}>{BOOKING_ICONS.activity}  Activities</Text>
             {activities.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onRemove={() => removeBooking(b.id)} />
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
             ))}
           </View>
         ) : null}
@@ -158,7 +165,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <Text style={styles.cardLabel}>{BOOKING_ICONS.transfer}  Transfers</Text>
             {transfers.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onRemove={() => removeBooking(b.id)} />
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
             ))}
           </View>
         ) : null}
@@ -198,32 +205,76 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <Text style={styles.cardLabel}>💸  Logged expenses</Text>
             {dayExp.map((e) => (
-              <View key={e.id} style={styles.expRow}>
+              <Pressable key={e.id} style={styles.expRow} onPress={() => setEditingExpense(e)}>
                 <Text style={styles.expIcon}>{CATEGORY_ICONS[e.category]}</Text>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.expCat}>{e.category}</Text>
                   {e.note ? <Text style={styles.expNote}>{e.note}</Text> : null}
                 </View>
                 <Money amount={e.amount} currency={e.currency} style={styles.expAmt} />
-              </View>
+                <Pressable
+                  onPress={(ev) => { ev.stopPropagation?.(); removeExpense(e.id); }}
+                  style={styles.expDelBtn}
+                >
+                  <Text style={styles.expDelTxt}>×</Text>
+                </Pressable>
+              </Pressable>
             ))}
           </View>
         ) : null}
       </View>
+
+      <Modal
+        visible={!!editingBooking}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setEditingBooking(null)}
+      >
+        <View style={[styles.modalBackdrop, { backgroundColor: colors.overlay }]}>
+          <View style={[styles.modalSheet, { backgroundColor: colors.bg }]}>
+            {editingBooking ? (
+              <BookingForm
+                existingBooking={editingBooking}
+                onSaved={() => setEditingBooking(null)}
+                onCancel={() => setEditingBooking(null)}
+              />
+            ) : null}
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={!!editingExpense}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setEditingExpense(null)}
+      >
+        <View style={[styles.modalBackdrop, { backgroundColor: colors.overlay }]}>
+          <View style={[styles.modalSheet, { backgroundColor: colors.bg }]}>
+            {editingExpense ? (
+              <ExpenseForm
+                existing={editingExpense}
+                onSaved={() => setEditingExpense(null)}
+                onCancel={() => setEditingExpense(null)}
+              />
+            ) : null}
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
 
 function BookingRow({
-  booking, accent, onRemove,
+  booking, accent, onPress, onRemove,
 }: {
-  booking: Booking; accent: string; onRemove: () => void;
+  booking: Booking; accent: string; onPress: () => void; onRemove: () => void;
 }) {
   const styles = useThemedStyles(makeStyles);
   const subline = subtitleFor(booking);
   const timeLabel = formatTimeLabel(booking);
   return (
-    <View style={styles.bkRow}>
+    <Pressable style={styles.bkRow} onPress={onPress}>
       <View style={{ flex: 1 }}>
         <View style={styles.bkHeader}>
           <Text style={styles.bkTitle}>{booking.title || BOOKING_LABELS[booking.type]}</Text>
@@ -241,11 +292,14 @@ function BookingRow({
         {booking.amount > 0 ? (
           <Money amount={booking.amount} currency={booking.currency} style={styles.bkAmt} />
         ) : null}
-        <Pressable onPress={onRemove} style={styles.bkDel}>
+        <Pressable
+          onPress={(e) => { e.stopPropagation?.(); onRemove(); }}
+          style={styles.bkDel}
+        >
           <Text style={styles.bkDelTxt}>×</Text>
         </Pressable>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -363,4 +417,13 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   bkAmt: { fontSize: 13, color: c.text, fontWeight: '700' },
   bkDel: { width: 24, height: 24, borderRadius: 12, backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center' },
   bkDelTxt: { fontSize: 14, color: c.textMuted },
+
+  expDelBtn: {
+    width: 24, height: 24, marginLeft: 8, borderRadius: 12,
+    backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center',
+  },
+  expDelTxt: { fontSize: 14, color: c.textMuted, lineHeight: 16 },
+
+  modalBackdrop: { flex: 1, justifyContent: 'flex-end' },
+  modalSheet: { height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden' },
 });

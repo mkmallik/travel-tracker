@@ -31,42 +31,52 @@ import type { ThemeColors } from '../theme/colors';
 type Props = {
   initialType?: BookingType;
   initialDate?: string;
+  existingBooking?: Booking;
   onSaved: () => void;
   onCancel: () => void;
 };
 
-export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCancel }: Props) {
+export function BookingForm({
+  initialType = 'hotel', initialDate, existingBooking, onSaved, onCancel,
+}: Props) {
   const styles = useThemedStyles(makeStyles);
   const { colors } = useTheme();
-  const { addBooking, days } = useAppStore();
+  const { addBooking, updateBooking, days } = useAppStore();
 
-  const defaultStart = initialDate ||
+  const isEditing = !!existingBooking;
+
+  const defaultStart = existingBooking?.startDate || initialDate ||
     (findDayNumForIso(todayIso(), days) ? todayIso() : (days[0] ? dayIsoFromSeed(days[0]) || todayIso() : todayIso()));
 
-  const [type, setType] = useState<BookingType>(initialType);
-  const [title, setTitle] = useState('');
-  const [bookingRef, setBookingRef] = useState('');
-  const [agent, setAgent] = useState('');
-  const [address, setAddress] = useState('');
+  const [type, setType] = useState<BookingType>(existingBooking?.type ?? initialType);
+  const [title, setTitle] = useState(existingBooking?.title ?? '');
+  const [bookingRef, setBookingRef] = useState(existingBooking?.bookingRef ?? '');
+  const [agent, setAgent] = useState(existingBooking?.agent ?? '');
+  const [address, setAddress] = useState(existingBooking?.address ?? '');
   const [startDate, setStartDate] = useState<string>(defaultStart);
-  const [endDate, setEndDate] = useState<string>(defaultStart);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState<Currency>('THB');
-  const [note, setNote] = useState('');
-  const [costOn, setCostOn] = useState<'start' | 'end'>('start');
+  const [endDate, setEndDate] = useState<string>(existingBooking?.endDate || defaultStart);
+  const [startTime, setStartTime] = useState(existingBooking?.startTime ?? '');
+  const [endTime, setEndTime] = useState(existingBooking?.endTime ?? '');
+  const [amount, setAmount] = useState(existingBooking?.amount ? String(existingBooking.amount) : '');
+  const [currency, setCurrency] = useState<Currency>(existingBooking?.currency ?? 'THB');
+  const [note, setNote] = useState(existingBooking?.note ?? '');
+  const [costOn, setCostOn] = useState<'start' | 'end'>(existingBooking?.costOn ?? 'start');
 
   // Type-specific state
-  const [flightFrom, setFlightFrom] = useState('');
-  const [flightTo, setFlightTo] = useState('');
-  const [flightStops, setFlightStops] = useState<FlightStop[]>([]);
-  const [roomType, setRoomType] = useState('');
-  const [activityLocation, setActivityLocation] = useState('');
-  const [activityOperator, setActivityOperator] = useState('');
-  const [transferFrom, setTransferFrom] = useState('');
-  const [transferTo, setTransferTo] = useState('');
-  const [transferMode, setTransferMode] = useState('');
+  const existingFlight = existingBooking?.type === 'flight' ? (existingBooking.extras as FlightExtras) : null;
+  const existingHotel = existingBooking?.type === 'hotel' ? (existingBooking.extras as HotelExtras) : null;
+  const existingActivity = existingBooking?.type === 'activity' ? (existingBooking.extras as ActivityExtras) : null;
+  const existingTransfer = existingBooking?.type === 'transfer' ? (existingBooking.extras as TransferExtras) : null;
+
+  const [flightFrom, setFlightFrom] = useState(existingFlight?.from ?? '');
+  const [flightTo, setFlightTo] = useState(existingFlight?.to ?? '');
+  const [flightStops, setFlightStops] = useState<FlightStop[]>(existingFlight?.stops ?? []);
+  const [roomType, setRoomType] = useState(existingHotel?.room_type ?? '');
+  const [activityLocation, setActivityLocation] = useState(existingActivity?.location ?? '');
+  const [activityOperator, setActivityOperator] = useState(existingActivity?.operator ?? '');
+  const [transferFrom, setTransferFrom] = useState(existingTransfer?.from_place ?? '');
+  const [transferTo, setTransferTo] = useState(existingTransfer?.to_place ?? '');
+  const [transferMode, setTransferMode] = useState(existingTransfer?.mode ?? '');
 
   const [busy, setBusy] = useState(false);
 
@@ -100,7 +110,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
     if (!canSave) return;
     setBusy(true);
     try {
-      await addBooking({
+      const shared = {
         type,
         title: title.trim(),
         bookingRef: bookingRef.trim(),
@@ -115,7 +125,15 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
         note: note.trim(),
         costOn,
         extras: buildExtras(),
-      });
+      };
+      if (existingBooking) {
+        await updateBooking({
+          ...existingBooking,
+          ...shared,
+        });
+      } else {
+        await addBooking(shared);
+      }
       onSaved();
     } catch (e: any) {
       alert(`Save failed: ${e?.message || e}`);
@@ -127,7 +145,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <View style={styles.headerRow}>
-        <Text style={styles.h1}>New booking</Text>
+        <Text style={styles.h1}>{isEditing ? 'Edit booking' : 'New booking'}</Text>
         <Pressable style={styles.cancel} onPress={onCancel}>
           <Text style={styles.cancelTxt}>×</Text>
         </Pressable>
@@ -384,7 +402,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={styles.saveBtn}
         >
-          <Text style={styles.saveTxt}>{busy ? 'Saving…' : '＋  Save booking'}</Text>
+          <Text style={styles.saveTxt}>{busy ? 'Saving…' : (isEditing ? '✓  Save changes' : '＋  Save booking')}</Text>
         </LinearGradient>
       </Pressable>
     </ScrollView>

@@ -357,6 +357,31 @@ export const actions = {
     }
   },
 
+  async updateExpense(e: Expense) {
+    const snapshot = state.expenses;
+    setState((s) => ({ expenses: s.expenses.map((x) => (x.id === e.id ? e : x)) }));
+    void saveCache();
+    try {
+      const { expense } = await api.updateExpense({
+        id: e.id,
+        trip_id: e.tripId,
+        date: e.date,
+        day_num: e.dayNum,
+        amount: e.amount,
+        currency: e.currency,
+        category: e.category,
+        note: e.note,
+        created_at: e.createdAt,
+      } as any);
+      setState((s) => ({
+        expenses: s.expenses.map((x) => (x.id === e.id ? serverToExpense(expense) : x)),
+      }));
+      await saveCache();
+    } catch (err: any) {
+      setState({ expenses: snapshot, syncError: err?.message ?? 'Update failed' });
+    }
+  },
+
   async setFxRate(rate: number) {
     const prev = state.fxInrPerThb;
     const next = rate > 0 ? rate : DEFAULT_INR_PER_THB;
@@ -369,13 +394,13 @@ export const actions = {
     }
   },
 
-  async replaceExpenses(items: Omit<Expense, 'id' | 'createdAt'>[]) {
+  async replaceExpenses(items: Omit<Expense, 'id' | 'createdAt' | 'tripId'>[]) {
     // This is a client-only convenience for CSV import; server stays authoritative
     // on reload. For now, we just add them one by one.
     for (const item of items) await actions.addExpense(item);
   },
 
-  async appendExpenses(items: Omit<Expense, 'id' | 'createdAt'>[]) {
+  async appendExpenses(items: Omit<Expense, 'id' | 'createdAt' | 'tripId'>[]) {
     for (const item of items) await actions.addExpense(item);
   },
 
