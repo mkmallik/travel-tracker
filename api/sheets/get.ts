@@ -16,6 +16,38 @@ function toRecords(rows: string[][], cols: readonly string[]): Record[] {
   });
 }
 
+// Google Sheets stores dates/times as serial numbers (days since Dec 30, 1899
+// with a fractional part representing time of day). The API reads them back
+// as numbers when we use valueRenderOption: 'UNFORMATTED_VALUE'. Convert them
+// back to ISO strings the frontend expects.
+function normalizeDate(v: string): string {
+  if (!v) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v; // already ISO
+  const n = parseFloat(v);
+  if (!Number.isFinite(n)) return v;
+  if (n < 10000 || n > 100000) return v; // not a plausible Sheets date serial
+  // Epoch: Dec 30, 1899 (Google's, Excel-compatible)
+  const epoch = Date.UTC(1899, 11, 30);
+  const ms = Math.floor(n) * 86400000;
+  const d = new Date(epoch + ms);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function normalizeTime(v: string): string {
+  if (!v) return '';
+  if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(v)) return v.slice(0, 5); // already HH:MM
+  const n = parseFloat(v);
+  if (!Number.isFinite(n)) return v;
+  if (n < 0 || n > 1) return v; // not a plausible time-of-day fraction
+  const total = Math.round(n * 24 * 60);
+  const hh = Math.floor(total / 60) % 24;
+  const mm = total % 60;
+  return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (applyCors(req, res)) return;
   if (!requireAuth(req, res)) return;
@@ -80,7 +112,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const allExpenses = toRecords(expRows, EXPENSE_COLS).map((r) => ({
       id: r.id,
       trip_id: r.trip_id || '',
-      date: r.date,
+      date: normalizeDate(r.date),
       day_num: r.day_num ? parseInt(r.day_num, 10) : null,
       category: r.category,
       amount: parseFloat(r.amount || '0') || 0,
@@ -101,6 +133,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const allBookings = toRecords(bookingRows, BOOKING_COLS).map((r) => {
       let extras: any = {};
       try { extras = r.extras ? JSON.parse(r.extras) : {}; } catch { extras = {}; }
+      const startDate = normalizeDate(r.start_date);
+      const endDate = normalizeDate(r.end_date) || startDate;
       return {
         id: r.id,
         trip_id: r.trip_id || '',
@@ -109,10 +143,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         booking_ref: r.booking_ref || '',
         agent: r.agent || '',
         address: r.address || '',
-        start_date: r.start_date || '',
-        end_date: r.end_date || r.start_date || '',
-        start_time: r.start_time || '',
-        end_time: r.end_time || '',
+        start_date: startDate,
+        end_date: endDate,
+        start_time: normalizeTime(r.start_time),
+        end_time: normalizeTime(r.end_time),
         amount: parseFloat(r.amount || '0') || 0,
         currency: (r.currency || 'THB') as 'THB' | 'INR',
         note: r.note || '',
