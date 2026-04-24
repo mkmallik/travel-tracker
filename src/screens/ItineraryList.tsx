@@ -169,7 +169,7 @@ function DayCard({ day, onPress }: { day: SeedDay; onPress: () => void }) {
         <View style={styles.cardFooterRow}>
           <View style={[styles.moneyPill, { backgroundColor: theme.light }]}>
             <Text style={[styles.moneyLabel, { color: theme.accent }]}>SPENT</Text>
-            <Text style={styles.moneyValue}>{formatTHB(spendThb)}</Text>
+            <Text style={styles.moneyValueOnLight}>{formatTHB(spendThb)}</Text>
           </View>
           {budgetThb > 0 ? (
             <View style={styles.moneyPill}>
@@ -242,6 +242,9 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   },
   moneyLabel: { fontSize: 9, color: c.textSubtle, fontWeight: '700', letterSpacing: 0.8 },
   moneyValue: { fontSize: 13, color: c.text, fontWeight: '700', marginTop: 1 },
+  // Used on the accent-tinted SPENT pill — the pill background comes from
+  // theme.light (always a pale tint), so text must stay dark in both modes.
+  moneyValueOnLight: { fontSize: 13, color: '#0F172A', fontWeight: '700', marginTop: 1 },
   arrowPill: {
     marginLeft: 'auto', width: 30, height: 30, borderRadius: 15,
     backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center',
