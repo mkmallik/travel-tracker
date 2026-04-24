@@ -54,22 +54,31 @@ const DEFAULT_SHEET_ID = '13grSBTA59EmnK9x7IFJ7vZrMw2-xuCic_BDf0f1oqr8';
 const SHEET_ID = process.env.SHEET_ID || DEFAULT_SHEET_ID;
 const KEY_PATH = path.join(__dirname, 'service-account.json');
 
+const TRIP_HEADERS = [
+  'id', 'title', 'start_date', 'end_date',
+  'home_currency', 'local_currency', 'fx_rate',
+  'cover_image_url', 'status', 'note', 'created_at',
+];
 const ITINERARY_HEADERS = [
-  'day_num', 'date', 'stay_city', 'from_city', 'to_city', 'image_url',
+  'trip_id', 'day_num', 'date', 'stay_city', 'from_city', 'to_city', 'image_url',
   'accommodation_name', 'address', 'location', 'agent', 'payment_status',
   'travel_details', 'summary', 'hotels', 'flights', 'ferry', 'train', 'others',
 ];
 const EXPENSE_HEADERS = [
-  'id', 'date', 'day_num', 'category', 'amount', 'currency',
+  'id', 'trip_id', 'date', 'day_num', 'category', 'amount', 'currency',
   'amount_thb', 'amount_inr', 'note', 'created_at',
 ];
 const SETTING_HEADERS = ['key', 'value'];
 const BOOKING_HEADERS = [
-  'id', 'type', 'title', 'booking_ref', 'agent', 'address',
+  'id', 'trip_id', 'type', 'title', 'booking_ref', 'agent', 'address',
   'start_date', 'end_date', 'start_time', 'end_time',
   'amount', 'currency', 'amount_thb', 'amount_inr', 'note',
   'cost_on', 'extras', 'created_at',
 ];
+
+const THAILAND_TRIP_ID = 'thailand-apr-2026';
+const THAILAND_COVER =
+  'https://images.unsplash.com/photo-1534008897995-27a23e859048?auto=format&fit=crop&w=1600&q=75';
 
 async function main() {
   if (!fs.existsSync(KEY_PATH)) {
@@ -86,26 +95,55 @@ async function main() {
   });
   const sheets = google.sheets({ version: 'v4', auth });
 
-  // Ensure bookings tab exists (adds it if missing — the other tabs you created manually)
+  // Ensure the new tabs exist
+  await ensureTabExists(sheets, 'trips');
   await ensureTabExists(sheets, 'bookings');
 
-  // Ensure headers in all four tabs
+  // Ensure headers across all tabs
   console.log('→ Writing headers...');
-  await setRange(sheets, 'itinerary!A1:R1', [ITINERARY_HEADERS]);
-  await setRange(sheets, 'expenses!A1:J1', [EXPENSE_HEADERS]);
+  await setRange(sheets, 'trips!A1:K1', [TRIP_HEADERS]);
+  await setRange(sheets, 'itinerary!A1:S1', [ITINERARY_HEADERS]);
+  await setRange(sheets, 'expenses!A1:K1', [EXPENSE_HEADERS]);
   await setRange(sheets, 'settings!A1:B1', [SETTING_HEADERS]);
-  await setRange(sheets, 'bookings!A1:R1', [BOOKING_HEADERS]);
+  await setRange(sheets, 'bookings!A1:S1', [BOOKING_HEADERS]);
 
-  // Clear + write itinerary rows
+  // Upsert the Thailand trip row
+  console.log('→ Ensuring Thailand trip row in trips tab...');
+  const tripRows = await getRange(sheets, 'trips!A:K');
+  const existingTripIds = new Set(tripRows.slice(1).map((r) => (r?.[0] ?? '').toString()));
+  if (!existingTripIds.has(THAILAND_TRIP_ID)) {
+    await appendRows(sheets, 'trips!A:K', [[
+      THAILAND_TRIP_ID,
+      'Thailand — Apr 27 to May 9, 2026',
+      '2026-04-27',
+      '2026-05-09',
+      'INR',
+      'THB',
+      '2.45',
+      THAILAND_COVER,
+      'active',
+      'First trip in the tracker',
+      String(Date.now()),
+    ]]);
+  }
+
+  // Clear + write itinerary rows (all scoped to the Thailand trip)
   console.log(`→ Uploading ${SEED_DAYS.length} itinerary rows...`);
-  await clearRange(sheets, 'itinerary!A2:R1000');
+  await clearRange(sheets, 'itinerary!A2:S1000');
   const itinRows = SEED_DAYS.map((d) => [
+    THAILAND_TRIP_ID,
     d.dayNum, d.date, d.stayCity, d.fromCity, d.toCity, d.imageUrl,
     d.accommodationName, d.address, d.location, d.agent, d.paymentStatus,
     d.travelDetails, d.summary,
     d.budgeted.hotels, d.budgeted.flights, d.budgeted.ferry, d.budgeted.train, d.budgeted.others,
   ]);
-  await setRange(sheets, `itinerary!A2:R${1 + itinRows.length}`, itinRows);
+  await setRange(sheets, `itinerary!A2:S${1 + itinRows.length}`, itinRows);
+
+  // Backfill trip_id on existing expense + booking rows if they're missing it.
+  // We assume any unlabeled legacy rows are Thailand rows (only trip that existed before this migration).
+  console.log('→ Backfilling trip_id on existing expenses + bookings (if any are legacy)...');
+  await backfillTripId(sheets, 'expenses', 'K', 11, THAILAND_TRIP_ID, 2);
+  await backfillTripId(sheets, 'bookings', 'S', 19, THAILAND_TRIP_ID, 2);
 
   // Upsert default settings (do not clobber existing)
   console.log('→ Writing default settings (fx rate, trip metadata)...');
@@ -160,6 +198,40 @@ async function appendRows(sheets, range, values) {
     insertDataOption: 'INSERT_ROWS',
     requestBody: { values },
   });
+}
+
+// Backfill: for every data row in the given tab, if the cell at tripIdColIndex (1-based)
+// is empty, write the tripId there. Each legacy row (written before migration) has its
+// original id in col A and an empty trip_id slot.
+async function backfillTripId(sheets, tab, colLetter, numCols, tripId, tripIdColIndex1Based) {
+  // Read full data first
+  const rows = await getRange(sheets, `${tab}!A:${colLetter}`);
+  if (rows.length <= 1) return;
+  const updates = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i] || [];
+    const tripIdCell = (r[tripIdColIndex1Based - 1] ?? '').toString().trim();
+    const idCell = (r[0] ?? '').toString().trim();
+    if (!idCell) continue; // empty row
+    if (!tripIdCell) {
+      // Sheets rows are 1-based in ranges; header is row 1, first data row is row 2
+      const rowNum = i + 1;
+      const colA = String.fromCharCode('A'.charCodeAt(0) + (tripIdColIndex1Based - 1));
+      updates.push({
+        range: `${tab}!${colA}${rowNum}`,
+        values: [[tripId]],
+      });
+    }
+  }
+  if (updates.length === 0) return;
+  await sheets.spreadsheets.values.batchUpdate({
+    spreadsheetId: SHEET_ID,
+    requestBody: {
+      valueInputOption: 'RAW',
+      data: updates,
+    },
+  });
+  console.log(`  · backfilled trip_id on ${updates.length} row(s) in ${tab}`);
 }
 
 async function ensureTabExists(sheets, title) {

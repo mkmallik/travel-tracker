@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Exp = {
   id: string;
+  trip_id: string;
   date: string;
   day_num: number | null;
   category: string;
@@ -11,7 +12,22 @@ type Exp = {
   created_at: number;
 };
 
+type ServerTrip = {
+  id: string;
+  title: string;
+  start_date: string;
+  end_date: string;
+  home_currency: string;
+  local_currency: string;
+  fx_rate: number;
+  cover_image_url: string;
+  status: 'planning' | 'active' | 'completed';
+  note: string;
+  created_at: number;
+};
+
 type DayRow = {
+  trip_id?: string;
   day_num: number;
   date: string;
   stay_city: string;
@@ -32,6 +48,7 @@ type DayRow = {
 
 type ServerBooking = {
   id: string;
+  trip_id: string;
   type: 'hotel' | 'flight' | 'activity' | 'transfer';
   title: string;
   booking_ref: string;
@@ -50,6 +67,7 @@ type ServerBooking = {
 };
 
 export type SheetsSnapshot = {
+  trips: ServerTrip[];
   itinerary: DayRow[];
   expenses: Exp[];
   settings: { [k: string]: string };
@@ -110,8 +128,33 @@ export async function isLoggedIn(): Promise<boolean> {
 
 // --- sheets ---
 
-export function fetchSnapshot(): Promise<SheetsSnapshot> {
-  return request<SheetsSnapshot>('/api/sheets/get', { method: 'GET' });
+export function fetchSnapshot(tripId?: string): Promise<SheetsSnapshot> {
+  const qs = tripId ? `?trip_id=${encodeURIComponent(tripId)}` : '';
+  return request<SheetsSnapshot>(`/api/sheets/get${qs}`, { method: 'GET' });
+}
+
+// --- trips ---
+
+type TripInput = Omit<ServerTrip, 'id' | 'created_at'> & { id?: string };
+
+export function addTrip(t: TripInput): Promise<{ trip: ServerTrip }> {
+  return request<{ trip: ServerTrip }>('/api/sheets/trip', {
+    method: 'POST',
+    body: JSON.stringify(t),
+  });
+}
+
+export function updateTrip(t: ServerTrip): Promise<{ trip: ServerTrip }> {
+  return request<{ trip: ServerTrip }>('/api/sheets/trip', {
+    method: 'PATCH',
+    body: JSON.stringify(t),
+  });
+}
+
+export function deleteTrip(id: string): Promise<{ deleted: true }> {
+  return request<{ deleted: true }>('/api/sheets/trip?id=' + encodeURIComponent(id), {
+    method: 'DELETE',
+  });
 }
 
 export function addExpense(e: Omit<Exp, 'id' | 'created_at'>): Promise<{ expense: Exp }> {

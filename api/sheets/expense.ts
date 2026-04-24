@@ -5,6 +5,7 @@ import { EXPENSE_COLS } from '../lib/schema';
 
 type Expense = {
   id: string;
+  trip_id: string;
   date: string;
   day_num: number | null;
   category: string;
@@ -29,6 +30,7 @@ function genId(): string {
 function toRowArray(e: Expense): (string | number)[] {
   return [
     e.id,
+    e.trip_id,
     e.date,
     e.day_num == null ? '' : e.day_num,
     e.category,
@@ -58,6 +60,9 @@ async function findRowIndexById(id: string): Promise<number | null> {
 }
 
 function validate(body: any, fxRate: number): Expense | { error: string } {
+  const trip_id = (body?.trip_id ?? '').toString().trim();
+  if (!trip_id) return { error: 'trip_id required' };
+
   const amount = parseFloat(body?.amount);
   if (!Number.isFinite(amount) || amount <= 0) return { error: 'invalid amount' };
 
@@ -81,6 +86,7 @@ function validate(body: any, fxRate: number): Expense | { error: string } {
 
   return {
     id: body?.id && typeof body.id === 'string' ? body.id : genId(),
+    trip_id,
     date,
     day_num: Number.isFinite(day_num as number) ? (day_num as number) : null,
     category,

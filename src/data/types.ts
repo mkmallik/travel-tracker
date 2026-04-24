@@ -41,6 +41,7 @@ export type BudgetedCosts = {
 };
 
 export type SeedDay = {
+  tripId?: string;
   dayNum: number;
   date: string;
   stayCity: string;
@@ -59,11 +60,28 @@ export type SeedDay = {
 
 export type Expense = {
   id: string;
+  tripId: string;
   date: string;
   dayNum: number | null;
   amount: number;
   currency: Currency;
   category: ExpenseCategory;
+  note: string;
+  createdAt: number;
+};
+
+export type TripStatus = 'planning' | 'active' | 'completed';
+
+export type Trip = {
+  id: string;
+  title: string;
+  startDate: string; // YYYY-MM-DD
+  endDate: string;   // YYYY-MM-DD
+  homeCurrency: Currency;
+  localCurrency: Currency;
+  fxRate: number;
+  coverImageUrl: string;
+  status: TripStatus;
   note: string;
   createdAt: number;
 };
@@ -108,6 +126,7 @@ export type BookingExtras =
 
 export type Booking = {
   id: string;
+  tripId: string;
   type: BookingType;
   title: string;
   bookingRef: string;

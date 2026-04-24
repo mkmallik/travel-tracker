@@ -1,8 +1,23 @@
 // Canonical column orders for each tab in the Google Sheet.
 // The sheet's header row MUST match these in order.
 
+export const TRIP_COLS = [
+  'id',
+  'title',
+  'start_date',
+  'end_date',
+  'home_currency',
+  'local_currency',
+  'fx_rate',
+  'cover_image_url',
+  'status', // planning | active | completed
+  'note',
+  'created_at',
+] as const;
+
 export const EXPENSE_COLS = [
   'id',
+  'trip_id',
   'date',
   'day_num',
   'category',
@@ -15,6 +30,7 @@ export const EXPENSE_COLS = [
 ] as const;
 
 export const ITINERARY_COLS = [
+  'trip_id',
   'day_num',
   'date',
   'stay_city',
@@ -39,6 +55,7 @@ export const SETTING_COLS = ['key', 'value'] as const;
 
 export const BOOKING_COLS = [
   'id',
+  'trip_id',
   'type',
   'title',
   'booking_ref',
@@ -59,8 +76,11 @@ export const BOOKING_COLS = [
 ] as const;
 
 export const SHEETS = {
+  trips: 'trips',
   itinerary: 'itinerary',
   expenses: 'expenses',
   settings: 'settings',
   bookings: 'bookings',
 } as const;
+
+export const THAILAND_TRIP_ID = 'thailand-apr-2026';

@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Booking, Expense, SeedDay, SeedTrip } from '../data/types';
+import type { Booking, Expense, SeedDay, SeedTrip, Trip } from '../data/types';
 import { SEED_TRIP, SEED_DAYS } from '../data/seedTrip';
 import { DEFAULT_INR_PER_THB } from '../utils/fx';
 import type { ThemePreference } from '../theme/colors';
@@ -8,6 +8,8 @@ import * as api from '../api/client';
 
 type State = {
   trip: SeedTrip;
+  trips: Trip[];
+  activeTripId: string | null;
   days: SeedDay[];
   expenses: Expense[];
   bookings: Booking[];
@@ -22,6 +24,8 @@ type State = {
 
 type CachePayload = {
   trip: SeedTrip;
+  trips: Trip[];
+  activeTripId: string | null;
   days: SeedDay[];
   expenses: Expense[];
   bookings: Booking[];
@@ -29,10 +33,12 @@ type CachePayload = {
   themePref: ThemePreference;
 };
 
-const CACHE_KEY = 'travel-tracker.cache.v2';
+const CACHE_KEY = 'travel-tracker.cache.v3';
 
 let state: State = {
   trip: SEED_TRIP,
+  trips: [],
+  activeTripId: null,
   days: SEED_DAYS,
   expenses: [],
   bookings: [],
@@ -57,6 +63,8 @@ function setState(patch: Partial<State> | ((s: State) => Partial<State>)) {
 async function saveCache() {
   const payload: CachePayload = {
     trip: state.trip,
+    trips: state.trips,
+    activeTripId: state.activeTripId,
     days: state.days,
     expenses: state.expenses,
     bookings: state.bookings,
@@ -102,6 +110,7 @@ function serverToDay(s: any): SeedDay {
 function serverToExpense(s: any): Expense {
   return {
     id: s.id,
+    tripId: s.trip_id || '',
     date: s.date,
     dayNum: s.day_num,
     amount: s.amount,
@@ -112,9 +121,61 @@ function serverToExpense(s: any): Expense {
   };
 }
 
+function serverToTrip(s: any): Trip {
+  return {
+    id: s.id,
+    title: s.title || 'Untitled trip',
+    startDate: s.start_date || '',
+    endDate: s.end_date || '',
+    homeCurrency: (s.home_currency || 'INR') as Trip['homeCurrency'],
+    localCurrency: (s.local_currency || 'THB') as Trip['localCurrency'],
+    fxRate: s.fx_rate || 0,
+    coverImageUrl: s.cover_image_url || '',
+    status: (s.status || 'planning') as Trip['status'],
+    note: s.note || '',
+    createdAt: Number(s.created_at) || 0,
+  };
+}
+
+function tripToServer(t: Trip | Omit<Trip, 'id' | 'createdAt'>) {
+  return {
+    title: t.title,
+    start_date: t.startDate,
+    end_date: t.endDate,
+    home_currency: t.homeCurrency,
+    local_currency: t.localCurrency,
+    fx_rate: t.fxRate,
+    cover_image_url: t.coverImageUrl,
+    status: t.status,
+    note: t.note,
+  };
+}
+
+// Auto-select the "closest" trip: active (today inside), else nearest upcoming,
+// else most recently completed. Sort fallback = created_at desc.
+export function pickAutoActiveTrip(trips: Trip[], today: string): Trip | null {
+  if (!trips.length) return null;
+  const active = trips.find((t) => t.startDate && t.endDate && today >= t.startDate && today <= t.endDate);
+  if (active) return active;
+  const upcoming = trips.filter((t) => t.startDate && t.startDate > today).sort((a, b) => a.startDate.localeCompare(b.startDate))[0];
+  if (upcoming) return upcoming;
+  const past = trips.filter((t) => t.endDate && t.endDate < today).sort((a, b) => b.endDate.localeCompare(a.endDate))[0];
+  if (past) return past;
+  return [...trips].sort((a, b) => b.createdAt - a.createdAt)[0];
+}
+
+function todayIsoStr(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 function serverToBooking(s: any): Booking {
   return {
     id: s.id,
+    tripId: s.trip_id || '',
     type: s.type,
     title: s.title || '',
     bookingRef: s.booking_ref || '',
@@ -135,6 +196,7 @@ function serverToBooking(s: any): Booking {
 
 function bookingToServer(b: Booking | Omit<Booking, 'id' | 'createdAt'>) {
   return {
+    trip_id: b.tripId,
     type: b.type,
     title: b.title,
     booking_ref: b.bookingRef,
@@ -168,6 +230,8 @@ export async function bootstrapStore(): Promise<void> {
   if (cached) {
     setState({
       trip: cached.trip || SEED_TRIP,
+      trips: cached.trips || [],
+      activeTripId: cached.activeTripId || null,
       days: cached.days?.length ? cached.days : SEED_DAYS,
       expenses: cached.expenses || [],
       bookings: cached.bookings || [],
@@ -185,16 +249,45 @@ export async function syncFromServer(): Promise<void> {
   if (!(await api.isLoggedIn())) return;
   setState({ syncing: true, syncError: null });
   try {
-    const snap = await api.fetchSnapshot();
+    // First pass: fetch trips (no filter) so we know which ones exist
+    const listSnap = await api.fetchSnapshot();
+    const trips = (listSnap.trips || []).map(serverToTrip);
+
+    // Decide active trip: stored one if still valid, otherwise auto-pick
+    const today = todayIsoStr();
+    let activeId = state.activeTripId && trips.some((t) => t.id === state.activeTripId)
+      ? state.activeTripId
+      : (pickAutoActiveTrip(trips, today)?.id ?? null);
+
+    // Scope: if we have an active trip, re-fetch filtered to that trip (cleaner)
+    const snap = activeId ? await api.fetchSnapshot(activeId) : listSnap;
+
     const days = snap.itinerary.map(serverToDay).sort((a, b) => a.dayNum - b.dayNum);
     const expenses = snap.expenses.map(serverToExpense);
     const bookings = (snap.bookings || []).map(serverToBooking);
-    const fxRaw = parseFloat(snap.settings['fx_inr_per_thb'] || '');
-    const fxInrPerThb = Number.isFinite(fxRaw) && fxRaw > 0 ? fxRaw : state.fxInrPerThb;
-    const tripPatch = settingsToTripPatch(snap.settings);
+
+    const activeTrip = activeId ? trips.find((t) => t.id === activeId) : null;
+    const fxFromTrip = activeTrip && activeTrip.fxRate > 0 ? activeTrip.fxRate : 0;
+    const fxFromSettings = parseFloat(snap.settings['fx_inr_per_thb'] || '');
+    const fxInrPerThb = fxFromTrip > 0
+      ? fxFromTrip
+      : (Number.isFinite(fxFromSettings) && fxFromSettings > 0 ? fxFromSettings : state.fxInrPerThb);
+
+    const tripPatch: Partial<SeedTrip> = activeTrip
+      ? {
+          id: activeTrip.id,
+          title: activeTrip.title,
+          startDate: activeTrip.startDate,
+          endDate: activeTrip.endDate,
+          homeCurrency: activeTrip.homeCurrency,
+          localCurrency: activeTrip.localCurrency,
+        }
+      : settingsToTripPatch(snap.settings);
 
     setState((s) => ({
       trip: { ...s.trip, ...tripPatch },
+      trips,
+      activeTripId: activeId,
       days: days.length ? days : s.days,
       expenses,
       bookings,
@@ -221,12 +314,18 @@ export async function syncFromServer(): Promise<void> {
 const genId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
 export const actions = {
-  async addExpense(e: Omit<Expense, 'id' | 'createdAt'>) {
-    const optimistic: Expense = { ...e, id: genId(), createdAt: Date.now() };
+  async addExpense(e: Omit<Expense, 'id' | 'createdAt' | 'tripId'>) {
+    const tripId = state.activeTripId;
+    if (!tripId) {
+      setState({ syncError: 'No active trip — pick one before logging expenses.' });
+      return;
+    }
+    const optimistic: Expense = { ...e, tripId, id: genId(), createdAt: Date.now() };
     setState((s) => ({ expenses: [...s.expenses, optimistic] }));
     void saveCache();
     try {
       const { expense } = await api.addExpense({
+        trip_id: tripId,
         date: e.date,
         day_num: e.dayNum,
         amount: e.amount,
@@ -295,12 +394,55 @@ export const actions = {
     void saveCache();
   },
 
-  async addBooking(input: Omit<Booking, 'id' | 'createdAt'>) {
-    const optimistic: Booking = { ...input, id: genId(), createdAt: Date.now() };
+  async setActiveTripId(id: string) {
+    setState({ activeTripId: id });
+    void saveCache();
+    await syncFromServer();
+  },
+
+  async addTrip(input: Omit<Trip, 'id' | 'createdAt'>) {
+    try {
+      const { trip } = await api.addTrip({
+        ...tripToServer(input),
+        status: input.status,
+      } as any);
+      const t = serverToTrip(trip);
+      setState((s) => ({ trips: [...s.trips, t] }));
+      await saveCache();
+      return t;
+    } catch (e: any) {
+      setState({ syncError: e?.message ?? 'Create trip failed' });
+      throw e;
+    }
+  },
+
+  async updateTripInfo(t: Trip) {
+    try {
+      const { trip } = await api.updateTrip({
+        id: t.id,
+        ...tripToServer(t),
+        created_at: t.createdAt,
+      } as any);
+      const merged = serverToTrip(trip);
+      setState((s) => ({ trips: s.trips.map((x) => (x.id === t.id ? merged : x)) }));
+      await saveCache();
+    } catch (e: any) {
+      setState({ syncError: e?.message ?? 'Update trip failed' });
+    }
+  },
+
+  async addBooking(input: Omit<Booking, 'id' | 'createdAt' | 'tripId'>) {
+    const tripId = state.activeTripId;
+    if (!tripId) {
+      setState({ syncError: 'No active trip — pick one before adding bookings.' });
+      return;
+    }
+    const withTrip = { ...input, tripId };
+    const optimistic: Booking = { ...withTrip, id: genId(), createdAt: Date.now() };
     setState((s) => ({ bookings: [...s.bookings, optimistic] }));
     void saveCache();
     try {
-      const { booking } = await api.addBooking(bookingToServer(input) as any);
+      const { booking } = await api.addBooking(bookingToServer(withTrip) as any);
       setState((s) => ({
         bookings: s.bookings.map((x) => (x.id === optimistic.id ? serverToBooking(booking) : x)),
       }));
@@ -340,6 +482,8 @@ export const actions = {
   async logout() {
     await api.logout();
     setState({
+      trips: [],
+      activeTripId: null,
       expenses: [],
       bookings: [],
       fxInrPerThb: DEFAULT_INR_PER_THB,

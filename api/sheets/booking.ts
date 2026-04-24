@@ -7,6 +7,7 @@ const BOOKING_TYPES = new Set(['hotel', 'flight', 'activity', 'transfer']);
 
 type BookingRow = {
   id: string;
+  trip_id: string;
   type: 'hotel' | 'flight' | 'activity' | 'transfer';
   title: string;
   booking_ref: string;
@@ -49,6 +50,9 @@ async function getFxRate(): Promise<number> {
 }
 
 function validate(body: any, fxRate: number): BookingRow | { error: string } {
+  const trip_id = (body?.trip_id ?? '').toString().trim();
+  if (!trip_id) return { error: 'trip_id required' };
+
   const type = (body?.type ?? '').toString();
   if (!BOOKING_TYPES.has(type)) return { error: 'invalid type' };
 
@@ -69,6 +73,7 @@ function validate(body: any, fxRate: number): BookingRow | { error: string } {
 
   return {
     id: body?.id && typeof body.id === 'string' ? body.id : genId(),
+    trip_id,
     type: type as BookingRow['type'],
     title: (body?.title ?? '').toString(),
     booking_ref: (body?.booking_ref ?? '').toString(),
@@ -91,7 +96,7 @@ function validate(body: any, fxRate: number): BookingRow | { error: string } {
 
 function toRowArray(b: BookingRow): (string | number)[] {
   return [
-    b.id, b.type, b.title, b.booking_ref, b.agent, b.address,
+    b.id, b.trip_id, b.type, b.title, b.booking_ref, b.agent, b.address,
     b.start_date, b.end_date, b.start_time, b.end_time,
     b.amount, b.currency, b.amount_thb, b.amount_inr, b.note,
     b.cost_on, JSON.stringify(b.extras || {}), b.created_at,

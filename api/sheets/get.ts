@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { applyCors, requireAuth } from '../lib/auth';
 import { readRange } from '../lib/sheets';
 import {
-  EXPENSE_COLS, ITINERARY_COLS, SETTING_COLS, BOOKING_COLS, SHEETS,
+  EXPENSE_COLS, ITINERARY_COLS, SETTING_COLS, BOOKING_COLS, TRIP_COLS, SHEETS,
 } from '../lib/schema';
 
 type Record = { [k: string]: string };
@@ -24,15 +24,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  const tripFilter = (req.query?.trip_id as string) || '';
+
   try {
-    const [itinRows, expRows, settingsRows, bookingRows] = await Promise.all([
-      readRange(`${SHEETS.itinerary}!A:R`),
-      readRange(`${SHEETS.expenses}!A:J`),
+    const [tripRows, itinRows, expRows, settingsRows, bookingRows] = await Promise.all([
+      readRange(`${SHEETS.trips}!A:K`).catch(() => [] as string[][]),
+      readRange(`${SHEETS.itinerary}!A:S`),
+      readRange(`${SHEETS.expenses}!A:K`),
       readRange(`${SHEETS.settings}!A:B`),
-      readRange(`${SHEETS.bookings}!A:R`).catch(() => [] as string[][]),
+      readRange(`${SHEETS.bookings}!A:S`).catch(() => [] as string[][]),
     ]);
 
-    const itinerary = toRecords(itinRows, ITINERARY_COLS).map((r) => ({
+    const trips = toRecords(tripRows, TRIP_COLS).map((r) => ({
+      id: r.id,
+      title: r.title,
+      start_date: r.start_date,
+      end_date: r.end_date,
+      home_currency: r.home_currency || 'INR',
+      local_currency: r.local_currency || 'THB',
+      fx_rate: parseFloat(r.fx_rate || '0') || 0,
+      cover_image_url: r.cover_image_url || '',
+      status: r.status || 'planning',
+      note: r.note || '',
+      created_at: r.created_at ? parseInt(r.created_at, 10) || 0 : 0,
+    })).filter((t) => !!t.id);
+
+    const allItinerary = toRecords(itinRows, ITINERARY_COLS).map((r) => ({
+      trip_id: r.trip_id || '',
       day_num: parseInt(r.day_num || '0', 10),
       date: r.date || '',
       stay_city: r.stay_city || '',
@@ -55,8 +73,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     })).filter((d) => d.day_num > 0).sort((a, b) => a.day_num - b.day_num);
 
-    const expenses = toRecords(expRows, EXPENSE_COLS).map((r) => ({
+    const itinerary = tripFilter
+      ? allItinerary.filter((d) => d.trip_id === tripFilter)
+      : allItinerary;
+
+    const allExpenses = toRecords(expRows, EXPENSE_COLS).map((r) => ({
       id: r.id,
+      trip_id: r.trip_id || '',
       date: r.date,
       day_num: r.day_num ? parseInt(r.day_num, 10) : null,
       category: r.category,
@@ -66,16 +89,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       created_at: r.created_at ? parseInt(r.created_at, 10) || Date.parse(r.created_at) || 0 : 0,
     })).filter((e) => !!e.id && e.amount > 0);
 
+    const expenses = tripFilter
+      ? allExpenses.filter((e) => e.trip_id === tripFilter)
+      : allExpenses;
+
     const settings: { [k: string]: string } = {};
     for (const r of toRecords(settingsRows, SETTING_COLS)) {
       if (r.key) settings[r.key] = r.value;
     }
 
-    const bookings = toRecords(bookingRows, BOOKING_COLS).map((r) => {
+    const allBookings = toRecords(bookingRows, BOOKING_COLS).map((r) => {
       let extras: any = {};
       try { extras = r.extras ? JSON.parse(r.extras) : {}; } catch { extras = {}; }
       return {
         id: r.id,
+        trip_id: r.trip_id || '',
         type: r.type,
         title: r.title || '',
         booking_ref: r.booking_ref || '',
@@ -94,7 +122,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       };
     }).filter((b) => !!b.id && !!b.type);
 
-    res.status(200).json({ itinerary, expenses, settings, bookings });
+    const bookings = tripFilter
+      ? allBookings.filter((b) => b.trip_id === tripFilter)
+      : allBookings;
+
+    res.status(200).json({ trips, itinerary, expenses, settings, bookings });
   } catch (e: any) {
     res.status(500).json({ error: 'Sheets read failed', details: e?.message ?? String(e) });
   }

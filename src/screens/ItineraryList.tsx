@@ -20,6 +20,8 @@ import type { SeedDay } from '../data/types';
 import { formatTHB } from '../utils/fx';
 import { useThemedStyles } from '../theme/styles';
 import type { ThemeColors } from '../theme/colors';
+import { TripSwitcher } from '../components/TripSwitcher';
+import { parseSeedDate, toIsoDate } from '../utils/date';
 
 type Props = {
   navigation: { navigate: (screen: string, params: object) => void };
@@ -28,10 +30,16 @@ type Props = {
 export function ItineraryListScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
-  const { trip, days } = useAppStore();
+  const { trip, days, trips, activeTripId } = useAppStore();
 
-  const cities = Array.from(new Set(days.map((d) => d.stayCity)));
+  const cities = Array.from(new Set(days.map((d) => d.stayCity).filter(Boolean)));
   const firstDay = days[0];
+  const activeTrip = trips.find((t) => t.id === activeTripId);
+  const heroImageUrl = activeTrip?.coverImageUrl || firstDay?.imageUrl || '';
+  const heroTitle = extractCountryTitle(activeTrip?.title || trip.title);
+  const heroDates = activeTrip
+    ? formatRange(activeTrip.startDate, activeTrip.endDate)
+    : 'Apr 27 – May 9, 2026';
 
   return (
     <FlatList
@@ -40,31 +48,36 @@ export function ItineraryListScreen({ navigation }: Props) {
       ListHeaderComponent={
         <View>
           <HeroImage
-            uri={firstDay?.imageUrl ?? ''}
+            uri={heroImageUrl}
             gradient={['#0EA5E9', '#7C3AED']}
-            style={[styles.topHero, { paddingTop: insets.top + 24 }]}
+            style={[styles.topHero, { paddingTop: insets.top + 12 }]}
           >
+            <View style={[styles.topHeroTop, { paddingTop: insets.top + 8 }]}>
+              <TripSwitcher />
+            </View>
             <View style={styles.topHeroInner}>
               <Text style={styles.kicker}>🇹🇭  YOUR TRIP</Text>
-              <Text style={styles.heroTitle}>Thailand</Text>
-              <Text style={styles.heroDates}>Apr 27 – May 9, 2026</Text>
-              <View style={styles.chipRow}>
-                {cities.map((c) => {
-                  const t = themeForCity(c);
-                  return (
-                    <View
-                      key={c}
-                      style={[styles.cityChip, { backgroundColor: t.accent }]}
-                    >
-                      <Text style={styles.cityChipTxt}>{t.emoji}  {c}</Text>
-                    </View>
-                  );
-                })}
-              </View>
+              <Text style={styles.heroTitle}>{heroTitle}</Text>
+              <Text style={styles.heroDates}>{heroDates}</Text>
+              {cities.length > 0 ? (
+                <View style={styles.chipRow}>
+                  {cities.map((c) => {
+                    const t = themeForCity(c);
+                    return (
+                      <View
+                        key={c}
+                        style={[styles.cityChip, { backgroundColor: t.accent }]}
+                      >
+                        <Text style={styles.cityChipTxt}>{t.emoji}  {c}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              ) : null}
               <View style={styles.statsRow}>
                 <Stat label="Days" value={String(days.length)} />
                 <Stat label="Cities" value={String(cities.length)} />
-                <Stat label="Flights" value="2" />
+                <Stat label="Trips" value={String(trips.length)} />
               </View>
             </View>
           </HeroImage>
@@ -83,6 +96,26 @@ export function ItineraryListScreen({ navigation }: Props) {
       )}
     />
   );
+}
+
+function extractCountryTitle(title: string): string {
+  if (!title) return 'Trip';
+  // Strip "XYZ — dates" and just keep the leading country/destination.
+  const before = title.split(/—|[|]|,/)[0]?.trim();
+  return before || title;
+}
+
+function formatRange(start: string, end: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(start) || !/^\d{4}-\d{2}-\d{2}$/.test(end)) return '';
+  const parse = (iso: string) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  };
+  const s = parse(start);
+  const e = parse(end);
+  const monthDay = (d: Date) => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  const year = e.getFullYear();
+  return `${monthDay(s)} – ${monthDay(e)}, ${year}`;
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
@@ -156,7 +189,8 @@ function DayCard({ day, onPress }: { day: SeedDay; onPress: () => void }) {
 const makeStyles = (c: ThemeColors) => StyleSheet.create({
   list: { flex: 1, backgroundColor: c.bg },
 
-  topHero: { height: 280, justifyContent: 'flex-end' },
+  topHero: { height: 300, justifyContent: 'flex-end' },
+  topHeroTop: { position: 'absolute', top: 0, left: 14, right: 14, zIndex: 2, flexDirection: 'row' },
   topHeroInner: { padding: 20, paddingBottom: 22 },
   kicker: { color: '#fff', fontSize: 11, fontWeight: '800', letterSpacing: 1.8, opacity: 0.9 },
   heroTitle: { color: '#fff', fontSize: 30, fontWeight: '800', marginTop: 4, textShadowColor: 'rgba(0,0,0,0.35)', textShadowRadius: 4 },
