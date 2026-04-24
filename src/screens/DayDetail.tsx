@@ -26,6 +26,7 @@ import { useThemedStyles } from '../theme/styles';
 import { useTheme } from '../theme/useTheme';
 import type { ThemeColors } from '../theme/colors';
 import { BookingForm } from './BookingForm';
+import { BookingDetails } from './BookingDetails';
 import { ExpenseForm } from './ExpenseForm';
 import { openInMaps, dialNumber, extractPhones, stripPhones } from '../utils/links';
 
@@ -40,7 +41,10 @@ export function DayDetailScreen({ navigation, route }: Props) {
   const { colors } = useTheme();
   const { days, expenses, bookings, fxInrPerThb, removeBooking, removeExpense } = useAppStore();
   const day = days.find((d) => d.dayNum === route.params.dayNum);
-  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [bookingSheet, setBookingSheet] = useState<
+    | { mode: 'view' | 'edit'; booking: Booking }
+    | null
+  >(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
   if (!day) {
@@ -151,7 +155,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <SectionLabel icon="flight" color={colors.textSubtle}>Flights</SectionLabel>
             {flights.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
             ))}
           </View>
         ) : null}
@@ -160,7 +164,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <SectionLabel icon="hotel" color={colors.textSubtle}>Hotels</SectionLabel>
             {hotels.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
             ))}
           </View>
         ) : null}
@@ -169,7 +173,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <SectionLabel icon="activity" color={colors.textSubtle}>Activities</SectionLabel>
             {activities.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
             ))}
           </View>
         ) : null}
@@ -178,14 +182,14 @@ export function DayDetailScreen({ navigation, route }: Props) {
           <View style={styles.card}>
             <SectionLabel icon="transfer" color={colors.textSubtle}>Transfers</SectionLabel>
             {transfers.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setEditingBooking(b)} onRemove={() => removeBooking(b.id)} />
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
             ))}
           </View>
         ) : null}
 
         <Pressable
           style={styles.card}
-          onPress={stayBooking ? () => setEditingBooking(stayBooking) : undefined}
+          onPress={stayBooking ? () => setBookingSheet({ mode: 'view', booking: stayBooking }) : undefined}
         >
           <SectionLabel icon="hotel" color={colors.textSubtle}>Stay</SectionLabel>
           <Text style={styles.stayName}>{stayName}</Text>
@@ -232,7 +236,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
             </View>
           ) : null}
           {stayBooking ? (
-            <Text style={styles.tapHint}>tap to edit booking</Text>
+            <Text style={styles.tapHint}>tap to view details</Text>
           ) : null}
         </Pressable>
 
@@ -281,18 +285,28 @@ export function DayDetailScreen({ navigation, route }: Props) {
       </View>
 
       <Modal
-        visible={!!editingBooking}
+        visible={!!bookingSheet}
         animationType="slide"
         transparent
-        onRequestClose={() => setEditingBooking(null)}
+        onRequestClose={() => setBookingSheet(null)}
       >
         <View style={[styles.modalBackdrop, { backgroundColor: colors.overlay }]}>
           <View style={[styles.modalSheet, { backgroundColor: colors.bg }]}>
-            {editingBooking ? (
+            {bookingSheet?.mode === 'view' ? (
+              <BookingDetails
+                booking={bookingSheet.booking}
+                onEdit={() => setBookingSheet({ mode: 'edit', booking: bookingSheet.booking })}
+                onDelete={async () => {
+                  await removeBooking(bookingSheet.booking.id);
+                  setBookingSheet(null);
+                }}
+                onClose={() => setBookingSheet(null)}
+              />
+            ) : bookingSheet?.mode === 'edit' ? (
               <BookingForm
-                existingBooking={editingBooking}
-                onSaved={() => setEditingBooking(null)}
-                onCancel={() => setEditingBooking(null)}
+                existingBooking={bookingSheet.booking}
+                onSaved={() => setBookingSheet(null)}
+                onCancel={() => setBookingSheet({ mode: 'view', booking: bookingSheet.booking })}
               />
             ) : null}
           </View>

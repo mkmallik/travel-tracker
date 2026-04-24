@@ -30,6 +30,7 @@ import type {
 import { toThb, toInr, formatTHB, formatINR } from '../utils/fx';
 import { shortDate } from '../utils/date';
 import { BookingForm } from './BookingForm';
+import { BookingDetails } from './BookingDetails';
 
 const ORDER: BookingType[] = ['flight', 'hotel', 'activity', 'transfer'];
 
@@ -38,7 +39,10 @@ export function BookingsScreen() {
   const styles = useThemedStyles(makeStyles);
   const { colors } = useTheme();
   const { bookings, fxInrPerThb, removeBooking } = useAppStore();
-  const [editing, setEditing] = useState<Booking | null>(null);
+  const [activeSheet, setActiveSheet] = useState<
+    | { mode: 'view' | 'edit'; booking: Booking }
+    | null
+  >(null);
 
   const grouped = useMemo(() => {
     const g: Record<BookingType, Booking[]> = { flight: [], hotel: [], activity: [], transfer: [] };
@@ -94,7 +98,7 @@ export function BookingsScreen() {
               <BookingCard
                 key={b.id}
                 booking={b}
-                onPress={() => setEditing(b)}
+                onPress={() => setActiveSheet({ mode: 'view', booking: b })}
                 onRemove={() => removeBooking(b.id)}
               />
             ))}
@@ -103,18 +107,28 @@ export function BookingsScreen() {
       })}
 
       <Modal
-        visible={!!editing}
+        visible={!!activeSheet}
         animationType="slide"
         transparent
-        onRequestClose={() => setEditing(null)}
+        onRequestClose={() => setActiveSheet(null)}
       >
         <View style={[styles.modalBackdrop, { backgroundColor: colors.overlay }]}>
           <View style={[styles.modalSheet, { backgroundColor: colors.bg }]}>
-            {editing ? (
+            {activeSheet?.mode === 'view' ? (
+              <BookingDetails
+                booking={activeSheet.booking}
+                onEdit={() => setActiveSheet({ mode: 'edit', booking: activeSheet.booking })}
+                onDelete={async () => {
+                  await removeBooking(activeSheet.booking.id);
+                  setActiveSheet(null);
+                }}
+                onClose={() => setActiveSheet(null)}
+              />
+            ) : activeSheet?.mode === 'edit' ? (
               <BookingForm
-                existingBooking={editing}
-                onSaved={() => setEditing(null)}
-                onCancel={() => setEditing(null)}
+                existingBooking={activeSheet.booking}
+                onSaved={() => setActiveSheet(null)}
+                onCancel={() => setActiveSheet({ mode: 'view', booking: activeSheet.booking })}
               />
             ) : null}
           </View>
