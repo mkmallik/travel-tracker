@@ -1,4 +1,5 @@
 import './src/theme/fonts';
+import './src/theme/pwa';
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, View, Text, ActivityIndicator, useWindowDimensions } from 'react-native';
