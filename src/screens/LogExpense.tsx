@@ -25,6 +25,9 @@ import { DatePicker } from '../components/DatePicker';
 import { BookingForm } from './BookingForm';
 import type { BookingType } from '../data/types';
 import { BOOKING_ICONS, BOOKING_LABELS } from '../utils/bookings';
+import { useThemedStyles } from '../theme/styles';
+import { useTheme } from '../theme/useTheme';
+import type { ThemeColors } from '../theme/colors';
 
 type LogMode = 'expense' | BookingType;
 
@@ -35,6 +38,8 @@ type Props = {
 
 export function LogExpenseScreen({ route }: Props) {
   const insets = useSafeAreaInsets();
+  const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
   const { days, expenses, addExpense, removeExpense } = useAppStore();
   const [logMode, setLogMode] = useState<LogMode>('expense');
 
@@ -165,7 +170,7 @@ export function LogExpenseScreen({ route }: Props) {
           <TextInput
             style={styles.amountInput}
             placeholder="0"
-            placeholderTextColor="#CBD5E1"
+            placeholderTextColor={colors.placeholder}
             keyboardType="decimal-pad"
             value={amount}
             onChangeText={setAmount}
@@ -256,7 +261,7 @@ export function LogExpenseScreen({ route }: Props) {
       <TextInput
         style={styles.noteInput}
         placeholder="e.g. Taxi from airport"
-        placeholderTextColor="#CBD5E1"
+        placeholderTextColor={colors.placeholder}
         value={note}
         onChangeText={setNote}
       />
@@ -309,75 +314,77 @@ export function LogExpenseScreen({ route }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#F3F4F6' },
+const makeStyles = (c: ThemeColors) => StyleSheet.create({
+  scroll: { flex: 1, backgroundColor: c.bg },
 
-  kicker: { fontSize: 11, fontWeight: '800', color: '#94A3B8', letterSpacing: 1.5 },
-  h1: { fontSize: 28, fontWeight: '800', color: '#0F172A', marginTop: 2, marginBottom: 16 },
-  label: { fontSize: 11, color: '#6B7280', fontWeight: '800', letterSpacing: 1.2, marginTop: 22, marginBottom: 10 },
+  kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
+  h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2, marginBottom: 16 },
+  label: { fontSize: 11, color: c.textSubtle, fontWeight: '800', letterSpacing: 1.2, marginTop: 22, marginBottom: 10 },
 
   amountCard: {
-    backgroundColor: '#fff', borderRadius: 20, padding: 14,
-    shadowColor: '#0F172A', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 3 }, elevation: 2,
+    backgroundColor: c.cardBg, borderRadius: 20, padding: 14,
+    borderWidth: 1, borderColor: c.border,
+    shadowColor: c.shadow, shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 3 }, elevation: 2,
   },
   amountRow: { flexDirection: 'row', alignItems: 'baseline', paddingHorizontal: 6 },
-  amountCurrencySymbol: { fontSize: 32, color: '#94A3B8', fontWeight: '700', marginRight: 4 },
+  amountCurrencySymbol: { fontSize: 32, color: c.placeholder, fontWeight: '700', marginRight: 4 },
   amountInput: {
-    flex: 1, fontSize: 44, fontWeight: '800', color: '#0F172A', paddingVertical: 4,
+    flex: 1, fontSize: 44, fontWeight: '800', color: c.text, paddingVertical: 4,
   },
   curToggle: {
-    flexDirection: 'row', backgroundColor: '#F1F5F9', borderRadius: 12, padding: 4, marginTop: 10,
+    flexDirection: 'row', backgroundColor: c.cardBgAlt, borderRadius: 12, padding: 4, marginTop: 10,
   },
   curBtn: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
-  curBtnOn: { backgroundColor: '#fff', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4, shadowOffset: { width: 0, height: 1 } },
-  curBtnTxt: { color: '#64748B', fontWeight: '600', fontSize: 13 },
-  curBtnTxtOn: { color: '#0F172A' },
+  curBtnOn: { backgroundColor: c.cardBg, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4, shadowOffset: { width: 0, height: 1 } },
+  curBtnTxt: { color: c.textMuted, fontWeight: '600', fontSize: 13 },
+  curBtnTxtOn: { color: c.text },
 
   catWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 as any },
   catChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6 as any,
     paddingHorizontal: 12, paddingVertical: 9, borderRadius: 999,
-    backgroundColor: '#fff', borderWidth: 1, borderColor: '#E2E8F0',
+    backgroundColor: c.cardBg, borderWidth: 1, borderColor: c.border,
   },
-  catChipOn: { backgroundColor: '#0F172A', borderColor: '#0F172A' },
+  catChipOn: { backgroundColor: c.borderStrong, borderColor: c.borderStrong },
   catIcon: { fontSize: 15 },
-  catTxt: { color: '#334155', fontSize: 13, fontWeight: '600' },
-  catTxtOn: { color: '#fff' },
+  catTxt: { color: c.textMuted, fontSize: 13, fontWeight: '600' },
+  catTxtOn: { color: c.bg },
 
   modeRow: { flexDirection: 'row', gap: 8 as any, marginBottom: 10 },
   modeBtn: {
     paddingVertical: 9, paddingHorizontal: 14, borderRadius: 10,
-    backgroundColor: '#fff', borderWidth: 1, borderColor: '#E2E8F0',
+    backgroundColor: c.cardBg, borderWidth: 1, borderColor: c.border,
   },
-  modeBtnOn: { backgroundColor: '#0F172A', borderColor: '#0F172A' },
-  modeTxt: { fontSize: 13, color: '#334155', fontWeight: '600' },
-  modeTxtOn: { color: '#fff' },
+  modeBtnOn: { backgroundColor: c.borderStrong, borderColor: c.borderStrong },
+  modeTxt: { fontSize: 13, color: c.textMuted, fontWeight: '600' },
+  modeTxtOn: { color: c.bg },
 
   chipStrip: { paddingVertical: 4, gap: 8 as any, paddingRight: 20 },
   dayChip: {
     paddingHorizontal: 12, paddingVertical: 10, borderRadius: 14,
-    backgroundColor: '#fff', borderWidth: 1, borderColor: '#E2E8F0',
+    backgroundColor: c.cardBg, borderWidth: 1, borderColor: c.border,
     minWidth: 104, marginRight: 8,
   },
-  dayChipLabel: { fontSize: 16, fontWeight: '800', color: '#0F172A' },
+  dayChipLabel: { fontSize: 16, fontWeight: '800', color: c.text },
   dayChipLabelOn: { color: '#fff' },
-  dayChipCity: { fontSize: 11, color: '#475569', marginTop: 3 },
+  dayChipCity: { fontSize: 11, color: c.textMuted, marginTop: 3 },
   dayChipCityOn: { color: 'rgba(255,255,255,0.9)' },
-  dayChipDate: { fontSize: 10, color: '#94A3B8', marginTop: 2 },
+  dayChipDate: { fontSize: 10, color: c.placeholder, marginTop: 2 },
   dayChipDateOn: { color: 'rgba(255,255,255,0.8)' },
 
   dateInput: {
-    backgroundColor: '#fff', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14,
-    fontSize: 16, fontWeight: '500',
+    backgroundColor: c.cardBg, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14,
+    fontSize: 16, fontWeight: '500', color: c.text,
   },
 
   noteInput: {
-    backgroundColor: '#fff', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14,
-    fontSize: 15,
+    backgroundColor: c.cardBg, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14,
+    fontSize: 15, color: c.text,
+    borderWidth: 1, borderColor: c.border,
   },
 
   summaryLine: { marginTop: 20 },
-  summaryText: { color: '#64748B', fontSize: 13, fontWeight: '500' },
+  summaryText: { color: c.textMuted, fontSize: 13, fontWeight: '500' },
 
   saveBtn: {
     marginTop: 14, borderRadius: 14, paddingVertical: 16, alignItems: 'center',
@@ -387,31 +394,32 @@ const styles = StyleSheet.create({
   recentWrap: { marginTop: 10 },
   recentRow: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#fff', borderRadius: 14, padding: 12, marginBottom: 8,
-    shadowColor: '#0F172A', shadowOpacity: 0.04, shadowRadius: 4, shadowOffset: { width: 0, height: 1 },
+    backgroundColor: c.cardBg, borderRadius: 14, padding: 12, marginBottom: 8,
+    borderWidth: 1, borderColor: c.border,
+    shadowColor: c.shadow, shadowOpacity: 0.04, shadowRadius: 4, shadowOffset: { width: 0, height: 1 },
   },
   recentIcon: { fontSize: 22, marginRight: 10 },
-  recentCat: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
-  recentSub: { fontSize: 11, color: '#64748B', marginTop: 2 },
-  recentAmt: { fontSize: 13, color: '#0F172A', marginRight: 10, fontWeight: '600' },
+  recentCat: { fontSize: 14, fontWeight: '700', color: c.text },
+  recentSub: { fontSize: 11, color: c.textMuted, marginTop: 2 },
+  recentAmt: { fontSize: 13, color: c.text, marginRight: 10, fontWeight: '600' },
   delBtn: {
     width: 28, height: 28, alignItems: 'center', justifyContent: 'center',
-    borderRadius: 14, backgroundColor: '#F1F5F9',
+    borderRadius: 14, backgroundColor: c.cardBgAlt,
   },
-  delTxt: { fontSize: 18, color: '#94A3B8', lineHeight: 20 },
+  delTxt: { fontSize: 18, color: c.textMuted, lineHeight: 20 },
 
   modeTabScroll: { flexGrow: 0, maxHeight: 48, marginBottom: 12 },
   modeTabStrip: { paddingHorizontal: 4, alignItems: 'center' },
   modeTab: {
-    backgroundColor: '#fff', borderRadius: 999,
+    backgroundColor: c.cardBg, borderRadius: 999,
     paddingHorizontal: 14, paddingVertical: 8,
     flexDirection: 'row', alignItems: 'center',
-    borderWidth: 1, borderColor: '#E2E8F0',
+    borderWidth: 1, borderColor: c.border,
     marginRight: 8,
     height: 36,
   },
-  modeTabOn: { backgroundColor: '#0F172A', borderColor: '#0F172A' },
+  modeTabOn: { backgroundColor: c.borderStrong, borderColor: c.borderStrong },
   modeTabIcon: { fontSize: 15, marginRight: 6 },
-  modeTabLabel: { fontSize: 13, color: '#334155', fontWeight: '600' },
-  modeTabLabelOn: { color: '#fff' },
+  modeTabLabel: { fontSize: 13, color: c.textMuted, fontWeight: '600' },
+  modeTabLabelOn: { color: c.bg },
 });

@@ -24,6 +24,9 @@ import type {
   TransferExtras,
 } from '../data/types';
 import { BOOKING_TYPES } from '../data/types';
+import { useThemedStyles } from '../theme/styles';
+import { useTheme } from '../theme/useTheme';
+import type { ThemeColors } from '../theme/colors';
 
 type Props = {
   initialType?: BookingType;
@@ -33,6 +36,8 @@ type Props = {
 };
 
 export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCancel }: Props) {
+  const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
   const { addBooking, days } = useAppStore();
 
   const defaultStart = initialDate ||
@@ -151,7 +156,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
         value={title}
         onChangeText={setTitle}
         placeholder={placeholderForTitle(type)}
-        placeholderTextColor="#94A3B8"
+        placeholderTextColor={colors.placeholder}
       />
 
       {/* Type-specific fields */}
@@ -174,7 +179,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
             value={roomType}
             onChangeText={setRoomType}
             placeholder="e.g. Deluxe Double"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
           />
         </>
       ) : null}
@@ -187,7 +192,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
             value={activityLocation}
             onChangeText={setActivityLocation}
             placeholder="e.g. Ao Nang pier"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
           />
           <Text style={styles.label}>OPERATOR</Text>
           <TextInput
@@ -195,7 +200,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
             value={activityOperator}
             onChangeText={setActivityOperator}
             placeholder="e.g. Klook, Hotel desk"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
           />
         </>
       ) : null}
@@ -210,7 +215,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
                 value={transferFrom}
                 onChangeText={setTransferFrom}
                 placeholder="e.g. Phuket airport"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={colors.placeholder}
               />
             </View>
             <View style={{ flex: 1 }}>
@@ -220,7 +225,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
                 value={transferTo}
                 onChangeText={setTransferTo}
                 placeholder="e.g. Patong hotel"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={colors.placeholder}
               />
             </View>
           </View>
@@ -249,7 +254,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
         value={bookingRef}
         onChangeText={setBookingRef}
         placeholder="PNR / booking code"
-        placeholderTextColor="#94A3B8"
+        placeholderTextColor={colors.placeholder}
         autoCapitalize="characters"
       />
 
@@ -259,7 +264,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
         value={agent}
         onChangeText={setAgent}
         placeholder="e.g. Booking.com, Akasa Air, Klook"
-        placeholderTextColor="#94A3B8"
+        placeholderTextColor={colors.placeholder}
       />
 
       {type === 'hotel' || type === 'activity' ? (
@@ -270,7 +275,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
             value={address}
             onChangeText={setAddress}
             placeholder="Street / area"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
           />
         </>
       ) : null}
@@ -301,7 +306,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
             value={startTime}
             onChangeText={setStartTime}
             placeholder="HH:MM"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
             autoCapitalize="none"
           />
         </View>
@@ -312,7 +317,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
             value={endTime}
             onChangeText={setEndTime}
             placeholder="HH:MM"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
             autoCapitalize="none"
           />
         </View>
@@ -325,7 +330,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
           value={amount}
           onChangeText={setAmount}
           placeholder="0"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.placeholder}
           keyboardType="decimal-pad"
         />
         <View style={styles.curToggle}>
@@ -369,7 +374,7 @@ export function BookingForm({ initialType = 'hotel', initialDate, onSaved, onCan
         value={note}
         onChangeText={setNote}
         placeholder="Anything to remember"
-        placeholderTextColor="#94A3B8"
+        placeholderTextColor={colors.placeholder}
         multiline
       />
 
@@ -402,6 +407,8 @@ function FlightFields({
   flightTo: string; setFlightTo: (v: string) => void;
   flightStops: FlightStop[]; setFlightStops: (v: FlightStop[]) => void;
 }) {
+  const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
   const updateStop = (i: number, patch: Partial<FlightStop>) => {
     setFlightStops(flightStops.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
   };
@@ -418,7 +425,7 @@ function FlightFields({
             value={flightFrom}
             onChangeText={setFlightFrom}
             placeholder="BLR"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
             autoCapitalize="characters"
           />
         </View>
@@ -429,7 +436,7 @@ function FlightFields({
             value={flightTo}
             onChangeText={setFlightTo}
             placeholder="HKT"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
             autoCapitalize="characters"
           />
         </View>
@@ -443,7 +450,7 @@ function FlightFields({
             value={s.airport}
             onChangeText={(v) => updateStop(i, { airport: v })}
             placeholder="DXB"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
             autoCapitalize="characters"
           />
           <TextInput
@@ -451,14 +458,14 @@ function FlightFields({
             value={s.arrive ?? ''}
             onChangeText={(v) => updateStop(i, { arrive: v })}
             placeholder="Arr HH:MM"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
           />
           <TextInput
             style={[styles.input, { flex: 1 }]}
             value={s.depart ?? ''}
             onChangeText={(v) => updateStop(i, { depart: v })}
             placeholder="Dep HH:MM"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={colors.placeholder}
           />
           <Pressable onPress={() => removeStop(i)} style={styles.removeStop}>
             <Text style={styles.removeStopTxt}>×</Text>
@@ -472,59 +479,59 @@ function FlightFields({
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#F3F4F6' },
+const makeStyles = (c: ThemeColors) => StyleSheet.create({
+  root: { flex: 1, backgroundColor: c.bg },
   content: { padding: 18, paddingBottom: 60 },
 
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  h1: { fontSize: 26, fontWeight: '800', color: '#0F172A' },
-  cancel: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#E2E8F0', alignItems: 'center', justifyContent: 'center' },
-  cancelTxt: { fontSize: 22, color: '#0F172A', fontWeight: '600', lineHeight: 24 },
+  h1: { fontSize: 26, fontWeight: '800', color: c.text },
+  cancel: { width: 36, height: 36, borderRadius: 18, backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center' },
+  cancelTxt: { fontSize: 22, color: c.text, fontWeight: '600', lineHeight: 24 },
 
-  label: { fontSize: 11, color: '#6B7280', fontWeight: '800', letterSpacing: 1.2, marginTop: 16, marginBottom: 8 },
+  label: { fontSize: 11, color: c.textSubtle, fontWeight: '800', letterSpacing: 1.2, marginTop: 16, marginBottom: 8 },
 
   typeRow: { flexDirection: 'row', gap: 8 as any, flexWrap: 'wrap' },
   typeBtn: {
     flex: 1, minWidth: 76,
-    backgroundColor: '#fff', borderRadius: 14,
+    backgroundColor: c.cardBg, borderRadius: 14,
     paddingVertical: 14, alignItems: 'center',
-    borderWidth: 1, borderColor: '#E2E8F0',
+    borderWidth: 1, borderColor: c.border,
   },
-  typeBtnOn: { backgroundColor: '#0F172A', borderColor: '#0F172A' },
+  typeBtnOn: { backgroundColor: c.borderStrong, borderColor: c.borderStrong },
   typeIcon: { fontSize: 22 },
-  typeLabel: { fontSize: 12, color: '#334155', fontWeight: '600', marginTop: 4 },
-  typeLabelOn: { color: '#fff' },
+  typeLabel: { fontSize: 12, color: c.textMuted, fontWeight: '600', marginTop: 4 },
+  typeLabelOn: { color: c.bg },
 
   input: {
-    backgroundColor: '#fff', borderRadius: 12,
+    backgroundColor: c.cardBg, borderRadius: 12,
     paddingHorizontal: 14, paddingVertical: 12,
-    fontSize: 15, color: '#0F172A',
-    borderWidth: 1, borderColor: '#E2E8F0',
+    fontSize: 15, color: c.text,
+    borderWidth: 1, borderColor: c.border,
   },
 
   splitRow: { flexDirection: 'row', gap: 10 as any },
 
   amountRow: { flexDirection: 'row', alignItems: 'center', gap: 10 as any },
-  curToggle: { flexDirection: 'row', backgroundColor: '#E2E8F0', borderRadius: 10, padding: 2 },
+  curToggle: { flexDirection: 'row', backgroundColor: c.cardBgAlt, borderRadius: 10, padding: 2 },
   curBtn: { paddingHorizontal: 10, paddingVertical: 10, borderRadius: 8 },
-  curBtnOn: { backgroundColor: '#0F172A' },
-  curBtnTxt: { color: '#64748B', fontSize: 12, fontWeight: '700' },
-  curBtnTxtOn: { color: '#fff' },
+  curBtnOn: { backgroundColor: c.borderStrong },
+  curBtnTxt: { color: c.textMuted, fontSize: 12, fontWeight: '700' },
+  curBtnTxtOn: { color: c.bg },
 
   modeChipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 as any },
   smallChip: {
     paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999,
-    backgroundColor: '#fff', borderWidth: 1, borderColor: '#E2E8F0',
+    backgroundColor: c.cardBg, borderWidth: 1, borderColor: c.border,
   },
-  smallChipOn: { backgroundColor: '#0F172A', borderColor: '#0F172A' },
-  smallChipTxt: { fontSize: 12, color: '#334155', fontWeight: '600' },
-  smallChipTxtOn: { color: '#fff' },
+  smallChipOn: { backgroundColor: c.borderStrong, borderColor: c.borderStrong },
+  smallChipTxt: { fontSize: 12, color: c.textMuted, fontWeight: '600' },
+  smallChipTxtOn: { color: c.bg },
 
   stopRow: { flexDirection: 'row', gap: 6 as any, marginBottom: 6, alignItems: 'flex-end' },
   removeStop: { width: 34, height: 42, borderRadius: 8, backgroundColor: '#FEE2E2', alignItems: 'center', justifyContent: 'center' },
   removeStopTxt: { fontSize: 18, color: '#DC2626', fontWeight: '700' },
-  addStopBtn: { marginTop: 4, paddingVertical: 10, alignItems: 'center', borderRadius: 10, backgroundColor: '#E0E7FF' },
-  addStopTxt: { color: '#3730A3', fontSize: 13, fontWeight: '700' },
+  addStopBtn: { marginTop: 4, paddingVertical: 10, alignItems: 'center', borderRadius: 10, backgroundColor: c.accentMuted },
+  addStopTxt: { color: c.accent, fontSize: 13, fontWeight: '700' },
 
   saveBtn: { marginTop: 22, borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
   saveTxt: { color: '#fff', fontSize: 16, fontWeight: '800' },

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '../theme/useTheme';
 
 type Props = {
   value: string; // YYYY-MM-DD
@@ -9,6 +10,8 @@ type Props = {
 };
 
 export function DatePicker({ value, onChange, minDate, maxDate }: Props) {
+  const { colors, mode } = useTheme();
+
   if (Platform.OS === 'web') {
     // Raw DOM input — react-native-web passes through intrinsic elements
     // @ts-ignore
@@ -18,28 +21,31 @@ export function DatePicker({ value, onChange, minDate, maxDate }: Props) {
       min: minDate,
       max: maxDate,
       onChange: (e: any) => onChange(e.target.value),
+      // @ts-ignore — only valid on web
+      ['data-color-scheme']: mode,
       style: {
         width: '100%',
         boxSizing: 'border-box',
-        backgroundColor: '#fff',
+        backgroundColor: colors.cardBg,
         borderRadius: 12,
         padding: '14px 16px',
         fontSize: 16,
         fontWeight: 500,
-        color: '#0F172A',
-        border: '1px solid #E2E8F0',
+        color: colors.text,
+        border: `1px solid ${colors.border}`,
         outline: 'none',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
-        boxShadow: '0 1px 3px rgba(15,23,42,0.05)',
+        boxShadow: mode === 'dark' ? 'none' : '0 1px 3px rgba(15,23,42,0.05)',
+        colorScheme: mode,
       },
     });
   }
 
-  // Native (iOS/Android): lazy-load DateTimePicker to keep web bundle clean
   return <NativeDatePicker value={value} onChange={onChange} minDate={minDate} maxDate={maxDate} />;
 }
 
 function NativeDatePicker({ value, onChange, minDate, maxDate }: Props) {
+  const { colors } = useTheme();
   const [show, setShow] = useState(false);
   const [DateTimePicker, setDTP] = useState<any>(null);
 
@@ -63,8 +69,11 @@ function NativeDatePicker({ value, onChange, minDate, maxDate }: Props) {
 
   return (
     <View>
-      <Pressable style={styles.trigger} onPress={() => setShow(true)}>
-        <Text style={styles.triggerTxt}>{formatLabel(value)}</Text>
+      <Pressable
+        style={[styles.trigger, { backgroundColor: colors.cardBg, borderColor: colors.border }]}
+        onPress={() => setShow(true)}
+      >
+        <Text style={[styles.triggerTxt, { color: colors.text }]}>{formatLabel(value)}</Text>
       </Pressable>
       {show && DateTimePicker ? (
         <DateTimePicker
@@ -90,16 +99,13 @@ function NativeDatePicker({ value, onChange, minDate, maxDate }: Props) {
 
 const styles = StyleSheet.create({
   trigger: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
   },
   triggerTxt: {
     fontSize: 16,
-    color: '#0F172A',
     fontWeight: '500',
   },
 });

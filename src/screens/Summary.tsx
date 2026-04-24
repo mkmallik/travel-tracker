@@ -36,13 +36,19 @@ import {
 import { CATEGORY_FOR_BOOKING_TYPE } from '../data/types';
 import { costIsoForBooking } from '../utils/bookings';
 import { findDayNumForIso } from '../utils/date';
+import { useThemedStyles } from '../theme/styles';
+import { useTheme } from '../theme/useTheme';
+import type { ThemeColors } from '../theme/colors';
 
 export function SummaryScreen() {
   const insets = useSafeAreaInsets();
+  const styles = useThemedStyles(makeStyles);
+  const { mode, colors } = useTheme();
   const {
     expenses, days, bookings, fxInrPerThb,
     setFxRate, replaceExpenses, appendExpenses, replaceDays,
     refresh, logout, syncing, lastSyncedAt, syncError,
+    themePref, setThemePref,
   } = useAppStore();
 
   const [fxOpen, setFxOpen] = useState(false);
@@ -309,6 +315,28 @@ export function SummaryScreen() {
         </View>
       </View>
 
+      <Text style={styles.sectionH}>Appearance</Text>
+      <View style={styles.card}>
+        <View style={styles.themeRow}>
+          {([
+            { key: 'auto', label: '🌓  Auto' },
+            { key: 'light', label: '☀︎  Light' },
+            { key: 'dark', label: '☾  Dark' },
+          ] as const).map((opt) => {
+            const on = themePref === opt.key;
+            return (
+              <Pressable
+                key={opt.key}
+                style={[styles.themeBtn, on && styles.themeBtnOn]}
+                onPress={() => setThemePref(opt.key)}
+              >
+                <Text style={[styles.themeBtnTxt, on && styles.themeBtnTxtOn]}>{opt.label}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
       <Text style={styles.sectionH}>Data</Text>
       <View style={styles.card}>
         <Text style={styles.dataHint}>
@@ -365,6 +393,7 @@ function DataBtn({
 }: {
   icon: string; label: string; onPress: () => void; busy: boolean;
 }) {
+  const styles = useThemedStyles(makeStyles);
   return (
     <Pressable
       style={[styles.dataBtn, busy && styles.dataBtnDisabled]}
@@ -377,20 +406,20 @@ function DataBtn({
   );
 }
 
-const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#F3F4F6' },
+const makeStyles = (c: ThemeColors) => StyleSheet.create({
+  scroll: { flex: 1, backgroundColor: c.bg },
 
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
-  kicker: { fontSize: 11, fontWeight: '800', color: '#94A3B8', letterSpacing: 1.5 },
-  h1: { fontSize: 28, fontWeight: '800', color: '#0F172A', marginTop: 2 },
+  kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
+  h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2 },
 
   fxBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6 as any,
-    backgroundColor: '#fff', paddingHorizontal: 12, paddingVertical: 8,
-    borderRadius: 12, borderWidth: 1, borderColor: '#E5E7EB',
+    backgroundColor: c.cardBg, paddingHorizontal: 12, paddingVertical: 8,
+    borderRadius: 12, borderWidth: 1, borderColor: c.border,
   },
-  fxLabel: { fontSize: 10, color: '#94A3B8', fontWeight: '800', letterSpacing: 1 },
-  fxBtnTxt: { fontSize: 13, fontWeight: '700', color: '#0F172A' },
+  fxLabel: { fontSize: 10, color: c.textSubtle, fontWeight: '800', letterSpacing: 1 },
+  fxBtnTxt: { fontSize: 13, fontWeight: '700', color: c.text },
 
   totalCard: {
     borderRadius: 22, padding: 22, marginBottom: 22,
@@ -405,64 +434,78 @@ const styles = StyleSheet.create({
   totalFootValue: { color: '#fff', fontSize: 14, fontWeight: '700', marginTop: 3 },
 
   sectionH: {
-    fontSize: 13, fontWeight: '800', color: '#6B7280', marginBottom: 10,
+    fontSize: 13, fontWeight: '800', color: c.textSubtle, marginBottom: 10,
     letterSpacing: 1, textTransform: 'uppercase',
   },
 
   card: {
-    backgroundColor: '#fff', borderRadius: 18, padding: 14, marginBottom: 20,
-    shadowColor: '#0F172A', shadowOpacity: 0.04, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 1,
+    backgroundColor: c.cardBg, borderRadius: 18, padding: 14, marginBottom: 20,
+    borderWidth: 1, borderColor: c.border,
+    shadowColor: c.shadow, shadowOpacity: 0.04, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 1,
   },
 
   catRow: { marginTop: 12 },
   catLabelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
   catHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 as any },
   catIcon: { fontSize: 16 },
-  catName: { fontSize: 13, color: '#1F2937', fontWeight: '600' },
-  catAmt: { fontSize: 12, color: '#0F172A', fontWeight: '700' },
-  bar: { height: 8, backgroundColor: '#F1F5F9', borderRadius: 4, overflow: 'hidden' },
+  catName: { fontSize: 13, color: c.textMuted, fontWeight: '600' },
+  catAmt: { fontSize: 12, color: c.text, fontWeight: '700' },
+  bar: { height: 8, backgroundColor: c.cardBgAlt, borderRadius: 4, overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 4 },
 
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', alignItems: 'center', justifyContent: 'center', padding: 20 },
-  modalCard: { backgroundColor: '#fff', borderRadius: 18, padding: 22, width: '100%', maxWidth: 360 },
-  modalH: { fontSize: 18, fontWeight: '800', color: '#0F172A' },
-  modalSub: { fontSize: 13, color: '#64748B', marginTop: 2 },
+  backdrop: { flex: 1, backgroundColor: c.overlay, alignItems: 'center', justifyContent: 'center', padding: 20 },
+  modalCard: { backgroundColor: c.bgElevated, borderRadius: 18, padding: 22, width: '100%', maxWidth: 360 },
+  modalH: { fontSize: 18, fontWeight: '800', color: c.text },
+  modalSub: { fontSize: 13, color: c.textMuted, marginTop: 2 },
   fxInput: {
-    marginTop: 14, backgroundColor: '#F1F5F9', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14,
-    fontSize: 24, fontWeight: '800',
+    marginTop: 14, backgroundColor: c.inputBg, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14,
+    fontSize: 24, fontWeight: '800', color: c.text,
+    borderWidth: 1, borderColor: c.border,
   },
-  modalHint: { fontSize: 12, color: '#94A3B8', marginTop: 8 },
+  modalHint: { fontSize: 12, color: c.placeholder, marginTop: 8 },
   modalBtnRow: { flexDirection: 'row', justifyContent: 'flex-end', gap: 10 as any, marginTop: 18 },
   modalCancel: { paddingHorizontal: 14, paddingVertical: 10 },
-  modalCancelTxt: { color: '#64748B', fontWeight: '700' },
+  modalCancelTxt: { color: c.textMuted, fontWeight: '700' },
   modalSave: { backgroundColor: '#3A5BD9', paddingHorizontal: 18, paddingVertical: 11, borderRadius: 12 },
   modalSaveTxt: { color: '#fff', fontWeight: '800' },
 
-  dataHint: { fontSize: 12, color: '#64748B', marginBottom: 12 },
+  dataHint: { fontSize: 12, color: c.textMuted, marginBottom: 12 },
   dataGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 as any },
   dataBtn: {
     flexBasis: '48%', flexGrow: 1,
-    backgroundColor: '#F8FAFC', borderRadius: 12,
+    backgroundColor: c.cardBgAlt, borderRadius: 12,
     paddingVertical: 14, paddingHorizontal: 12,
     flexDirection: 'row', alignItems: 'center', gap: 10 as any,
-    borderWidth: 1, borderColor: '#E2E8F0',
+    borderWidth: 1, borderColor: c.border,
   },
   dataBtnDisabled: { opacity: 0.5 },
-  dataBtnIcon: { fontSize: 17, color: '#3A5BD9', fontWeight: '700' },
-  dataBtnLabel: { fontSize: 13, color: '#1F2937', fontWeight: '700' },
+  dataBtnIcon: { fontSize: 17, color: c.accent, fontWeight: '700' },
+  dataBtnLabel: { fontSize: 13, color: c.text, fontWeight: '700' },
 
   syncRow: { flexDirection: 'row', alignItems: 'center', gap: 10 as any },
-  syncStatus: { fontSize: 13, color: '#1F2937', fontWeight: '600' },
-  syncErr: { fontSize: 11, color: '#DC2626', marginTop: 4 },
+  syncStatus: { fontSize: 13, color: c.text, fontWeight: '600' },
+  syncErr: { fontSize: 11, color: c.danger, marginTop: 4 },
   syncBtn: {
-    backgroundColor: '#0F172A', borderRadius: 10,
+    backgroundColor: c.borderStrong, borderRadius: 10,
     paddingHorizontal: 14, paddingVertical: 10,
   },
-  syncBtnTxt: { color: '#fff', fontSize: 13, fontWeight: '700' },
+  syncBtnTxt: { color: c.bg, fontSize: 13, fontWeight: '700' },
 
   signout: {
     alignSelf: 'center', paddingVertical: 12, paddingHorizontal: 22,
     marginTop: 10, marginBottom: 4,
   },
-  signoutTxt: { color: '#64748B', fontSize: 13, fontWeight: '600' },
+  signoutTxt: { color: c.textMuted, fontSize: 13, fontWeight: '600' },
+
+  themeRow: { flexDirection: 'row', gap: 6 as any },
+  themeBtn: {
+    flex: 1,
+    paddingVertical: 10, paddingHorizontal: 12,
+    backgroundColor: c.cardBgAlt, borderRadius: 10,
+    borderWidth: 1, borderColor: c.border,
+    alignItems: 'center',
+  },
+  themeBtnOn: { backgroundColor: c.borderStrong, borderColor: c.borderStrong },
+  themeBtnTxt: { fontSize: 13, color: c.text, fontWeight: '600' },
+  themeBtnTxtOn: { color: c.bg },
 });

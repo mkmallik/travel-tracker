@@ -20,6 +20,8 @@ import { themeForCity, CATEGORY_ICONS } from '../data/theme';
 import { bookingsForIso, BOOKING_ICONS, BOOKING_LABELS, flightStopsLabel, hotelNights } from '../utils/bookings';
 import { dayIsoFromSeed } from '../utils/date';
 import type { Booking, FlightExtras, HotelExtras, ActivityExtras, TransferExtras } from '../data/types';
+import { useThemedStyles } from '../theme/styles';
+import type { ThemeColors } from '../theme/colors';
 
 type Props = {
   navigation: { goBack: () => void; navigate: (n: string, p: any) => void };
@@ -28,6 +30,7 @@ type Props = {
 
 export function DayDetailScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
+  const styles = useThemedStyles(makeStyles);
   const { days, expenses, bookings, fxInrPerThb, removeBooking } = useAppStore();
   const day = days.find((d) => d.dayNum === route.params.dayNum);
 
@@ -216,6 +219,7 @@ function BookingRow({
 }: {
   booking: Booking; accent: string; onRemove: () => void;
 }) {
+  const styles = useThemedStyles(makeStyles);
   const subline = subtitleFor(booking);
   const timeLabel = formatTimeLabel(booking);
   return (
@@ -276,9 +280,9 @@ function formatTimeLabel(b: Booking): string {
   return '';
 }
 
-const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#F3F4F6' },
-  empty: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+const makeStyles = (c: ThemeColors) => StyleSheet.create({
+  scroll: { flex: 1, backgroundColor: c.bg },
+  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: c.bg },
 
   hero: { height: 340, justifyContent: 'flex-end' },
   heroContent: { padding: 22, paddingBottom: 24 },
@@ -299,24 +303,25 @@ const styles = StyleSheet.create({
   body: { padding: 14, gap: 12 as any, marginTop: -22 },
 
   card: {
-    backgroundColor: '#fff', borderRadius: 18, padding: 16,
+    backgroundColor: c.cardBg, borderRadius: 18, padding: 16,
     marginBottom: 12,
-    shadowColor: '#0F172A', shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 3 }, elevation: 2,
+    borderWidth: 1, borderColor: c.border,
+    shadowColor: c.shadow, shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 3 }, elevation: 2,
   },
   cardLabel: {
-    fontSize: 12, color: '#6B7280', fontWeight: '700', marginBottom: 10, letterSpacing: 0.3,
+    fontSize: 12, color: c.textSubtle, fontWeight: '700', marginBottom: 10, letterSpacing: 0.3,
   },
   cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 },
 
   moneyCard: { borderWidth: 2 },
   moneySplit: { flexDirection: 'row', gap: 10 as any, marginTop: 6 },
-  moneyBigLabel: { fontSize: 11, color: '#94A3B8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8 },
-  moneyBigVal: { fontSize: 16, color: '#0F172A', fontWeight: '700', marginTop: 3 },
+  moneyBigLabel: { fontSize: 11, color: c.placeholder, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8 },
+  moneyBigVal: { fontSize: 16, color: c.text, fontWeight: '700', marginTop: 3 },
 
   pctPill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
   pctTxt: { fontSize: 11, fontWeight: '800', letterSpacing: 0.5 },
 
-  barTrack: { marginTop: 14, height: 8, backgroundColor: '#F1F5F9', borderRadius: 4, overflow: 'hidden' },
+  barTrack: { marginTop: 14, height: 8, backgroundColor: c.cardBgAlt, borderRadius: 4, overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 4 },
 
   logBtn: {
@@ -324,38 +329,38 @@ const styles = StyleSheet.create({
   },
   logBtnTxt: { color: '#fff', fontSize: 15, fontWeight: '700' },
 
-  stayName: { fontSize: 17, fontWeight: '700', color: '#0F172A' },
-  stayAddr: { fontSize: 13, color: '#475569', marginTop: 4 },
-  agent: { fontSize: 12, color: '#64748B', marginTop: 6 },
+  stayName: { fontSize: 17, fontWeight: '700', color: c.text },
+  stayAddr: { fontSize: 13, color: c.textMuted, marginTop: 4 },
+  agent: { fontSize: 12, color: c.textMuted, marginTop: 6 },
   statusPill: { alignSelf: 'flex-start', marginTop: 10, paddingHorizontal: 12, paddingVertical: 5, borderRadius: 999 },
   pillPaid: { backgroundColor: '#D1FAE5' },
   pillPending: { backgroundColor: '#FEF3C7' },
   statusTxt: { fontSize: 11, color: '#374151', fontWeight: '700' },
 
-  summary: { fontSize: 14, color: '#374151', lineHeight: 21 },
+  summary: { fontSize: 14, color: c.text, lineHeight: 21 },
 
   travelLineRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8, paddingRight: 8 },
   bullet: { width: 6, height: 6, borderRadius: 3, marginTop: 8, marginRight: 10 },
-  travelLine: { flex: 1, fontSize: 13, color: '#374151', lineHeight: 20 },
+  travelLine: { flex: 1, fontSize: 13, color: c.text, lineHeight: 20 },
 
   expRow: {
     flexDirection: 'row', alignItems: 'center',
-    paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth, borderColor: '#E5E7EB',
+    paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth, borderColor: c.border,
   },
   expIcon: { fontSize: 20, marginRight: 10 },
-  expCat: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
-  expNote: { fontSize: 12, color: '#64748B', marginTop: 2 },
-  expAmt: { fontSize: 13, color: '#0F172A', fontWeight: '600' },
+  expCat: { fontSize: 14, fontWeight: '700', color: c.text },
+  expNote: { fontSize: 12, color: c.textMuted, marginTop: 2 },
+  expAmt: { fontSize: 13, color: c.text, fontWeight: '600' },
 
-  bkRow: { flexDirection: 'row', paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth, borderColor: '#E5E7EB' },
+  bkRow: { flexDirection: 'row', paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth, borderColor: c.border },
   bkHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 as any, flexWrap: 'wrap' },
-  bkTitle: { fontSize: 14, fontWeight: '700', color: '#0F172A' },
+  bkTitle: { fontSize: 14, fontWeight: '700', color: c.text },
   bkTimePill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 999 },
   bkTimeTxt: { fontSize: 10, fontWeight: '700' },
-  bkSub: { fontSize: 12, color: '#475569', marginTop: 3 },
-  bkMeta: { fontSize: 11, color: '#94A3B8', marginTop: 2 },
+  bkSub: { fontSize: 12, color: c.textMuted, marginTop: 3 },
+  bkMeta: { fontSize: 11, color: c.placeholder, marginTop: 2 },
   bkRight: { alignItems: 'flex-end', gap: 8 as any },
-  bkAmt: { fontSize: 13, color: '#0F172A', fontWeight: '700' },
-  bkDel: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#F1F5F9', alignItems: 'center', justifyContent: 'center' },
-  bkDelTxt: { fontSize: 14, color: '#94A3B8' },
+  bkAmt: { fontSize: 13, color: c.text, fontWeight: '700' },
+  bkDel: { width: 24, height: 24, borderRadius: 12, backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center' },
+  bkDelTxt: { fontSize: 14, color: c.textMuted },
 });

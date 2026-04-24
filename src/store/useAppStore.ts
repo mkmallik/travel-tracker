@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Booking, Expense, SeedDay, SeedTrip } from '../data/types';
 import { SEED_TRIP, SEED_DAYS } from '../data/seedTrip';
 import { DEFAULT_INR_PER_THB } from '../utils/fx';
+import type { ThemePreference } from '../theme/colors';
 import * as api from '../api/client';
 
 type State = {
@@ -11,6 +12,7 @@ type State = {
   expenses: Expense[];
   bookings: Booking[];
   fxInrPerThb: number;
+  themePref: ThemePreference;
   hydrated: boolean;
   syncing: boolean;
   lastSyncedAt: number | null;
@@ -24,6 +26,7 @@ type CachePayload = {
   expenses: Expense[];
   bookings: Booking[];
   fxInrPerThb: number;
+  themePref: ThemePreference;
 };
 
 const CACHE_KEY = 'travel-tracker.cache.v2';
@@ -34,6 +37,7 @@ let state: State = {
   expenses: [],
   bookings: [],
   fxInrPerThb: DEFAULT_INR_PER_THB,
+  themePref: 'auto',
   hydrated: false,
   syncing: false,
   lastSyncedAt: null,
@@ -57,6 +61,7 @@ async function saveCache() {
     expenses: state.expenses,
     bookings: state.bookings,
     fxInrPerThb: state.fxInrPerThb,
+    themePref: state.themePref,
   };
   try {
     await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(payload));
@@ -167,6 +172,7 @@ export async function bootstrapStore(): Promise<void> {
       expenses: cached.expenses || [],
       bookings: cached.bookings || [],
       fxInrPerThb: cached.fxInrPerThb || DEFAULT_INR_PER_THB,
+      themePref: cached.themePref || 'auto',
     });
   }
   setState({ hydrated: true });
@@ -282,6 +288,11 @@ export const actions = {
 
   async refresh() {
     await syncFromServer();
+  },
+
+  setThemePref(pref: ThemePreference) {
+    setState({ themePref: pref });
+    void saveCache();
   },
 
   async addBooking(input: Omit<Booking, 'id' | 'createdAt'>) {

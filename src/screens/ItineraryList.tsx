@@ -18,6 +18,8 @@ import {
 import { themeForCity } from '../data/theme';
 import type { SeedDay } from '../data/types';
 import { formatTHB } from '../utils/fx';
+import { useThemedStyles } from '../theme/styles';
+import type { ThemeColors } from '../theme/colors';
 
 type Props = {
   navigation: { navigate: (screen: string, params: object) => void };
@@ -25,6 +27,7 @@ type Props = {
 
 export function ItineraryListScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const styles = useThemedStyles(makeStyles);
   const { trip, days } = useAppStore();
 
   const cities = Array.from(new Set(days.map((d) => d.stayCity)));
@@ -83,6 +86,7 @@ export function ItineraryListScreen({ navigation }: Props) {
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
+  const styles = useThemedStyles(makeStyles);
   return (
     <View style={styles.stat}>
       <Text style={styles.statValue}>{value}</Text>
@@ -92,6 +96,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 function DayCard({ day, onPress }: { day: SeedDay; onPress: () => void }) {
+  const styles = useThemedStyles(makeStyles);
   const { expenses, fxInrPerThb } = useAppStore();
   const theme = themeForCity(day.stayCity);
   const dayExp = expensesForDay(expenses, day.dayNum);
@@ -148,8 +153,8 @@ function DayCard({ day, onPress }: { day: SeedDay; onPress: () => void }) {
   );
 }
 
-const styles = StyleSheet.create({
-  list: { flex: 1, backgroundColor: '#F3F4F6' },
+const makeStyles = (c: ThemeColors) => StyleSheet.create({
+  list: { flex: 1, backgroundColor: c.bg },
 
   topHero: { height: 280, justifyContent: 'flex-end' },
   topHeroInner: { padding: 20, paddingBottom: 22 },
@@ -169,13 +174,14 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     paddingHorizontal: 20, paddingTop: 22, paddingBottom: 10,
-    fontSize: 13, fontWeight: '800', color: '#6B7280', letterSpacing: 1, textTransform: 'uppercase',
+    fontSize: 13, fontWeight: '800', color: c.textSubtle, letterSpacing: 1, textTransform: 'uppercase',
   },
 
   card: {
     marginHorizontal: 14, marginBottom: 14,
-    backgroundColor: '#fff', borderRadius: 20, overflow: 'hidden',
-    shadowColor: '#0F172A', shadowOpacity: 0.09, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 3,
+    backgroundColor: c.cardBg, borderRadius: 20, overflow: 'hidden',
+    borderWidth: 1, borderColor: c.border,
+    shadowColor: c.shadow, shadowOpacity: 0.09, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 3,
   },
   cardHero: { height: 170, justifyContent: 'space-between' },
   cardHeroTop: { flexDirection: 'row', justifyContent: 'space-between', padding: 12 },
@@ -193,18 +199,18 @@ const styles = StyleSheet.create({
   cardDate: { color: '#fff', fontSize: 12, opacity: 0.95, marginTop: 2, textShadowColor: 'rgba(0,0,0,0.5)', textShadowRadius: 3 },
 
   cardFooter: { padding: 14, paddingTop: 12 },
-  cardSummary: { fontSize: 13, color: '#475569', lineHeight: 18 },
+  cardSummary: { fontSize: 13, color: c.textMuted, lineHeight: 18 },
   cardFooterRow: { flexDirection: 'row', alignItems: 'center', gap: 8 as any, marginTop: 12 },
 
   moneyPill: {
-    backgroundColor: '#F3F4F6', borderRadius: 10,
+    backgroundColor: c.cardBgAlt, borderRadius: 10,
     paddingHorizontal: 10, paddingVertical: 6,
   },
-  moneyLabel: { fontSize: 9, color: '#6B7280', fontWeight: '700', letterSpacing: 0.8 },
-  moneyValue: { fontSize: 13, color: '#0F172A', fontWeight: '700', marginTop: 1 },
+  moneyLabel: { fontSize: 9, color: c.textSubtle, fontWeight: '700', letterSpacing: 0.8 },
+  moneyValue: { fontSize: 13, color: c.text, fontWeight: '700', marginTop: 1 },
   arrowPill: {
     marginLeft: 'auto', width: 30, height: 30, borderRadius: 15,
-    backgroundColor: '#F3F4F6', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center',
   },
-  arrow: { fontSize: 22, color: '#64748B', fontWeight: '700', lineHeight: 24 },
+  arrow: { fontSize: 22, color: c.textMuted, fontWeight: '700', lineHeight: 24 },
 });
