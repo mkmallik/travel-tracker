@@ -26,6 +26,7 @@ import { useTheme } from '../theme/useTheme';
 import type { ThemeColors } from '../theme/colors';
 import { BookingForm } from './BookingForm';
 import { ExpenseForm } from './ExpenseForm';
+import { openInMaps, dialNumber, extractPhones, stripPhones } from '../utils/links';
 
 type Props = {
   navigation: { goBack: () => void; navigate: (n: string, p: any) => void };
@@ -63,6 +64,17 @@ export function DayDetailScreen({ navigation, route }: Props) {
   const hotels = dayBookings.filter((b) => b.type === 'hotel');
   const activities = dayBookings.filter((b) => b.type === 'activity');
   const transfers = dayBookings.filter((b) => b.type === 'transfer');
+
+  // The stay card prefers a booked hotel for this day; falls back to the
+  // static itinerary info.
+  const stayBooking = hotels[0] ?? null;
+  const stayName = stayBooking?.title || day.accommodationName || 'Not booked';
+  const rawStayAddress = stayBooking?.address || day.address || '';
+  const stayPhones = extractPhones(rawStayAddress).concat(extractPhones(stayBooking?.note ?? ''));
+  const stayAddress = stripPhones(rawStayAddress);
+  const stayAgent = stayBooking?.agent || day.agent || '';
+  const stayBookingRef = stayBooking?.bookingRef || '';
+  const stayStatus = day.paymentStatus;
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 48 }}>
@@ -170,17 +182,53 @@ export function DayDetailScreen({ navigation, route }: Props) {
           </View>
         ) : null}
 
-        <View style={styles.card}>
+        <Pressable
+          style={styles.card}
+          onPress={stayBooking ? () => setEditingBooking(stayBooking) : undefined}
+        >
           <Text style={styles.cardLabel}>🏨  Stay</Text>
-          <Text style={styles.stayName}>{day.accommodationName || 'Not booked'}</Text>
-          {day.address ? <Text style={styles.stayAddr}>📍  {day.address}</Text> : null}
-          {day.agent ? <Text style={styles.agent}>Booking via: {day.agent}</Text> : null}
-          {day.paymentStatus ? (
-            <View style={[styles.statusPill, day.paymentStatus === 'Paid' ? styles.pillPaid : styles.pillPending]}>
-              <Text style={styles.statusTxt}>{day.paymentStatus === 'Paid' ? '✓ Paid' : '⏱  ' + day.paymentStatus}</Text>
+          <Text style={styles.stayName}>{stayName}</Text>
+
+          {stayAddress ? (
+            <Pressable
+              style={styles.addrRow}
+              onPress={(e) => { e.stopPropagation?.(); openInMaps(stayAddress); }}
+            >
+              <Text style={styles.stayAddr}>📍  {stayAddress}</Text>
+              <View style={[styles.mapBtn, { backgroundColor: theme.light }]}>
+                <Text style={[styles.mapBtnTxt, { color: theme.accent }]}>Open map</Text>
+              </View>
+            </Pressable>
+          ) : null}
+
+          {stayPhones.length > 0 ? (
+            <View style={styles.phonesWrap}>
+              {stayPhones.map((p) => (
+                <Pressable
+                  key={p}
+                  style={[styles.phonePill, { backgroundColor: theme.light }]}
+                  onPress={(e) => { e.stopPropagation?.(); dialNumber(p); }}
+                >
+                  <Text style={[styles.phonePillTxt, { color: theme.accent }]}>📞  {p}</Text>
+                </Pressable>
+              ))}
             </View>
           ) : null}
-        </View>
+
+          {stayBookingRef ? (
+            <Text style={styles.agent}>Ref: {stayBookingRef}</Text>
+          ) : null}
+          {stayAgent ? <Text style={styles.agent}>Booking via: {stayAgent}</Text> : null}
+          {stayBooking?.note ? <Text style={styles.stayNote}>{stayBooking.note}</Text> : null}
+          {stayStatus && !stayBooking ? (
+            <View style={[styles.statusPill, stayStatus === 'Paid' ? styles.pillPaid : styles.pillPending]}>
+              <Text style={styles.statusTxt}>{stayStatus === 'Paid' ? '✓ Paid' : '⏱  ' + stayStatus}</Text>
+            </View>
+          ) : null}
+          {stayBooking ? (
+            <Text style={styles.tapHint}>tap to edit booking</Text>
+          ) : null}
+        </Pressable>
 
         {day.summary ? (
           <View style={styles.card}>
@@ -384,7 +432,15 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   logBtnTxt: { color: '#fff', fontSize: 15, fontWeight: '700' },
 
   stayName: { fontSize: 17, fontWeight: '700', color: c.text },
-  stayAddr: { fontSize: 13, color: c.textMuted, marginTop: 4 },
+  addrRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 as any, marginTop: 8 },
+  stayAddr: { flex: 1, fontSize: 13, color: c.textMuted, lineHeight: 18 },
+  mapBtn: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, alignSelf: 'flex-start' },
+  mapBtnTxt: { fontSize: 11, fontWeight: '700', letterSpacing: 0.2 },
+  phonesWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 as any, marginTop: 8 },
+  phonePill: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999 },
+  phonePillTxt: { fontSize: 12, fontWeight: '700' },
+  stayNote: { fontSize: 12, color: c.textMuted, marginTop: 8, fontStyle: 'italic' },
+  tapHint: { fontSize: 10, color: c.textSubtle, marginTop: 10, fontStyle: 'italic' },
   agent: { fontSize: 12, color: c.textMuted, marginTop: 6 },
   statusPill: { alignSelf: 'flex-start', marginTop: 10, paddingHorizontal: 12, paddingVertical: 5, borderRadius: 999 },
   pillPaid: { backgroundColor: '#D1FAE5' },
