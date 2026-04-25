@@ -14,6 +14,7 @@ import { LogExpenseScreen } from './src/screens/LogExpense';
 import { SummaryScreen } from './src/screens/Summary';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { BookingsScreen } from './src/screens/Bookings';
+import { LinksTab } from './src/screens/LinksTab';
 import { bootstrapStore, useAppStore } from './src/store/useAppStore';
 import { isLoggedIn } from './src/api/client';
 import { useTheme } from './src/theme/useTheme';
@@ -111,6 +112,13 @@ function MainApp() {
           options={{
             title: 'Log',
             tabBarIcon: ({ focused, color }) => <TabIcon name="plus" focused={focused} color={color} />,
+          }}
+        />
+        <Tab.Screen
+          name="Links"
+          component={LinksTab}
+          options={{
+            tabBarIcon: ({ focused, color }) => <TabIcon name="arrowUpRight" focused={focused} color={color} />,
           }}
         />
         <Tab.Screen

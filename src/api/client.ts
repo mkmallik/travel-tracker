@@ -66,12 +66,22 @@ type ServerBooking = {
   created_at: number;
 };
 
+type ServerLink = {
+  id: string;
+  trip_id: string;
+  name: string;
+  url: string;
+  note: string;
+  created_at: number;
+};
+
 export type SheetsSnapshot = {
   trips: ServerTrip[];
   itinerary: DayRow[];
   expenses: Exp[];
   settings: { [k: string]: string };
   bookings: ServerBooking[];
+  links: ServerLink[];
 };
 
 const TOKEN_KEY = 'travel-tracker.token';
@@ -211,6 +221,30 @@ export function updateBooking(b: ServerBooking): Promise<{ booking: ServerBookin
 
 export function deleteBooking(id: string): Promise<{ deleted: true }> {
   return request<{ deleted: true }>('/api/sheets/booking?id=' + encodeURIComponent(id), {
+    method: 'DELETE',
+  });
+}
+
+// --- links ---
+
+type LinkInput = Omit<ServerLink, 'id' | 'created_at'>;
+
+export function addLink(l: LinkInput): Promise<{ link: ServerLink }> {
+  return request<{ link: ServerLink }>('/api/sheets/link', {
+    method: 'POST',
+    body: JSON.stringify(l),
+  });
+}
+
+export function updateLink(l: ServerLink): Promise<{ link: ServerLink }> {
+  return request<{ link: ServerLink }>('/api/sheets/link', {
+    method: 'PATCH',
+    body: JSON.stringify(l),
+  });
+}
+
+export function deleteLink(id: string): Promise<{ deleted: true }> {
+  return request<{ deleted: true }>('/api/sheets/link?id=' + encodeURIComponent(id), {
     method: 'DELETE',
   });
 }

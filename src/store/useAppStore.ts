@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Booking, Expense, SeedDay, SeedTrip, Trip } from '../data/types';
+import type { Booking, Expense, SeedDay, SeedTrip, Trip, TripLink } from '../data/types';
 import { SEED_TRIP, SEED_DAYS } from '../data/seedTrip';
 import { DEFAULT_INR_PER_THB } from '../utils/fx';
 import type { ThemePreference } from '../theme/colors';
@@ -13,6 +13,7 @@ type State = {
   days: SeedDay[];
   expenses: Expense[];
   bookings: Booking[];
+  links: TripLink[];
   fxInrPerThb: number;
   themePref: ThemePreference;
   hydrated: boolean;
@@ -29,11 +30,12 @@ type CachePayload = {
   days: SeedDay[];
   expenses: Expense[];
   bookings: Booking[];
+  links: TripLink[];
   fxInrPerThb: number;
   themePref: ThemePreference;
 };
 
-const CACHE_KEY = 'travel-tracker.cache.v3';
+const CACHE_KEY = 'travel-tracker.cache.v4';
 
 let state: State = {
   trip: SEED_TRIP,
@@ -42,6 +44,7 @@ let state: State = {
   days: SEED_DAYS,
   expenses: [],
   bookings: [],
+  links: [],
   fxInrPerThb: DEFAULT_INR_PER_THB,
   themePref: 'auto',
   hydrated: false,
@@ -68,6 +71,7 @@ async function saveCache() {
     days: state.days,
     expenses: state.expenses,
     bookings: state.bookings,
+    links: state.links,
     fxInrPerThb: state.fxInrPerThb,
     themePref: state.themePref,
   };
@@ -194,6 +198,17 @@ function serverToBooking(s: any): Booking {
   };
 }
 
+function serverToLink(s: any): TripLink {
+  return {
+    id: s.id,
+    tripId: s.trip_id || '',
+    name: s.name || '',
+    url: s.url || '',
+    note: s.note || '',
+    createdAt: Number(s.created_at) || 0,
+  };
+}
+
 function bookingToServer(b: Booking | Omit<Booking, 'id' | 'createdAt'>) {
   return {
     trip_id: b.tripId,
@@ -235,6 +250,7 @@ export async function bootstrapStore(): Promise<void> {
       days: cached.days?.length ? cached.days : SEED_DAYS,
       expenses: cached.expenses || [],
       bookings: cached.bookings || [],
+      links: cached.links || [],
       fxInrPerThb: cached.fxInrPerThb || DEFAULT_INR_PER_THB,
       themePref: cached.themePref || 'auto',
     });
@@ -265,6 +281,7 @@ export async function syncFromServer(): Promise<void> {
     const days = snap.itinerary.map(serverToDay).sort((a, b) => a.dayNum - b.dayNum);
     const expenses = snap.expenses.map(serverToExpense);
     const bookings = (snap.bookings || []).map(serverToBooking);
+    const links = (snap.links || []).map(serverToLink);
 
     const activeTrip = activeId ? trips.find((t) => t.id === activeId) : null;
     const fxFromTrip = activeTrip && activeTrip.fxRate > 0 ? activeTrip.fxRate : 0;
@@ -291,6 +308,7 @@ export async function syncFromServer(): Promise<void> {
       days: days.length ? days : s.days,
       expenses,
       bookings,
+      links,
       fxInrPerThb,
       lastSyncedAt: Date.now(),
       syncing: false,
@@ -501,6 +519,62 @@ export const actions = {
       await api.deleteBooking(id);
     } catch (e: any) {
       setState({ bookings: snapshot, syncError: e?.message ?? 'Delete failed' });
+    }
+  },
+
+  async addLink(input: Omit<TripLink, 'id' | 'createdAt' | 'tripId'>) {
+    const tripId = state.activeTripId;
+    if (!tripId) {
+      setState({ syncError: 'No active trip — pick one before adding links.' });
+      return;
+    }
+    const optimistic: TripLink = { ...input, tripId, id: genId(), createdAt: Date.now() };
+    setState((s) => ({ links: [...s.links, optimistic] }));
+    void saveCache();
+    try {
+      const { link } = await api.addLink({
+        trip_id: tripId,
+        name: input.name,
+        url: input.url,
+        note: input.note,
+      } as any);
+      setState((s) => ({
+        links: s.links.map((x) => (x.id === optimistic.id ? serverToLink(link) : x)),
+      }));
+      await saveCache();
+    } catch (e: any) {
+      setState({ syncError: e?.message ?? 'Save failed' });
+    }
+  },
+
+  async updateLink(l: TripLink) {
+    const snapshot = state.links;
+    setState((s) => ({ links: s.links.map((x) => (x.id === l.id ? l : x)) }));
+    void saveCache();
+    try {
+      const { link } = await api.updateLink({
+        id: l.id,
+        trip_id: l.tripId,
+        name: l.name,
+        url: l.url,
+        note: l.note,
+        created_at: l.createdAt,
+      } as any);
+      setState((s) => ({ links: s.links.map((x) => (x.id === l.id ? serverToLink(link) : x)) }));
+      await saveCache();
+    } catch (e: any) {
+      setState({ links: snapshot, syncError: e?.message ?? 'Update failed' });
+    }
+  },
+
+  async removeLink(id: string) {
+    const snapshot = state.links;
+    setState((s) => ({ links: s.links.filter((x) => x.id !== id) }));
+    void saveCache();
+    try {
+      await api.deleteLink(id);
+    } catch (e: any) {
+      setState({ links: snapshot, syncError: e?.message ?? 'Delete failed' });
     }
   },
 

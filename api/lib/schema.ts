@@ -53,6 +53,15 @@ export const ITINERARY_COLS = [
 
 export const SETTING_COLS = ['key', 'value'] as const;
 
+export const LINK_COLS = [
+  'id',
+  'trip_id',
+  'name',
+  'url',
+  'note',
+  'created_at',
+] as const;
+
 export const BOOKING_COLS = [
   'id',
   'trip_id',
@@ -81,6 +90,7 @@ export const SHEETS = {
   expenses: 'expenses',
   settings: 'settings',
   bookings: 'bookings',
+  links: 'links',
 } as const;
 
 export const THAILAND_TRIP_ID = 'thailand-apr-2026';

@@ -136,6 +136,16 @@ export function ItineraryListScreen({ navigation }: Props) {
   );
 }
 
+// Takes "Mon, Apr 27, 2026" and returns the compact form "Mon, Apr 27" —
+// the year is redundant on each card when the whole trip is one year.
+function formatDayDate(d: string): string {
+  if (!d) return '';
+  // Already in "Weekday, Mon DD, YYYY" format — drop the trailing ", YYYY"
+  const m = d.match(/^(.+?),\s*([A-Za-z]+ \d+),\s*\d{4}$/);
+  if (m) return `${m[1]}, ${m[2]}`;
+  return d;
+}
+
 function extractCountryTitle(title: string): string {
   if (!title) return 'Trip';
   // Strip "XYZ — dates" and just keep the leading country/destination.
@@ -190,8 +200,8 @@ function DayCard({ day, isToday, onPress }: { day: SeedDay; isToday?: boolean; o
       >
         <View style={styles.cardHeroTop}>
           <View style={styles.topBadgeCol}>
-            <View style={[styles.dayBadge, { backgroundColor: theme.accent }]}>
-              <Text style={styles.dayBadgeTxt}>DAY {day.dayNum}</Text>
+            <View style={styles.dayBadge}>
+              <Text style={styles.dayBadgeTxt}>Day {day.dayNum}</Text>
             </View>
             {isToday ? (
               <View style={styles.todayBadge}>
@@ -206,10 +216,10 @@ function DayCard({ day, isToday, onPress }: { day: SeedDay; isToday?: boolean; o
           ) : null}
         </View>
         <View style={styles.cardHeroBottom}>
-          <Text style={styles.cardCity}>
-            {theme.emoji}  {day.stayCity}
-          </Text>
-          <Text style={styles.cardDate}>{day.date}</Text>
+          <View style={styles.cityDateRow}>
+            <Text style={styles.cardCity} numberOfLines={1}>{day.stayCity}</Text>
+            <Text style={styles.cardDate}>{formatDayDate(day.date)}</Text>
+          </View>
         </View>
       </HeroImage>
 
@@ -272,13 +282,16 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   cardHeroTop: { flexDirection: 'row', justifyContent: 'space-between', padding: 12, alignItems: 'flex-start' },
   cardHeroBottom: { padding: 14 },
   topBadgeCol: { flexDirection: 'row', gap: 6 as any, flexWrap: 'wrap' },
+  // Subtle translucent chip — no longer a saturated city-color fill
   dayBadge: {
-    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999,
+    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8,
+    backgroundColor: 'rgba(0,0,0,0.38)',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)',
   },
-  dayBadgeTxt: { color: '#fff', fontSize: 11, fontWeight: '800', letterSpacing: 1 },
+  dayBadgeTxt: { color: 'rgba(255,255,255,0.92)', fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
   todayBadge: {
     backgroundColor: '#FBBF24',
-    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999,
+    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8,
   },
   todayBadgeTxt: { color: '#0F172A', fontSize: 11, fontWeight: '800', letterSpacing: 1 },
   transitBadge: {
@@ -286,8 +299,9 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999,
   },
   transitTxt: { color: '#fff', fontSize: 11, fontWeight: '600' },
-  cardCity: { color: '#fff', fontSize: 24, fontWeight: '800', textShadowColor: 'rgba(0,0,0,0.5)', textShadowRadius: 4 },
-  cardDate: { color: '#fff', fontSize: 12, opacity: 0.95, marginTop: 2, textShadowColor: 'rgba(0,0,0,0.5)', textShadowRadius: 3 },
+  cityDateRow: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 as any },
+  cardCity: { color: '#fff', fontSize: 18, fontWeight: '700', flexShrink: 1, letterSpacing: -0.2, textShadowColor: 'rgba(0,0,0,0.6)', textShadowRadius: 4 },
+  cardDate: { color: 'rgba(255,255,255,0.92)', fontSize: 12, fontWeight: '500', textShadowColor: 'rgba(0,0,0,0.6)', textShadowRadius: 3 },
 
   cardFooter: { padding: 14, paddingTop: 12 },
   cardSummary: { fontSize: 13, color: c.textMuted, lineHeight: 18 },

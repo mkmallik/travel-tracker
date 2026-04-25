@@ -150,3 +150,12 @@ export const CATEGORY_FOR_BOOKING_TYPE: Record<BookingType, ExpenseCategory> = {
   activity: 'Activities',
   transfer: 'Cabs',
 };
+
+export type TripLink = {
+  id: string;
+  tripId: string;
+  name: string;
+  url: string;
+  note: string;
+  createdAt: number;
+};

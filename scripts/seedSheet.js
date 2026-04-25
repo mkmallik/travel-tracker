@@ -75,6 +75,9 @@ const EXPENSE_HEADERS = [
   'amount_thb', 'amount_inr', 'note', 'created_at',
 ];
 const SETTING_HEADERS = ['key', 'value'];
+const LINK_HEADERS = [
+  'id', 'trip_id', 'name', 'url', 'note', 'created_at',
+];
 const BOOKING_HEADERS = [
   'id', 'trip_id', 'type', 'title', 'booking_ref', 'agent', 'address',
   'start_date', 'end_date', 'start_time', 'end_time',
@@ -104,6 +107,7 @@ async function main() {
   // Ensure the new tabs exist
   await ensureTabExists(sheets, 'trips');
   await ensureTabExists(sheets, 'bookings');
+  await ensureTabExists(sheets, 'links');
 
   // Ensure headers across all tabs
   console.log('→ Writing headers...');
@@ -112,6 +116,7 @@ async function main() {
   await setRange(sheets, 'expenses!A1:K1', [EXPENSE_HEADERS]);
   await setRange(sheets, 'settings!A1:B1', [SETTING_HEADERS]);
   await setRange(sheets, 'bookings!A1:S1', [BOOKING_HEADERS]);
+  await setRange(sheets, 'links!A1:F1', [LINK_HEADERS]);
 
   // Upsert the Thailand trip row
   console.log('→ Ensuring Thailand trip row in trips tab...');

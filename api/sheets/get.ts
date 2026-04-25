@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { applyCors, requireAuth } from '../lib/auth';
 import { readRange } from '../lib/sheets';
 import {
-  EXPENSE_COLS, ITINERARY_COLS, SETTING_COLS, BOOKING_COLS, TRIP_COLS, SHEETS,
+  EXPENSE_COLS, ITINERARY_COLS, SETTING_COLS, BOOKING_COLS, TRIP_COLS, LINK_COLS, SHEETS,
 } from '../lib/schema';
 
 type Record = { [k: string]: string };
@@ -59,12 +59,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const tripFilter = (req.query?.trip_id as string) || '';
 
   try {
-    const [tripRows, itinRows, expRows, settingsRows, bookingRows] = await Promise.all([
+    const [tripRows, itinRows, expRows, settingsRows, bookingRows, linkRows] = await Promise.all([
       readRange(`${SHEETS.trips}!A:K`).catch(() => [] as string[][]),
       readRange(`${SHEETS.itinerary}!A:S`),
       readRange(`${SHEETS.expenses}!A:K`),
       readRange(`${SHEETS.settings}!A:B`),
       readRange(`${SHEETS.bookings}!A:S`).catch(() => [] as string[][]),
+      readRange(`${SHEETS.links}!A:F`).catch(() => [] as string[][]),
     ]);
 
     const trips = toRecords(tripRows, TRIP_COLS).map((r) => ({
@@ -160,7 +161,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ? allBookings.filter((b) => b.trip_id === tripFilter)
       : allBookings;
 
-    res.status(200).json({ trips, itinerary, expenses, settings, bookings });
+    const allLinks = toRecords(linkRows, LINK_COLS).map((r) => ({
+      id: r.id,
+      trip_id: r.trip_id || '',
+      name: r.name || '',
+      url: r.url || '',
+      note: r.note || '',
+      created_at: r.created_at ? parseInt(r.created_at, 10) || 0 : 0,
+    })).filter((l) => !!l.id && !!l.url);
+
+    const links = tripFilter
+      ? allLinks.filter((l) => l.trip_id === tripFilter)
+      : allLinks;
+
+    res.status(200).json({ trips, itinerary, expenses, settings, bookings, links });
   } catch (e: any) {
     res.status(500).json({ error: 'Sheets read failed', details: e?.message ?? String(e) });
   }
