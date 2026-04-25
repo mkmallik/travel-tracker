@@ -9,6 +9,7 @@
     "web": "expo start --web",
     "build": "expo export -p web",
     "seed": "node scripts/seedSheet.js",
+    "set-fx": "node scripts/setFxRate.js",
     "update-images": "node scripts/updateImages.js && node scripts/parseCsv.js",
     "parse-csv": "node scripts/parseCsv.js"
   },
