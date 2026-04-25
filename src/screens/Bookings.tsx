@@ -290,5 +290,8 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   delTxt: { fontSize: 16, color: c.textMuted, lineHeight: 18 },
 
   modalBackdrop: { flex: 1, justifyContent: 'flex-end' },
-  modalSheet: { height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden' },
+  modalSheet: {
+    height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden',
+    width: '100%', maxWidth: 480, alignSelf: 'center',
+  },
 });

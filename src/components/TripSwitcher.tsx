@@ -251,6 +251,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 22, borderTopRightRadius: 22,
     paddingHorizontal: 20, paddingTop: 12, paddingBottom: 28,
     maxHeight: '85%',
+    width: '100%', maxWidth: 480, alignSelf: 'center',
   },
   grabber: { alignSelf: 'center', width: 42, height: 4, borderRadius: 2, backgroundColor: '#94A3B8', marginBottom: 12 },
   sheetTitle: { fontSize: 22, fontWeight: '800', marginBottom: 12 },

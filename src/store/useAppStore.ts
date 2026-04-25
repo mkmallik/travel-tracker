@@ -428,6 +428,32 @@ export const actions = {
     void saveCache();
   },
 
+  // Patch the editable text fields of an itinerary day (summary / travel
+  // details). Optimistic local update; server call PATCHes the sheet row.
+  async updateDayInfo(
+    dayNum: number,
+    patch: Partial<{ summary: string; travelDetails: string; accommodationName: string; address: string; agent: string; paymentStatus: string }>
+  ) {
+    const snapshot = state.days;
+    setState((s) => ({
+      days: s.days.map((d) => (d.dayNum === dayNum ? { ...d, ...patch } : d)),
+    }));
+    void saveCache();
+    try {
+      // Map camelCase → snake_case for the server
+      const updates: Record<string, string> = {};
+      if (patch.summary !== undefined) updates.summary = patch.summary;
+      if (patch.travelDetails !== undefined) updates.travel_details = patch.travelDetails;
+      if (patch.accommodationName !== undefined) updates.accommodation_name = patch.accommodationName;
+      if (patch.address !== undefined) updates.address = patch.address;
+      if (patch.agent !== undefined) updates.agent = patch.agent;
+      if (patch.paymentStatus !== undefined) updates.payment_status = patch.paymentStatus;
+      await api.updateDay(dayNum, updates as any);
+    } catch (e: any) {
+      setState({ days: snapshot, syncError: e?.message ?? 'Update failed' });
+    }
+  },
+
   async refresh() {
     await syncFromServer();
   },

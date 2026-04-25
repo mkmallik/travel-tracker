@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -39,13 +40,14 @@ export function DayDetailScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
   const { colors } = useTheme();
-  const { days, expenses, bookings, fxInrPerThb, removeBooking, removeExpense } = useAppStore();
+  const { days, expenses, bookings, fxInrPerThb, removeBooking, removeExpense, updateDayInfo } = useAppStore();
   const day = days.find((d) => d.dayNum === route.params.dayNum);
   const [bookingSheet, setBookingSheet] = useState<
     | { mode: 'view' | 'edit'; booking: Booking }
     | null
   >(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [editingField, setEditingField] = useState<'summary' | 'travelDetails' | null>(null);
 
   if (!day) {
     return (
@@ -240,24 +242,48 @@ export function DayDetailScreen({ navigation, route }: Props) {
           ) : null}
         </Pressable>
 
-        {day.summary ? (
-          <View style={styles.card}>
+        <View style={styles.card}>
+          <View style={styles.editableSectionHeader}>
             <SectionLabel icon="receipt" color={colors.textSubtle}>Plan for the day</SectionLabel>
-            <Text style={styles.summary}>{day.summary}</Text>
+            <Pressable
+              style={styles.sectionEditBtn}
+              onPress={() => setEditingField('summary')}
+            >
+              <Icon name="edit" size={13} color={colors.textMuted} strokeWidth={2.1} />
+            </Pressable>
           </View>
-        ) : null}
+          {day.summary ? (
+            <Text style={styles.summary}>{day.summary}</Text>
+          ) : (
+            <Text style={[styles.summary, { color: colors.textSubtle, fontStyle: 'italic' }]}>
+              Tap the pencil to add a plan for this day.
+            </Text>
+          )}
+        </View>
 
-        {travelLines.length > 0 ? (
-          <View style={styles.card}>
+        <View style={styles.card}>
+          <View style={styles.editableSectionHeader}>
             <SectionLabel icon="map" color={colors.textSubtle}>Travel details</SectionLabel>
-            {travelLines.map((line, i) => (
+            <Pressable
+              style={styles.sectionEditBtn}
+              onPress={() => setEditingField('travelDetails')}
+            >
+              <Icon name="edit" size={13} color={colors.textMuted} strokeWidth={2.1} />
+            </Pressable>
+          </View>
+          {travelLines.length > 0 ? (
+            travelLines.map((line, i) => (
               <View key={i} style={styles.travelLineRow}>
                 <View style={[styles.bullet, { backgroundColor: theme.accent }]} />
                 <Text style={styles.travelLine}>{line}</Text>
               </View>
-            ))}
-          </View>
-        ) : null}
+            ))
+          ) : (
+            <Text style={[styles.summary, { color: colors.textSubtle, fontStyle: 'italic' }]}>
+              Tap the pencil to add travel notes.
+            </Text>
+          )}
+        </View>
 
         {dayExp.length > 0 ? (
           <View style={styles.card}>
@@ -331,7 +357,100 @@ export function DayDetailScreen({ navigation, route }: Props) {
           </View>
         </View>
       </Modal>
+
+      <DayInfoEditModal
+        visible={!!editingField}
+        title={editingField === 'summary' ? 'Plan for the day' : 'Travel details'}
+        initialValue={
+          editingField === 'summary' ? day.summary :
+          editingField === 'travelDetails' ? day.travelDetails : ''
+        }
+        onSave={async (val) => {
+          if (!editingField) return;
+          if (editingField === 'summary') {
+            await updateDayInfo(day.dayNum, { summary: val });
+          } else {
+            await updateDayInfo(day.dayNum, { travelDetails: val });
+          }
+          setEditingField(null);
+        }}
+        onCancel={() => setEditingField(null)}
+      />
     </ScrollView>
+  );
+}
+
+function DayInfoEditModal({
+  visible, title, initialValue, onSave, onCancel,
+}: {
+  visible: boolean;
+  title: string;
+  initialValue: string;
+  onSave: (v: string) => Promise<void>;
+  onCancel: () => void;
+}) {
+  const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
+  const [value, setValue] = React.useState(initialValue);
+  const [busy, setBusy] = React.useState(false);
+
+  React.useEffect(() => {
+    if (visible) setValue(initialValue);
+  }, [visible, initialValue]);
+
+  const submit = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await onSave(value);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onCancel}>
+      <View style={[styles.modalBackdrop, { backgroundColor: colors.overlay }]}>
+        <View style={[styles.modalSheet, { backgroundColor: colors.bg, height: undefined, maxHeight: '88%' }]}>
+          <ScrollView contentContainerStyle={{ padding: 18, paddingBottom: 30 }}>
+            <View style={styles.editHeaderRow}>
+              <Text style={styles.editTitle}>{title}</Text>
+              <Pressable style={styles.editCloseBtn} onPress={onCancel}>
+                <Icon name="close" size={18} color={colors.text} strokeWidth={2.4} />
+              </Pressable>
+            </View>
+            <Text style={styles.editHint}>
+              Use new lines for separate points. Travel-details bullets render
+              one per line.
+            </Text>
+            <TextInput
+              style={styles.editTextarea}
+              value={value}
+              onChangeText={setValue}
+              multiline
+              placeholder="Type here…"
+              placeholderTextColor={colors.placeholder}
+              autoFocus
+            />
+            <View style={styles.editActions}>
+              <Pressable style={[styles.editCancelBtn, { borderColor: colors.border }]} onPress={onCancel}>
+                <Text style={[styles.editCancelTxt, { color: colors.textMuted }]}>Cancel</Text>
+              </Pressable>
+              <Pressable style={{ flex: 1 }} onPress={submit} disabled={busy}>
+                <LinearGradient
+                  colors={busy ? ['#94A3B8', '#94A3B8'] : ['#3A5BD9', '#7C3AED']}
+                  start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                  style={styles.editSaveBtn}
+                >
+                  <Icon name="check" size={14} color="#fff" strokeWidth={2.4} />
+                  <Text style={styles.editSaveTxt}>{busy ? 'Saving…' : 'Save'}</Text>
+                </LinearGradient>
+              </Pressable>
+            </View>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -518,5 +637,34 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   expDelTxt: { fontSize: 14, color: c.textMuted, lineHeight: 16 },
 
   modalBackdrop: { flex: 1, justifyContent: 'flex-end' },
-  modalSheet: { height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden' },
+  modalSheet: {
+    height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden',
+    width: '100%', maxWidth: 480, alignSelf: 'center',
+  },
+
+  editableSectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  sectionEditBtn: {
+    width: 28, height: 28, borderRadius: 14, backgroundColor: c.cardBgAlt,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 10,
+  },
+
+  editHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  editTitle: { fontSize: 22, fontWeight: '800', color: c.text },
+  editCloseBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center' },
+  editHint: { fontSize: 12, color: c.textMuted, marginTop: 6, marginBottom: 12 },
+  editTextarea: {
+    backgroundColor: c.cardBg, borderRadius: 12,
+    paddingHorizontal: 14, paddingVertical: 12,
+    fontSize: 15, color: c.text,
+    borderWidth: 1, borderColor: c.border,
+    minHeight: 200, textAlignVertical: 'top',
+  },
+  editActions: { flexDirection: 'row', gap: 10 as any, marginTop: 16, alignItems: 'center' },
+  editCancelBtn: { paddingHorizontal: 14, paddingVertical: 12, borderRadius: 12, borderWidth: 1 },
+  editCancelTxt: { fontSize: 13, fontWeight: '700' },
+  editSaveBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 8 as any, paddingVertical: 13, borderRadius: 12,
+  },
+  editSaveTxt: { color: '#fff', fontSize: 15, fontWeight: '800' },
 });

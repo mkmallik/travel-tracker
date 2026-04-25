@@ -261,6 +261,7 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   sheet: {
     borderTopLeftRadius: 20, borderTopRightRadius: 20,
     maxHeight: '88%', overflow: 'hidden',
+    width: '100%', maxWidth: 480, alignSelf: 'center',
   },
   formHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   formH1: { fontSize: 22, fontWeight: '800', color: c.text },

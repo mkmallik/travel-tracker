@@ -485,5 +485,8 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   modeTabLabelOn: { color: c.bg },
 
   editBackdrop: { flex: 1, justifyContent: 'flex-end' },
-  editSheet: { height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden' },
+  editSheet: {
+    height: '92%', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden',
+    width: '100%', maxWidth: 480, alignSelf: 'center',
+  },
 });
