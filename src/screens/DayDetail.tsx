@@ -80,6 +80,10 @@ export function DayDetailScreen({ navigation, route }: Props) {
     hotels.find((h) => h.startDate === dayIso) ??
     hotels.find((h) => h.endDate !== dayIso) ?? // anything that's not strictly checkout-only
     hotels[0] ?? null;
+  // Hotels section should not duplicate the Stay hotel on the same day
+  const otherHotels = stayBooking
+    ? hotels.filter((h) => h.id !== stayBooking.id)
+    : hotels;
   const stayName = stayBooking?.title || day.accommodationName || 'Not booked';
   const rawStayAddress = stayBooking?.address || day.address || '';
   const stayPhones = extractPhones(rawStayAddress).concat(extractPhones(stayBooking?.note ?? ''));
@@ -118,82 +122,32 @@ export function DayDetailScreen({ navigation, route }: Props) {
       </HeroImage>
 
       <View style={styles.body}>
-        <View style={[styles.card, styles.moneyCard, { borderColor: theme.light }]}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.cardLabel}>Money today</Text>
-            {budgetThb > 0 ? (
-              <View style={[styles.pctPill, { backgroundColor: theme.light }]}>
-                <Text style={[styles.pctTxt, { color: theme.accent }]}>
-                  {Math.round(budgetPct)}%
-                </Text>
-              </View>
-            ) : null}
+        {/* 1. Plan for the day */}
+        <View style={styles.card}>
+          <View style={styles.editableSectionHeader}>
+            <SectionLabel icon="receipt" color={colors.textSubtle}>Plan for the day</SectionLabel>
+            <Pressable
+              style={styles.sectionEditBtn}
+              onPress={() => setEditingField('summary')}
+            >
+              <Icon name="edit" size={13} color={colors.textMuted} strokeWidth={2.1} />
+            </Pressable>
           </View>
-          <View style={styles.moneySplit}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.moneyBigLabel}>Spent</Text>
-              <Money amount={spendThb} currency="THB" style={styles.moneyBigVal} />
-            </View>
-            {budgetThb > 0 ? (
-              <View style={{ flex: 1 }}>
-                <Text style={styles.moneyBigLabel}>Budget</Text>
-                <Money amount={budgetThb} currency="THB" style={styles.moneyBigVal} />
+          {planLines.length > 0 ? (
+            planLines.map((line, i) => (
+              <View key={i} style={styles.travelLineRow}>
+                <View style={[styles.bullet, { backgroundColor: theme.accent }]} />
+                <Text style={styles.travelLine}>{line}</Text>
               </View>
-            ) : null}
-          </View>
-          {budgetThb > 0 ? (
-            <View style={styles.barTrack}>
-              <LinearGradient
-                colors={theme.gradient}
-                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                style={[styles.barFill, { width: `${budgetPct}%` }]}
-              />
-            </View>
-          ) : null}
-          <Pressable
-            style={[styles.logBtn, { backgroundColor: theme.accent }]}
-            onPress={() => navigation.navigate('LogTab', { dayNum: day.dayNum })}
-          >
-            <Text style={styles.logBtnTxt}>＋ Log expense / booking</Text>
-          </Pressable>
+            ))
+          ) : (
+            <Text style={[styles.summary, { color: colors.textSubtle, fontStyle: 'italic' }]}>
+              Tap the pencil to add plan points.
+            </Text>
+          )}
         </View>
 
-        {flights.length > 0 ? (
-          <View style={styles.card}>
-            <SectionLabel icon="flight" color={colors.textSubtle}>Flights</SectionLabel>
-            {flights.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
-            ))}
-          </View>
-        ) : null}
-
-        {hotels.length > 0 ? (
-          <View style={styles.card}>
-            <SectionLabel icon="hotel" color={colors.textSubtle}>Hotels</SectionLabel>
-            {hotels.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
-            ))}
-          </View>
-        ) : null}
-
-        {activities.length > 0 ? (
-          <View style={styles.card}>
-            <SectionLabel icon="activity" color={colors.textSubtle}>Activities</SectionLabel>
-            {activities.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
-            ))}
-          </View>
-        ) : null}
-
-        {transfers.length > 0 ? (
-          <View style={styles.card}>
-            <SectionLabel icon="transfer" color={colors.textSubtle}>Transfers</SectionLabel>
-            {transfers.map((b) => (
-              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
-            ))}
-          </View>
-        ) : null}
-
+        {/* 2. Stay (hotel for the day) */}
         <Pressable
           style={styles.card}
           onPress={stayBooking ? () => setBookingSheet({ mode: 'view', booking: stayBooking }) : undefined}
@@ -247,30 +201,79 @@ export function DayDetailScreen({ navigation, route }: Props) {
           ) : null}
         </Pressable>
 
-        <View style={styles.card}>
-          <View style={styles.editableSectionHeader}>
-            <SectionLabel icon="receipt" color={colors.textSubtle}>Plan for the day</SectionLabel>
-            <Pressable
-              style={styles.sectionEditBtn}
-              onPress={() => setEditingField('summary')}
-            >
-              <Icon name="edit" size={13} color={colors.textMuted} strokeWidth={2.1} />
-            </Pressable>
-          </View>
-          {planLines.length > 0 ? (
-            planLines.map((line, i) => (
-              <View key={i} style={styles.travelLineRow}>
-                <View style={[styles.bullet, { backgroundColor: theme.accent }]} />
-                <Text style={styles.travelLine}>{line}</Text>
+        {/* 3. Money today (no log button — just spent vs budget) */}
+        <View style={[styles.card, styles.moneyCard, { borderColor: theme.light }]}>
+          <View style={styles.cardHeaderRow}>
+            <Text style={styles.cardLabel}>Money today</Text>
+            {budgetThb > 0 ? (
+              <View style={[styles.pctPill, { backgroundColor: theme.light }]}>
+                <Text style={[styles.pctTxt, { color: theme.accent }]}>
+                  {Math.round(budgetPct)}%
+                </Text>
               </View>
-            ))
-          ) : (
-            <Text style={[styles.summary, { color: colors.textSubtle, fontStyle: 'italic' }]}>
-              Tap the pencil to add plan points.
-            </Text>
-          )}
+            ) : null}
+          </View>
+          <View style={styles.moneySplit}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.moneyBigLabel}>Spent</Text>
+              <Money amount={spendThb} currency="THB" style={styles.moneyBigVal} />
+            </View>
+            {budgetThb > 0 ? (
+              <View style={{ flex: 1 }}>
+                <Text style={styles.moneyBigLabel}>Budget</Text>
+                <Money amount={budgetThb} currency="THB" style={styles.moneyBigVal} />
+              </View>
+            ) : null}
+          </View>
+          {budgetThb > 0 ? (
+            <View style={styles.barTrack}>
+              <LinearGradient
+                colors={theme.gradient}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={[styles.barFill, { width: `${budgetPct}%` }]}
+              />
+            </View>
+          ) : null}
         </View>
 
+        {/* 4. Bookings of other types — Flights / additional Hotels / Activities / Transfers */}
+        {flights.length > 0 ? (
+          <View style={styles.card}>
+            <SectionLabel icon="flight" color={colors.textSubtle}>Flights</SectionLabel>
+            {flights.map((b) => (
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
+            ))}
+          </View>
+        ) : null}
+
+        {otherHotels.length > 0 ? (
+          <View style={styles.card}>
+            <SectionLabel icon="hotel" color={colors.textSubtle}>Other hotels today</SectionLabel>
+            {otherHotels.map((b) => (
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
+            ))}
+          </View>
+        ) : null}
+
+        {activities.length > 0 ? (
+          <View style={styles.card}>
+            <SectionLabel icon="activity" color={colors.textSubtle}>Activities</SectionLabel>
+            {activities.map((b) => (
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
+            ))}
+          </View>
+        ) : null}
+
+        {transfers.length > 0 ? (
+          <View style={styles.card}>
+            <SectionLabel icon="transfer" color={colors.textSubtle}>Transfers</SectionLabel>
+            {transfers.map((b) => (
+              <BookingRow key={b.id} booking={b} accent={theme.accent} onPress={() => setBookingSheet({ mode: 'view', booking: b })} onRemove={() => removeBooking(b.id)} />
+            ))}
+          </View>
+        ) : null}
+
+        {/* 5. Travel details */}
         <View style={styles.card}>
           <View style={styles.editableSectionHeader}>
             <SectionLabel icon="map" color={colors.textSubtle}>Travel details</SectionLabel>
@@ -295,6 +298,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
           )}
         </View>
 
+        {/* 6. Logged expenses */}
         {dayExp.length > 0 ? (
           <View style={styles.card}>
             <SectionLabel icon="wallet" color={colors.textSubtle}>Logged expenses</SectionLabel>
