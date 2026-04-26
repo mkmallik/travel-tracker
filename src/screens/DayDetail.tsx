@@ -62,7 +62,8 @@ export function DayDetailScreen({ navigation, route }: Props) {
   const spendThb = sumExpensesInThb(dayExp, fxInrPerThb);
   const budgetThb = budgetedTotalThb(day);
   const transit = day.fromCity && day.toCity ? `${day.fromCity} → ${day.toCity}` : null;
-  const travelLines = day.travelDetails.split('\n').filter(Boolean);
+  const travelLines = day.travelDetails.split('\n').map((s) => s.trim()).filter(Boolean);
+  const planLines = (day.summary || '').split('\n').map((s) => s.trim()).filter(Boolean);
   const budgetPct = budgetThb > 0 ? Math.min(100, (spendThb / budgetThb) * 100) : 0;
 
   const dayIso = dayIsoFromSeed(day);
@@ -73,8 +74,12 @@ export function DayDetailScreen({ navigation, route }: Props) {
   const transfers = dayBookings.filter((b) => b.type === 'transfer');
 
   // The stay card prefers a booked hotel for this day; falls back to the
-  // static itinerary info.
-  const stayBooking = hotels[0] ?? null;
+  // static itinerary info. On transition days (check-out + check-in same
+  // day) we prefer the hotel where this day is the check-in.
+  const stayBooking =
+    hotels.find((h) => h.startDate === dayIso) ??
+    hotels.find((h) => h.endDate !== dayIso) ?? // anything that's not strictly checkout-only
+    hotels[0] ?? null;
   const stayName = stayBooking?.title || day.accommodationName || 'Not booked';
   const rawStayAddress = stayBooking?.address || day.address || '';
   const stayPhones = extractPhones(rawStayAddress).concat(extractPhones(stayBooking?.note ?? ''));
@@ -252,11 +257,16 @@ export function DayDetailScreen({ navigation, route }: Props) {
               <Icon name="edit" size={13} color={colors.textMuted} strokeWidth={2.1} />
             </Pressable>
           </View>
-          {day.summary ? (
-            <Text style={styles.summary}>{day.summary}</Text>
+          {planLines.length > 0 ? (
+            planLines.map((line, i) => (
+              <View key={i} style={styles.travelLineRow}>
+                <View style={[styles.bullet, { backgroundColor: theme.accent }]} />
+                <Text style={styles.travelLine}>{line}</Text>
+              </View>
+            ))
           ) : (
             <Text style={[styles.summary, { color: colors.textSubtle, fontStyle: 'italic' }]}>
-              Tap the pencil to add a plan for this day.
+              Tap the pencil to add plan points.
             </Text>
           )}
         </View>
@@ -280,7 +290,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
             ))
           ) : (
             <Text style={[styles.summary, { color: colors.textSubtle, fontStyle: 'italic' }]}>
-              Tap the pencil to add travel notes.
+              Tap the pencil to add travel points.
             </Text>
           )}
         </View>
@@ -358,13 +368,14 @@ export function DayDetailScreen({ navigation, route }: Props) {
         </View>
       </Modal>
 
-      <DayInfoEditModal
+      <PointListEditModal
         visible={!!editingField}
         title={editingField === 'summary' ? 'Plan for the day' : 'Travel details'}
         initialValue={
-          editingField === 'summary' ? day.summary :
+          editingField === 'summary' ? (day.summary || '') :
           editingField === 'travelDetails' ? day.travelDetails : ''
         }
+        accent={theme.accent}
         onSave={async (val) => {
           if (!editingField) return;
           if (editingField === 'summary') {
@@ -380,29 +391,45 @@ export function DayDetailScreen({ navigation, route }: Props) {
   );
 }
 
-function DayInfoEditModal({
-  visible, title, initialValue, onSave, onCancel,
+function PointListEditModal({
+  visible, title, initialValue, accent, onSave, onCancel,
 }: {
   visible: boolean;
   title: string;
   initialValue: string;
+  accent: string;
   onSave: (v: string) => Promise<void>;
   onCancel: () => void;
 }) {
   const styles = useThemedStyles(makeStyles);
   const { colors } = useTheme();
-  const [value, setValue] = React.useState(initialValue);
+  // Local edit state — array of point strings. Keep empty trailing point as
+  // an "add slot" UX cue is overkill; we use an explicit "+ Add point" button.
+  const [points, setPoints] = React.useState<string[]>([]);
   const [busy, setBusy] = React.useState(false);
 
   React.useEffect(() => {
-    if (visible) setValue(initialValue);
+    if (visible) {
+      const seed = initialValue.split('\n').map((s) => s.trim()).filter(Boolean);
+      setPoints(seed.length ? seed : ['']);
+    }
   }, [visible, initialValue]);
 
+  const updatePoint = (i: number, val: string) => {
+    setPoints((arr) => arr.map((p, idx) => (idx === i ? val : p)));
+  };
+  const removePoint = (i: number) => {
+    setPoints((arr) => (arr.length > 1 ? arr.filter((_, idx) => idx !== i) : ['']));
+  };
+  const addPoint = () => {
+    setPoints((arr) => [...arr, '']);
+  };
   const submit = async () => {
     if (busy) return;
     setBusy(true);
     try {
-      await onSave(value);
+      const cleaned = points.map((p) => p.trim()).filter(Boolean);
+      await onSave(cleaned.join('\n'));
     } finally {
       setBusy(false);
     }
@@ -412,7 +439,7 @@ function DayInfoEditModal({
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onCancel}>
       <View style={[styles.modalBackdrop, { backgroundColor: colors.overlay }]}>
         <View style={[styles.modalSheet, { backgroundColor: colors.bg, height: undefined, maxHeight: '88%' }]}>
-          <ScrollView contentContainerStyle={{ padding: 18, paddingBottom: 30 }}>
+          <ScrollView contentContainerStyle={{ padding: 18, paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
             <View style={styles.editHeaderRow}>
               <Text style={styles.editTitle}>{title}</Text>
               <Pressable style={styles.editCloseBtn} onPress={onCancel}>
@@ -420,18 +447,32 @@ function DayInfoEditModal({
               </Pressable>
             </View>
             <Text style={styles.editHint}>
-              Use new lines for separate points. Travel-details bullets render
-              one per line.
+              Each point becomes one bullet. Empty points are dropped on save.
             </Text>
-            <TextInput
-              style={styles.editTextarea}
-              value={value}
-              onChangeText={setValue}
-              multiline
-              placeholder="Type here…"
-              placeholderTextColor={colors.placeholder}
-              autoFocus
-            />
+
+            {points.map((p, i) => (
+              <View key={i} style={styles.pointRow}>
+                <View style={[styles.pointBullet, { backgroundColor: accent }]} />
+                <TextInput
+                  style={styles.pointInput}
+                  value={p}
+                  onChangeText={(v) => updatePoint(i, v)}
+                  placeholder={`Point ${i + 1}`}
+                  placeholderTextColor={colors.placeholder}
+                  multiline
+                  autoFocus={i === points.length - 1 && p === ''}
+                />
+                <Pressable style={styles.pointDelBtn} onPress={() => removePoint(i)}>
+                  <Icon name="close" size={14} color={colors.textMuted} strokeWidth={2.2} />
+                </Pressable>
+              </View>
+            ))}
+
+            <Pressable style={[styles.addPointBtn, { borderColor: colors.border }]} onPress={addPoint}>
+              <Icon name="plus" size={14} color={colors.accent} strokeWidth={2.4} />
+              <Text style={[styles.addPointTxt, { color: colors.accent }]}>Add point</Text>
+            </Pressable>
+
             <View style={styles.editActions}>
               <Pressable style={[styles.editCancelBtn, { borderColor: colors.border }]} onPress={onCancel}>
                 <Text style={[styles.editCancelTxt, { color: colors.textMuted }]}>Cancel</Text>
@@ -667,4 +708,30 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     gap: 8 as any, paddingVertical: 13, borderRadius: 12,
   },
   editSaveTxt: { color: '#fff', fontSize: 15, fontWeight: '800' },
+
+  pointRow: {
+    flexDirection: 'row', alignItems: 'flex-start', gap: 10 as any,
+    marginTop: 8,
+  },
+  pointBullet: { width: 6, height: 6, borderRadius: 3, marginTop: 18 },
+  pointInput: {
+    flex: 1,
+    backgroundColor: c.cardBg, borderRadius: 10,
+    paddingHorizontal: 12, paddingVertical: 10,
+    fontSize: 14, color: c.text,
+    borderWidth: 1, borderColor: c.border,
+    minHeight: 42,
+  },
+  pointDelBtn: {
+    width: 32, height: 32, borderRadius: 16,
+    backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center',
+    marginTop: 4,
+  },
+  addPointBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 6 as any,
+    marginTop: 12, paddingVertical: 11, borderRadius: 10,
+    borderWidth: 1, borderStyle: 'dashed' as any,
+  },
+  addPointTxt: { fontSize: 13, fontWeight: '700' },
 });
