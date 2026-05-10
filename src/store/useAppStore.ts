@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Booking, Expense, SeedDay, SeedTrip, Trip, TripLink } from '../data/types';
 import { SEED_TRIP, SEED_DAYS } from '../data/seedTrip';
-import { DEFAULT_INR_PER_THB } from '../utils/fx';
+import { DEFAULT_INR_PER_THB, setActiveLocalCurrency } from '../utils/fx';
 import type { ThemePreference } from '../theme/colors';
 import * as api from '../api/client';
 
@@ -256,6 +256,10 @@ export async function bootstrapStore(): Promise<void> {
       fxInrPerThb: cached.fxInrPerThb || DEFAULT_INR_PER_THB,
       themePref: cached.themePref || 'auto',
     });
+    // Restore currency symbol from the cached active trip so the first
+    // paint doesn't briefly flash THB labels for non-Thailand trips.
+    const activeTrip = cached.trips?.find((t) => t.id === cached.activeTripId);
+    setActiveLocalCurrency(activeTrip?.localCurrency || cached.trip?.localCurrency || 'THB');
   }
   setState({ hydrated: true });
 
@@ -316,6 +320,9 @@ export async function syncFromServer(): Promise<void> {
       syncing: false,
       online: true,
     }));
+    // Tell the fx module which currency symbol to use in displays.
+    // Picks up IDR for Bali, VND for Vietnam, EUR for Greece, THB for Thailand.
+    setActiveLocalCurrency(activeTrip?.localCurrency || tripPatch.localCurrency || 'THB');
     await saveCache();
   } catch (e: any) {
     setState({
@@ -478,6 +485,10 @@ export const actions = {
 
   async setActiveTripId(id: string) {
     setState({ activeTripId: id });
+    // Update the currency symbol synchronously so labels switch instantly,
+    // before the server sync round-trip completes.
+    const t = state.trips.find((x) => x.id === id);
+    setActiveLocalCurrency(t?.localCurrency || 'THB');
     void saveCache();
     await syncFromServer();
   },
