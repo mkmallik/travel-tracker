@@ -38,14 +38,15 @@ function ItineraryStack() {
 
 function TabIcon({ name, focused, color }: { name: IconName; focused: boolean; color: string }) {
   // Active tab gets a translucent accent pill behind the icon — makes the
-  // selection state impossible to miss at a glance. Padding is tight to fit
-  // 7 tabs (Trips, Itinerary, Bookings, Log, Links, Blog, Summary).
+  // selection state impossible to miss at a glance. The pill is compact so
+  // the label below stays visible across all 7 tabs (Trips, Itinerary,
+  // Bookings, Log, Links, Blog, Summary).
   return (
     <View
       style={{
         paddingHorizontal: 8,
-        paddingVertical: 6,
-        borderRadius: 12,
+        paddingVertical: 4,
+        borderRadius: 10,
         backgroundColor: focused ? hexWithAlpha(color, 0.15) : 'transparent',
       }}
     >
@@ -83,16 +84,23 @@ function MainApp() {
           tabBarActiveTintColor: colors.accent,
           tabBarInactiveTintColor: colors.textMuted,
           tabBarStyle: {
-            paddingVertical: 6,
-            paddingBottom: 8,
             paddingTop: 6,
-            height: 64,
+            paddingBottom: 8,
+            // 7 tabs — needs taller bar so label has room under the icon
+            height: 72,
             backgroundColor: colors.bgElevated,
             borderTopColor: colors.border,
             borderTopWidth: 1,
           },
-          tabBarLabelStyle: { fontSize: 9.5, fontWeight: '700', marginTop: 2 },
-          tabBarIconStyle: { height: 32 },
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: '700',
+            marginTop: 4,
+            // Web/RNW honors `display: none` on hidden labels — make sure
+            // we keep them visible.
+            includeFontPadding: false as any,
+          },
+          tabBarIconStyle: { height: 28 },
         }}
       >
         <Tab.Screen

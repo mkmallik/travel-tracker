@@ -285,19 +285,28 @@ export async function syncFromServer(): Promise<void> {
     const listSnap = await api.fetchSnapshot();
     const trips = (listSnap.trips || []).map(serverToTrip);
 
+    // Per-trip total = expenses + bookings, matching the Summary screen's
+    // formula. Both lists carry trip_id and a currency (THB/INR); convert
+    // every row to INR using the trip's fx_rate.
+    const toInrForTrip = (amt: number, cur: string, tid: string): number => {
+      const t = trips.find((x) => x.id === tid);
+      const fx = t?.fxRate ?? 0;
+      return cur === 'INR' ? amt : (fx > 0 ? amt * fx : amt);
+    };
     const tripTotals: Record<string, number> = {};
     for (const e of listSnap.expenses || []) {
       const tid = (e as any).trip_id || '';
       if (!tid) continue;
       const amt = Number((e as any).amount) || 0;
       const cur = (e as any).currency || 'INR';
-      // Convert each expense to INR using the per-trip fx_rate. If we can't
-      // find one, assume INR (safe for the imported past trips where every
-      // expense is already pre-converted).
-      const t = trips.find((x) => x.id === tid);
-      const fx = t?.fxRate ?? 0;
-      const inr = cur === 'INR' ? amt : (fx > 0 ? amt * fx : amt);
-      tripTotals[tid] = (tripTotals[tid] || 0) + inr;
+      tripTotals[tid] = (tripTotals[tid] || 0) + toInrForTrip(amt, cur, tid);
+    }
+    for (const b of listSnap.bookings || []) {
+      const tid = (b as any).trip_id || '';
+      if (!tid) continue;
+      const amt = Number((b as any).amount) || 0;
+      const cur = (b as any).currency || 'INR';
+      tripTotals[tid] = (tripTotals[tid] || 0) + toInrForTrip(amt, cur, tid);
     }
 
     // Decide active trip: stored one if still valid, otherwise auto-pick

@@ -90,18 +90,21 @@ export function TripsTab() {
   };
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={{ paddingTop: insets.top + 14, paddingBottom: 110, paddingHorizontal: 18 }}
-    >
-      <Text style={styles.kicker}>YOUR TRAVELS</Text>
-      <Text style={styles.h1}>Trips</Text>
-      <Text style={styles.sub}>
-        {trips.length === 0
-          ? 'Create your first trip to get started.'
-          : `${trips.length} ${trips.length === 1 ? 'trip' : 'trips'} on file. Tap one to make it active.`}
-      </Text>
+    <View style={styles.scroll}>
+      {/* Sticky header — sits above the scrollable card list and never moves. */}
+      <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
+        <Text style={styles.kicker}>YOUR TRAVELS</Text>
+        <Text style={styles.h1}>Trips</Text>
+        <Text style={styles.sub}>
+          {trips.length === 0
+            ? 'Create your first trip to get started.'
+            : `${trips.length} ${trips.length === 1 ? 'trip' : 'trips'} on file. Tap one to make it active.`}
+        </Text>
+      </View>
 
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 14, paddingBottom: 110, paddingHorizontal: 18 }}
+      >
       {sorted.map((t) => {
         const isActive = t.id === activeTripId;
         const total = tripTotals?.[t.id] || 0;
@@ -174,6 +177,8 @@ export function TripsTab() {
         </LinearGradient>
       </Pressable>
 
+      </ScrollView>
+
       <Modal visible={creating} transparent animationType="slide" onRequestClose={() => setCreating(false)}>
         <View style={[styles.backdrop, { backgroundColor: colors.overlay }]}>
           <View style={[styles.sheet, { backgroundColor: colors.bgElevated }]}>
@@ -191,7 +196,7 @@ export function TripsTab() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -319,9 +324,16 @@ function NewTripForm({
 
 const makeStyles = (c: ThemeColors) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: c.bg },
+  header: {
+    paddingHorizontal: 18,
+    paddingBottom: 14,
+    backgroundColor: c.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: c.border,
+  },
   kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
   h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2 },
-  sub: { fontSize: 13, color: c.textMuted, marginTop: 4, marginBottom: 18, lineHeight: 19 },
+  sub: { fontSize: 13, color: c.textMuted, marginTop: 4, lineHeight: 19 },
 
   card: {
     borderRadius: 22, marginBottom: 16,
