@@ -17,7 +17,7 @@ import {
 } from '../utils/expenseHelpers';
 import { themeForCity } from '../data/theme';
 import type { SeedDay } from '../data/types';
-import { formatTHB } from '../utils/fx';
+import { formatTHB, formatINR } from '../utils/fx';
 import { useThemedStyles } from '../theme/styles';
 import type { ThemeColors } from '../theme/colors';
 import { TripSwitcher } from '../components/TripSwitcher';
@@ -230,12 +230,14 @@ function DayCard({ day, isToday, onPress }: { day: SeedDay; isToday?: boolean; o
         <View style={styles.cardFooterRow}>
           <View style={[styles.moneyPill, { backgroundColor: theme.light }]}>
             <Text style={[styles.moneyLabel, { color: theme.accent }]}>SPENT</Text>
-            <Text style={styles.moneyValueOnLight}>{formatTHB(spendThb)}</Text>
+            <Text style={styles.moneyValueOnLight}>{formatINR(spendThb * fxInrPerThb)}</Text>
+            <Text style={styles.moneyValueSecondary}>{formatTHB(spendThb)}</Text>
           </View>
           {budgetThb > 0 ? (
             <View style={styles.moneyPill}>
               <Text style={styles.moneyLabel}>BUDGET</Text>
-              <Text style={styles.moneyValue}>{formatTHB(budgetThb)}</Text>
+              <Text style={styles.moneyValue}>{formatINR(budgetThb * fxInrPerThb)}</Text>
+              <Text style={styles.moneyValueSecondary}>{formatTHB(budgetThb)}</Text>
             </View>
           ) : null}
           <View style={styles.arrowPill}>
@@ -316,6 +318,8 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   // Used on the accent-tinted SPENT pill — the pill background comes from
   // theme.light (always a pale tint), so text must stay dark in both modes.
   moneyValueOnLight: { fontSize: 13, color: '#0F172A', fontWeight: '700', marginTop: 1 },
+  // Reference value (THB) — small, lower contrast, on either pill background
+  moneyValueSecondary: { fontSize: 10, color: '#475569', fontWeight: '500', marginTop: 0 },
   arrowPill: {
     marginLeft: 'auto', width: 30, height: 30, borderRadius: 15,
     backgroundColor: c.cardBgAlt, alignItems: 'center', justifyContent: 'center',

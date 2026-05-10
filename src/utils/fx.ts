@@ -20,8 +20,11 @@ export function formatINR(n: number): string {
   return '₹' + Math.round(n).toLocaleString('en-IN');
 }
 
+// INR is the primary readout (home currency); THB is shown as a reference
+// secondary value. Swap order here and the whole app picks it up via
+// the <Money> component and other call sites.
 export function formatDual(amount: number, currency: Currency, inrPerThb: number): string {
   const thb = toThb(amount, currency, inrPerThb);
   const inr = toInr(amount, currency, inrPerThb);
-  return `${formatTHB(thb)} · ${formatINR(inr)}`;
+  return `${formatINR(inr)} · ${formatTHB(thb)}`;
 }

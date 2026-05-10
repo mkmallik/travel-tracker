@@ -218,8 +218,8 @@ export function SummaryScreen() {
         style={styles.totalCard}
       >
         <Text style={styles.totalLabel}>TOTAL SPENT</Text>
-        <Text style={styles.totalThb}>{formatTHB(totals.totalThb)}</Text>
-        <Text style={styles.totalInr}>{formatINR(totals.totalInr)}</Text>
+        <Text style={styles.totalPrimary}>{formatINR(totals.totalInr)}</Text>
+        <Text style={styles.totalSecondary}>{formatTHB(totals.totalThb)}</Text>
         <View style={styles.totalFooter}>
           <View style={styles.totalFoot}>
             <Text style={styles.totalFootLabel}>Entries</Text>
@@ -273,7 +273,7 @@ export function SummaryScreen() {
         <Text style={styles.sectionH}>By day</Text>
         {dayFilter !== 'All' ? (
           <Text style={styles.filterTotalTxt}>
-            {formatTHB(totals.byDayTotal)}
+            {formatINR(totals.byDayTotal * fxInrPerThb)} · {formatTHB(totals.byDayTotal)}
           </Text>
         ) : null}
       </View>
@@ -323,7 +323,10 @@ export function SummaryScreen() {
                     Day {d.dayNum} · {d.city}
                   </Text>
                 </View>
-                <Text style={styles.catAmt}>{formatTHB(d.thb)}</Text>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Text style={styles.catAmt}>{formatINR(d.thb * fxInrPerThb)}</Text>
+                  <Text style={styles.catAmtSecondary}>{formatTHB(d.thb)}</Text>
+                </View>
               </View>
               <View style={styles.bar}>
                 <LinearGradient
@@ -477,8 +480,9 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     shadowColor: '#7C3AED', shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 6,
   },
   totalLabel: { color: '#E0E7FF', fontSize: 11, fontWeight: '800', letterSpacing: 1.6 },
-  totalThb: { color: '#fff', fontSize: 44, fontWeight: '800', marginTop: 6, letterSpacing: -0.5 },
-  totalInr: { color: '#E0E7FF', fontSize: 20, fontWeight: '700', marginTop: 4 },
+  // Primary is INR (home currency, big), secondary is THB (reference, small).
+  totalPrimary: { color: '#fff', fontSize: 44, fontWeight: '800', marginTop: 6, letterSpacing: -0.5 },
+  totalSecondary: { color: '#E0E7FF', fontSize: 20, fontWeight: '700', marginTop: 4 },
   totalFooter: { flexDirection: 'row', marginTop: 20, gap: 18 as any },
   totalFoot: {},
   totalFootLabel: { color: '#C7D2FE', fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
@@ -513,7 +517,8 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   catHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 as any },
   catIcon: { fontSize: 16 },
   catName: { fontSize: 13, color: c.textMuted, fontWeight: '600' },
-  catAmt: { fontSize: 12, color: c.text, fontWeight: '700' },
+  catAmt: { fontSize: 13, color: c.text, fontWeight: '700' },
+  catAmtSecondary: { fontSize: 10, color: c.textSubtle, fontWeight: '600', marginTop: 1 },
   bar: { height: 8, backgroundColor: c.cardBgAlt, borderRadius: 4, overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 4 },
 
