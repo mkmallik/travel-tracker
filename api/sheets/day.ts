@@ -30,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Find the row. Col A = trip_id (string), col B = day_num. We match by
     // day_num within the active trip (the trip filter happens client-side
     // via state.activeTripId, so a single-trip lookup is sufficient here).
-    const rows = await readRange(`${SHEETS.itinerary}!A:T`);
+    const rows = await readRange(`${SHEETS.itinerary}!A:U`);
     let rowIdx = -1;
     const wantTripId = (body?.trip_id ?? '').toString();
     for (let i = 1; i < rows.length; i++) {

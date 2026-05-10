@@ -108,6 +108,7 @@ function serverToDay(s: any): SeedDay {
     travelDetails: s.travel_details,
     summary: s.summary,
     daySummary: s.day_summary || '',
+    blog: s.blog || '',
     budgeted: s.budgeted || { hotels: 0, flights: 0, ferry: 0, train: 0, others: 0 },
   };
 }
@@ -437,6 +438,7 @@ export const actions = {
       summary: string;
       travelDetails: string;
       daySummary: string;
+      blog: string;
       accommodationName: string;
       address: string;
       agent: string;
@@ -454,6 +456,7 @@ export const actions = {
       if (patch.summary !== undefined) updates.summary = patch.summary;
       if (patch.travelDetails !== undefined) updates.travel_details = patch.travelDetails;
       if (patch.daySummary !== undefined) updates.day_summary = patch.daySummary;
+      if (patch.blog !== undefined) updates.blog = patch.blog;
       if (patch.accommodationName !== undefined) updates.accommodation_name = patch.accommodationName;
       if (patch.address !== undefined) updates.address = patch.address;
       if (patch.agent !== undefined) updates.agent = patch.agent;

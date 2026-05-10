@@ -47,6 +47,7 @@ export type SeedDay = {
   dayNum: number;
   date: string;
   daySummary?: string;
+  blog?: string;
   stayCity: string;
   fromCity: string;
   toCity: string;

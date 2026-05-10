@@ -42,6 +42,7 @@ type DayRow = {
   travel_details: string;
   summary: string;
   day_summary?: string;
+  blog?: string;
   budgeted: {
     hotels: number; flights: number; ferry: number; train: number; others: number;
   };

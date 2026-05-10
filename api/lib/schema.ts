@@ -50,6 +50,7 @@ export const ITINERARY_COLS = [
   'train',
   'others',
   'day_summary',
+  'blog',
 ] as const;
 
 export const SETTING_COLS = ['key', 'value'] as const;
