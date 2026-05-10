@@ -47,7 +47,7 @@ export function DayDetailScreen({ navigation, route }: Props) {
     | null
   >(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
-  const [editingField, setEditingField] = useState<'summary' | 'travelDetails' | null>(null);
+  const [editingField, setEditingField] = useState<'summary' | 'travelDetails' | 'daySummary' | null>(null);
 
   if (!day) {
     return (
@@ -122,6 +122,26 @@ export function DayDetailScreen({ navigation, route }: Props) {
       </HeroImage>
 
       <View style={styles.body}>
+        {/* 0. Summary (post-trip recap) */}
+        <View style={styles.card}>
+          <View style={styles.editableSectionHeader}>
+            <SectionLabel icon="sparkles" color={colors.textSubtle}>Summary</SectionLabel>
+            <Pressable
+              style={styles.sectionEditBtn}
+              onPress={() => setEditingField('daySummary')}
+            >
+              <Icon name="edit" size={13} color={colors.textMuted} strokeWidth={2.1} />
+            </Pressable>
+          </View>
+          {day.daySummary ? (
+            <Text style={styles.summary}>{day.daySummary}</Text>
+          ) : (
+            <Text style={[styles.summary, { color: colors.textSubtle, fontStyle: 'italic' }]}>
+              Tap the pencil to add a recap of how the day went.
+            </Text>
+          )}
+        </View>
+
         {/* 1. Plan for the day */}
         <View style={styles.card}>
           <View style={styles.editableSectionHeader}>
@@ -374,18 +394,26 @@ export function DayDetailScreen({ navigation, route }: Props) {
 
       <PointListEditModal
         visible={!!editingField}
-        title={editingField === 'summary' ? 'Plan for the day' : 'Travel details'}
+        title={
+          editingField === 'summary' ? 'Plan for the day'
+          : editingField === 'travelDetails' ? 'Travel details'
+          : 'Summary'
+        }
         initialValue={
           editingField === 'summary' ? (day.summary || '') :
-          editingField === 'travelDetails' ? day.travelDetails : ''
+          editingField === 'travelDetails' ? day.travelDetails :
+          editingField === 'daySummary' ? (day.daySummary ?? '') : ''
         }
         accent={theme.accent}
+        prose={editingField === 'daySummary'}
         onSave={async (val) => {
           if (!editingField) return;
           if (editingField === 'summary') {
             await updateDayInfo(day.dayNum, { summary: val });
-          } else {
+          } else if (editingField === 'travelDetails') {
             await updateDayInfo(day.dayNum, { travelDetails: val });
+          } else if (editingField === 'daySummary') {
+            await updateDayInfo(day.dayNum, { daySummary: val });
           }
           setEditingField(null);
         }}
@@ -396,28 +424,31 @@ export function DayDetailScreen({ navigation, route }: Props) {
 }
 
 function PointListEditModal({
-  visible, title, initialValue, accent, onSave, onCancel,
+  visible, title, initialValue, accent, prose, onSave, onCancel,
 }: {
   visible: boolean;
   title: string;
   initialValue: string;
   accent: string;
+  prose?: boolean; // when true, render a single textarea (paragraph) instead of point list
   onSave: (v: string) => Promise<void>;
   onCancel: () => void;
 }) {
   const styles = useThemedStyles(makeStyles);
   const { colors } = useTheme();
-  // Local edit state — array of point strings. Keep empty trailing point as
-  // an "add slot" UX cue is overkill; we use an explicit "+ Add point" button.
   const [points, setPoints] = React.useState<string[]>([]);
+  const [proseValue, setProseValue] = React.useState<string>('');
   const [busy, setBusy] = React.useState(false);
 
   React.useEffect(() => {
-    if (visible) {
+    if (!visible) return;
+    if (prose) {
+      setProseValue(initialValue);
+    } else {
       const seed = initialValue.split('\n').map((s) => s.trim()).filter(Boolean);
       setPoints(seed.length ? seed : ['']);
     }
-  }, [visible, initialValue]);
+  }, [visible, initialValue, prose]);
 
   const updatePoint = (i: number, val: string) => {
     setPoints((arr) => arr.map((p, idx) => (idx === i ? val : p)));
@@ -432,8 +463,12 @@ function PointListEditModal({
     if (busy) return;
     setBusy(true);
     try {
-      const cleaned = points.map((p) => p.trim()).filter(Boolean);
-      await onSave(cleaned.join('\n'));
+      if (prose) {
+        await onSave(proseValue);
+      } else {
+        const cleaned = points.map((p) => p.trim()).filter(Boolean);
+        await onSave(cleaned.join('\n'));
+      }
     } finally {
       setBusy(false);
     }
@@ -451,31 +486,47 @@ function PointListEditModal({
               </Pressable>
             </View>
             <Text style={styles.editHint}>
-              Each point becomes one bullet. Empty points are dropped on save.
+              {prose
+                ? 'Free-form paragraph. Use line breaks for distinct beats.'
+                : 'Each point becomes one bullet. Empty points are dropped on save.'}
             </Text>
 
-            {points.map((p, i) => (
-              <View key={i} style={styles.pointRow}>
-                <View style={[styles.pointBullet, { backgroundColor: accent }]} />
-                <TextInput
-                  style={styles.pointInput}
-                  value={p}
-                  onChangeText={(v) => updatePoint(i, v)}
-                  placeholder={`Point ${i + 1}`}
-                  placeholderTextColor={colors.placeholder}
-                  multiline
-                  autoFocus={i === points.length - 1 && p === ''}
-                />
-                <Pressable style={styles.pointDelBtn} onPress={() => removePoint(i)}>
-                  <Icon name="close" size={14} color={colors.textMuted} strokeWidth={2.2} />
-                </Pressable>
-              </View>
-            ))}
+            {prose ? (
+              <TextInput
+                style={[styles.editTextarea, { minHeight: 200 }]}
+                value={proseValue}
+                onChangeText={setProseValue}
+                multiline
+                placeholder="A short recap of how the day went…"
+                placeholderTextColor={colors.placeholder}
+                autoFocus
+              />
+            ) : (
+              <>
+                {points.map((p, i) => (
+                  <View key={i} style={styles.pointRow}>
+                    <View style={[styles.pointBullet, { backgroundColor: accent }]} />
+                    <TextInput
+                      style={styles.pointInput}
+                      value={p}
+                      onChangeText={(v) => updatePoint(i, v)}
+                      placeholder={`Point ${i + 1}`}
+                      placeholderTextColor={colors.placeholder}
+                      multiline
+                      autoFocus={i === points.length - 1 && p === ''}
+                    />
+                    <Pressable style={styles.pointDelBtn} onPress={() => removePoint(i)}>
+                      <Icon name="close" size={14} color={colors.textMuted} strokeWidth={2.2} />
+                    </Pressable>
+                  </View>
+                ))}
 
-            <Pressable style={[styles.addPointBtn, { borderColor: colors.border }]} onPress={addPoint}>
-              <Icon name="plus" size={14} color={colors.accent} strokeWidth={2.4} />
-              <Text style={[styles.addPointTxt, { color: colors.accent }]}>Add point</Text>
-            </Pressable>
+                <Pressable style={[styles.addPointBtn, { borderColor: colors.border }]} onPress={addPoint}>
+                  <Icon name="plus" size={14} color={colors.accent} strokeWidth={2.4} />
+                  <Text style={[styles.addPointTxt, { color: colors.accent }]}>Add point</Text>
+                </Pressable>
+              </>
+            )}
 
             <View style={styles.editActions}>
               <Pressable style={[styles.editCancelBtn, { borderColor: colors.border }]} onPress={onCancel}>

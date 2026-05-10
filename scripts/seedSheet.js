@@ -69,6 +69,7 @@ const ITINERARY_HEADERS = [
   'trip_id', 'day_num', 'date', 'stay_city', 'from_city', 'to_city', 'image_url',
   'accommodation_name', 'address', 'location', 'agent', 'payment_status',
   'travel_details', 'summary', 'hotels', 'flights', 'ferry', 'train', 'others',
+  'day_summary',
 ];
 const EXPENSE_HEADERS = [
   'id', 'trip_id', 'date', 'day_num', 'category', 'amount', 'currency',
@@ -112,7 +113,7 @@ async function main() {
   // Ensure headers across all tabs
   console.log('→ Writing headers...');
   await setRange(sheets, 'trips!A1:K1', [TRIP_HEADERS]);
-  await setRange(sheets, 'itinerary!A1:S1', [ITINERARY_HEADERS]);
+  await setRange(sheets, 'itinerary!A1:T1', [ITINERARY_HEADERS]);
   await setRange(sheets, 'expenses!A1:K1', [EXPENSE_HEADERS]);
   await setRange(sheets, 'settings!A1:B1', [SETTING_HEADERS]);
   await setRange(sheets, 'bookings!A1:S1', [BOOKING_HEADERS]);
@@ -140,15 +141,16 @@ async function main() {
 
   // Clear + write itinerary rows (all scoped to the Thailand trip)
   console.log(`→ Uploading ${SEED_DAYS.length} itinerary rows...`);
-  await clearRange(sheets, 'itinerary!A2:S1000');
+  await clearRange(sheets, 'itinerary!A2:T1000');
   const itinRows = SEED_DAYS.map((d) => [
     THAILAND_TRIP_ID,
     d.dayNum, d.date, d.stayCity, d.fromCity, d.toCity, d.imageUrl,
     d.accommodationName, d.address, d.location, d.agent, d.paymentStatus,
     d.travelDetails, d.summary,
     d.budgeted.hotels, d.budgeted.flights, d.budgeted.ferry, d.budgeted.train, d.budgeted.others,
+    '', // day_summary — fill via inference script after the trip
   ]);
-  await setRange(sheets, `itinerary!A2:S${1 + itinRows.length}`, itinRows);
+  await setRange(sheets, `itinerary!A2:T${1 + itinRows.length}`, itinRows);
 
   // Backfill trip_id on existing expense + booking rows if they're missing it.
   // We assume any unlabeled legacy rows are Thailand rows (only trip that existed before this migration).

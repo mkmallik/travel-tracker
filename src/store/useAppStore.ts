@@ -107,6 +107,7 @@ function serverToDay(s: any): SeedDay {
     paymentStatus: s.payment_status,
     travelDetails: s.travel_details,
     summary: s.summary,
+    daySummary: s.day_summary || '',
     budgeted: s.budgeted || { hotels: 0, flights: 0, ferry: 0, train: 0, others: 0 },
   };
 }
@@ -428,27 +429,36 @@ export const actions = {
     void saveCache();
   },
 
-  // Patch the editable text fields of an itinerary day (summary / travel
-  // details). Optimistic local update; server call PATCHes the sheet row.
+  // Patch the editable text fields of an itinerary day. Optimistic local
+  // update; server call PATCHes the sheet row matching {trip_id, day_num}.
   async updateDayInfo(
     dayNum: number,
-    patch: Partial<{ summary: string; travelDetails: string; accommodationName: string; address: string; agent: string; paymentStatus: string }>
+    patch: Partial<{
+      summary: string;
+      travelDetails: string;
+      daySummary: string;
+      accommodationName: string;
+      address: string;
+      agent: string;
+      paymentStatus: string;
+    }>
   ) {
     const snapshot = state.days;
+    const tripId = state.activeTripId ?? undefined;
     setState((s) => ({
       days: s.days.map((d) => (d.dayNum === dayNum ? { ...d, ...patch } : d)),
     }));
     void saveCache();
     try {
-      // Map camelCase → snake_case for the server
       const updates: Record<string, string> = {};
       if (patch.summary !== undefined) updates.summary = patch.summary;
       if (patch.travelDetails !== undefined) updates.travel_details = patch.travelDetails;
+      if (patch.daySummary !== undefined) updates.day_summary = patch.daySummary;
       if (patch.accommodationName !== undefined) updates.accommodation_name = patch.accommodationName;
       if (patch.address !== undefined) updates.address = patch.address;
       if (patch.agent !== undefined) updates.agent = patch.agent;
       if (patch.paymentStatus !== undefined) updates.payment_status = patch.paymentStatus;
-      await api.updateDay(dayNum, updates as any);
+      await api.updateDay(dayNum, updates as any, tripId);
     } catch (e: any) {
       setState({ days: snapshot, syncError: e?.message ?? 'Update failed' });
     }

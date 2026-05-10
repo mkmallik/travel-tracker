@@ -61,7 +61,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const [tripRows, itinRows, expRows, settingsRows, bookingRows, linkRows] = await Promise.all([
       readRange(`${SHEETS.trips}!A:K`).catch(() => [] as string[][]),
-      readRange(`${SHEETS.itinerary}!A:S`),
+      readRange(`${SHEETS.itinerary}!A:T`),
       readRange(`${SHEETS.expenses}!A:K`),
       readRange(`${SHEETS.settings}!A:B`),
       readRange(`${SHEETS.bookings}!A:S`).catch(() => [] as string[][]),
@@ -82,6 +82,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       created_at: r.created_at ? parseInt(r.created_at, 10) || 0 : 0,
     })).filter((t) => !!t.id);
 
+    // The itinerary range was widened to A:T to include the new day_summary column
     const allItinerary = toRecords(itinRows, ITINERARY_COLS).map((r) => ({
       trip_id: r.trip_id || '',
       day_num: parseInt(r.day_num || '0', 10),
@@ -97,6 +98,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       payment_status: r.payment_status || '',
       travel_details: r.travel_details || '',
       summary: r.summary || '',
+      day_summary: r.day_summary || '',
       budgeted: {
         hotels: parseFloat(r.hotels || '0') || 0,
         flights: parseFloat(r.flights || '0') || 0,

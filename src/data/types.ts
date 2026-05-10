@@ -46,6 +46,7 @@ export type SeedDay = {
   tripId?: string;
   dayNum: number;
   date: string;
+  daySummary?: string;
   stayCity: string;
   fromCity: string;
   toCity: string;

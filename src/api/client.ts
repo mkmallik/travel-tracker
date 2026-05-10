@@ -41,6 +41,7 @@ type DayRow = {
   payment_status: string;
   travel_details: string;
   summary: string;
+  day_summary?: string;
   budgeted: {
     hotels: number; flights: number; ferry: number; train: number; others: number;
   };
@@ -187,10 +188,14 @@ export function deleteExpense(id: string): Promise<{ deleted: true }> {
   });
 }
 
-export function updateDay(day_num: number, updates: Partial<DayRow>): Promise<any> {
+export function updateDay(
+  day_num: number,
+  updates: Partial<DayRow>,
+  trip_id?: string
+): Promise<any> {
   return request('/api/sheets/day', {
     method: 'PATCH',
-    body: JSON.stringify({ day_num, updates }),
+    body: JSON.stringify({ day_num, trip_id, updates }),
   });
 }
 

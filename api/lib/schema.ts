@@ -49,6 +49,7 @@ export const ITINERARY_COLS = [
   'ferry',
   'train',
   'others',
+  'day_summary',
 ] as const;
 
 export const SETTING_COLS = ['key', 'value'] as const;

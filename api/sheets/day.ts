@@ -27,12 +27,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    // Find the row
-    const rows = await readRange(`${SHEETS.itinerary}!A:R`);
+    // Find the row. Col A = trip_id (string), col B = day_num. We match by
+    // day_num within the active trip (the trip filter happens client-side
+    // via state.activeTripId, so a single-trip lookup is sufficient here).
+    const rows = await readRange(`${SHEETS.itinerary}!A:T`);
     let rowIdx = -1;
+    const wantTripId = (body?.trip_id ?? '').toString();
     for (let i = 1; i < rows.length; i++) {
-      const n = parseInt((rows[i]?.[0] ?? '').toString(), 10);
-      if (n === dayNum) { rowIdx = i; break; }
+      const r = rows[i] ?? [];
+      const tripId = (r[0] ?? '').toString();
+      const n = parseInt((r[1] ?? '').toString(), 10);
+      if (n !== dayNum) continue;
+      if (wantTripId && tripId !== wantTripId) continue;
+      rowIdx = i;
+      break;
     }
     if (rowIdx < 0) {
       res.status(404).json({ error: 'day not found' });
@@ -43,6 +51,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const current = rows[rowIdx] ?? [];
     const updated = ITINERARY_COLS.map((col, i) => {
       if (col === 'day_num') return dayNum;
+      if (col === 'trip_id' && wantTripId) return wantTripId;
       if (col in (body?.updates ?? {}) && EDITABLE_FIELDS.has(col)) {
         return (body.updates[col] ?? '').toString();
       }
