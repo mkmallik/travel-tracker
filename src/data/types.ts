@@ -25,13 +25,17 @@ export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
   'Others',
 ];
 
+// Trip-level currency labels are intentionally widened to `string` so trips
+// can advertise any 3-letter ISO code (IDR, VND, EUR, JPY, ...). The narrow
+// Currency union (THB | INR) still drives expense-level math; trip labels
+// only feed the display symbol via setActiveLocalCurrency.
 export type SeedTrip = {
   id: string;
   title: string;
   startDate: string;
   endDate: string;
-  homeCurrency: Currency;
-  localCurrency: Currency;
+  homeCurrency: string;
+  localCurrency: string;
 };
 
 export type BudgetedCosts = {
@@ -81,8 +85,10 @@ export type Trip = {
   title: string;
   startDate: string; // YYYY-MM-DD
   endDate: string;   // YYYY-MM-DD
-  homeCurrency: Currency;
-  localCurrency: Currency;
+  // 3-letter ISO codes — wider than the THB|INR Currency type because trips
+  // can be anywhere (IDR, VND, EUR, JPY, ...).
+  homeCurrency: string;
+  localCurrency: string;
   fxRate: number;
   coverImageUrl: string;
   status: TripStatus;

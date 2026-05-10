@@ -45,6 +45,7 @@ import {
   Download,
   Upload,
   BookOpen,
+  Globe2,
   type LucideProps,
 } from 'lucide-react-native';
 import { useTheme } from '../theme/useTheme';
@@ -88,7 +89,8 @@ export type IconName =
   | 'filter'
   | 'download'
   | 'upload'
-  | 'book';
+  | 'book'
+  | 'globe';
 
 const MAP: Record<IconName, React.ComponentType<LucideProps>> = {
   flight: Plane,
@@ -130,6 +132,7 @@ const MAP: Record<IconName, React.ComponentType<LucideProps>> = {
   download: Download,
   upload: Upload,
   book: BookOpen,
+  globe: Globe2,
 };
 
 type Props = Omit<LucideProps, 'ref'> & {

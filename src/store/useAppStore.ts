@@ -14,6 +14,10 @@ type State = {
   expenses: Expense[];
   bookings: Booking[];
   links: TripLink[];
+  // Per-trip totals so the Trips overview can render spend without
+  // having to load every trip's expenses one by one. Computed once on
+  // each unfiltered server sync. Values are home-currency (INR) totals.
+  tripTotals: Record<string, number>;
   fxInrPerThb: number;
   themePref: ThemePreference;
   hydrated: boolean;
@@ -31,6 +35,7 @@ type CachePayload = {
   expenses: Expense[];
   bookings: Booking[];
   links: TripLink[];
+  tripTotals: Record<string, number>;
   fxInrPerThb: number;
   themePref: ThemePreference;
 };
@@ -45,6 +50,7 @@ let state: State = {
   expenses: [],
   bookings: [],
   links: [],
+  tripTotals: {},
   fxInrPerThb: DEFAULT_INR_PER_THB,
   themePref: 'auto',
   hydrated: false,
@@ -72,6 +78,7 @@ async function saveCache() {
     expenses: state.expenses,
     bookings: state.bookings,
     links: state.links,
+    tripTotals: state.tripTotals,
     fxInrPerThb: state.fxInrPerThb,
     themePref: state.themePref,
   };
@@ -253,6 +260,7 @@ export async function bootstrapStore(): Promise<void> {
       expenses: cached.expenses || [],
       bookings: cached.bookings || [],
       links: cached.links || [],
+      tripTotals: cached.tripTotals || {},
       fxInrPerThb: cached.fxInrPerThb || DEFAULT_INR_PER_THB,
       themePref: cached.themePref || 'auto',
     });
@@ -271,9 +279,26 @@ export async function syncFromServer(): Promise<void> {
   if (!(await api.isLoggedIn())) return;
   setState({ syncing: true, syncError: null });
   try {
-    // First pass: fetch trips (no filter) so we know which ones exist
+    // First pass: fetch trips (no filter) so we know which ones exist.
+    // The unfiltered snapshot also gives us every trip's expenses, which we
+    // aggregate into per-trip INR totals for the Trips overview screen.
     const listSnap = await api.fetchSnapshot();
     const trips = (listSnap.trips || []).map(serverToTrip);
+
+    const tripTotals: Record<string, number> = {};
+    for (const e of listSnap.expenses || []) {
+      const tid = (e as any).trip_id || '';
+      if (!tid) continue;
+      const amt = Number((e as any).amount) || 0;
+      const cur = (e as any).currency || 'INR';
+      // Convert each expense to INR using the per-trip fx_rate. If we can't
+      // find one, assume INR (safe for the imported past trips where every
+      // expense is already pre-converted).
+      const t = trips.find((x) => x.id === tid);
+      const fx = t?.fxRate ?? 0;
+      const inr = cur === 'INR' ? amt : (fx > 0 ? amt * fx : amt);
+      tripTotals[tid] = (tripTotals[tid] || 0) + inr;
+    }
 
     // Decide active trip: stored one if still valid, otherwise auto-pick
     const today = todayIsoStr();
@@ -315,6 +340,7 @@ export async function syncFromServer(): Promise<void> {
       expenses,
       bookings,
       links,
+      tripTotals,
       fxInrPerThb,
       lastSyncedAt: Date.now(),
       syncing: false,

@@ -16,6 +16,7 @@ import { LoginScreen } from './src/screens/LoginScreen';
 import { BookingsScreen } from './src/screens/Bookings';
 import { LinksTab } from './src/screens/LinksTab';
 import { BlogTab } from './src/screens/BlogTab';
+import { TripsTab } from './src/screens/TripsTab';
 import { bootstrapStore, useAppStore } from './src/store/useAppStore';
 import { isLoggedIn } from './src/api/client';
 import { useTheme } from './src/theme/useTheme';
@@ -37,18 +38,18 @@ function ItineraryStack() {
 
 function TabIcon({ name, focused, color }: { name: IconName; focused: boolean; color: string }) {
   // Active tab gets a translucent accent pill behind the icon — makes the
-  // selection state impossible to miss at a glance. Padding is a bit tighter
-  // now that we're carrying 6 tabs (Itinerary, Bookings, Log, Links, Blog, Summary).
+  // selection state impossible to miss at a glance. Padding is tight to fit
+  // 7 tabs (Trips, Itinerary, Bookings, Log, Links, Blog, Summary).
   return (
     <View
       style={{
-        paddingHorizontal: 10,
+        paddingHorizontal: 8,
         paddingVertical: 6,
         borderRadius: 12,
         backgroundColor: focused ? hexWithAlpha(color, 0.15) : 'transparent',
       }}
     >
-      <Icon name={name} size={21} color={color} strokeWidth={focused ? 2.5 : 2} />
+      <Icon name={name} size={20} color={color} strokeWidth={focused ? 2.5 : 2} />
     </View>
   );
 }
@@ -90,10 +91,17 @@ function MainApp() {
             borderTopColor: colors.border,
             borderTopWidth: 1,
           },
-          tabBarLabelStyle: { fontSize: 10.5, fontWeight: '700', marginTop: 2 },
-          tabBarIconStyle: { height: 34 },
+          tabBarLabelStyle: { fontSize: 9.5, fontWeight: '700', marginTop: 2 },
+          tabBarIconStyle: { height: 32 },
         }}
       >
+        <Tab.Screen
+          name="Trips"
+          component={TripsTab}
+          options={{
+            tabBarIcon: ({ focused, color }) => <TabIcon name="globe" focused={focused} color={color} />,
+          }}
+        />
         <Tab.Screen
           name="Itinerary"
           component={ItineraryStack}
