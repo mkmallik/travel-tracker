@@ -35,13 +35,13 @@ const IMAGE_BY_DAY = {
   4:  `https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b${QS}`, // Ao Nang / Krabi longtails
   5:  `https://images.unsplash.com/photo-1528127269322-539801943592${QS}`, // 4 Islands — longtail + cliffs
   6:  `https://images.unsplash.com/photo-1530948990335-1eb93cbe6430${QS}`, // Koh Samui beach (1st Samui day)
-  7:  `https://images.unsplash.com/photo-1502602898657-3e91760cbb34${QS}`, // Emerald lagoon / island (Ang Thong)
+  7:  `https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb${QS}`, // Ang Thong Marine Park — limestone islands
   8:  `https://images.unsplash.com/photo-1551918120-9739cb430c6d${QS}`, // resort pool — lazy day
   9:  `https://images.unsplash.com/photo-1508009603885-50cf7c579365${QS}`, // Bangkok skyscrapers (Skywalk vibe)
   10: `https://images.unsplash.com/photo-1563492065599-3520f775eeed${QS}`, // Grand Palace gold
   11: `https://images.unsplash.com/photo-1525874684015-58379d421a52${QS}`, // busy Bangkok shopping street
-  12: `https://images.unsplash.com/photo-1567337710282-00832b415979${QS}`, // Bangkok markets / urban shopping
-  13: `https://images.unsplash.com/photo-1436491865332-7a61a109cc05${QS}`, // clouds — going home
+  12: `https://images.unsplash.com/photo-1577720580479-7d839d829c73${QS}`, // Bangkok skyscrapers
+  13: `https://images.unsplash.com/photo-1567337710282-00832b415979${QS}`, // Bangkok busy streets
 };
 
 async function main() {
