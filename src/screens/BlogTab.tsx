@@ -41,14 +41,20 @@ function formatDate(raw: string): string {
   return raw;
 }
 
+type BlogView = 'byDay' | 'full';
+
 export function BlogTab() {
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
   const { colors } = useTheme();
-  const { days, updateDayInfo } = useAppStore();
+  const { days, updateDayInfo, trip } = useAppStore();
   const [editing, setEditing] = useState<SeedDay | null>(null);
+  const [view, setView] = useState<BlogView>('byDay');
 
   const sorted = useMemo(() => [...days].sort((a, b) => a.dayNum - b.dayNum), [days]);
+  // For the full-trip view: only days that actually have an entry. Stops the
+  // empty days from leaving awkward gaps in the long-form read.
+  const withBlog = useMemo(() => sorted.filter((d) => !!(d.blog && d.blog.trim())), [sorted]);
 
   return (
     <ScrollView
@@ -58,8 +64,26 @@ export function BlogTab() {
       <Text style={styles.kicker}>TRIP BLOG</Text>
       <Text style={styles.h1}>The journal</Text>
       <Text style={styles.sub}>
-        A day-by-day record of the trip. Tap any day's pencil to edit the entry.
+        {view === 'byDay'
+          ? "A day-by-day record. Tap any day's pencil to edit."
+          : 'The whole trip, top to tail. Switch back to By day to edit individual entries.'}
       </Text>
+
+      {/* Pill toggle: By day | Full trip */}
+      <View style={styles.toggleRow}>
+        <Pressable
+          onPress={() => setView('byDay')}
+          style={[styles.togglePill, view === 'byDay' && styles.togglePillActive]}
+        >
+          <Text style={[styles.togglePillTxt, view === 'byDay' && styles.togglePillTxtActive]}>By day</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setView('full')}
+          style={[styles.togglePill, view === 'full' && styles.togglePillActive]}
+        >
+          <Text style={[styles.togglePillTxt, view === 'full' && styles.togglePillTxtActive]}>Full trip</Text>
+        </Pressable>
+      </View>
 
       {sorted.length === 0 ? (
         <View style={styles.emptyCard}>
@@ -69,7 +93,7 @@ export function BlogTab() {
             Once your itinerary loads, each day will appear here as its own blog entry.
           </Text>
         </View>
-      ) : (
+      ) : view === 'byDay' ? (
         sorted.map((d) => {
           const theme = themeForCity(d.stayCity);
           return (
@@ -107,6 +131,38 @@ export function BlogTab() {
             </View>
           );
         })
+      ) : (
+        // Full-trip mode: a single long-form read. Each day gets a small
+        // inline header (date + city) and its paragraphs flow underneath
+        // — no card chrome, no edit button. Cleaner for reading.
+        <View style={styles.fullCard}>
+          {trip?.title ? <Text style={styles.fullTitle}>{trip.title}</Text> : null}
+          {withBlog.length === 0 ? (
+            <Text style={[styles.para, styles.placeholder]}>
+              No entries yet. Switch to By day and start writing.
+            </Text>
+          ) : (
+            withBlog.map((d, idx) => {
+              const theme = themeForCity(d.stayCity);
+              return (
+                <View key={d.dayNum} style={[styles.fullDay, idx === 0 && { marginTop: 0 }]}>
+                  <View style={styles.fullDayHeader}>
+                    <View style={[styles.fullDayDot, { backgroundColor: theme.accent }]} />
+                    <Text style={styles.fullDayKicker}>
+                      DAY {d.dayNum} · {d.stayCity || '—'}
+                    </Text>
+                    <Text style={styles.fullDayDate}>{formatDate(d.date)}</Text>
+                  </View>
+                  {d.blog!.split(/\n\n+/).map((para, i) => (
+                    <Text key={i} style={[styles.para, i > 0 && { marginTop: 10 }]}>
+                      {para.trim()}
+                    </Text>
+                  ))}
+                </View>
+              );
+            })
+          )}
+        </View>
       )}
 
       <Modal
@@ -201,6 +257,31 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
   h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2 },
   sub: { fontSize: 13, color: c.textMuted, marginTop: 4, marginBottom: 18, lineHeight: 19 },
+
+  toggleRow: {
+    flexDirection: 'row', gap: 8 as any, marginBottom: 16,
+    backgroundColor: c.cardBgAlt, borderRadius: 14, padding: 4,
+  },
+  togglePill: {
+    flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center',
+  },
+  togglePillActive: { backgroundColor: c.cardBg, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4, shadowOffset: { width: 0, height: 1 } },
+  togglePillTxt: { fontSize: 13, fontWeight: '700', color: c.textMuted },
+  togglePillTxtActive: { color: c.text },
+
+  fullCard: {
+    backgroundColor: c.cardBg, borderRadius: 18, padding: 22,
+    borderWidth: 1, borderColor: c.border,
+  },
+  fullTitle: { fontSize: 20, fontWeight: '800', color: c.text, marginBottom: 8 },
+  fullDay: { marginTop: 22 },
+  fullDayHeader: {
+    flexDirection: 'row', alignItems: 'center', gap: 8 as any,
+    marginBottom: 10, flexWrap: 'wrap',
+  },
+  fullDayDot: { width: 8, height: 8, borderRadius: 4 },
+  fullDayKicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.4 },
+  fullDayDate: { fontSize: 11, fontWeight: '700', color: c.textMuted, marginLeft: 'auto' as any },
 
   emptyCard: {
     backgroundColor: c.cardBg, borderRadius: 18, padding: 28, alignItems: 'center',

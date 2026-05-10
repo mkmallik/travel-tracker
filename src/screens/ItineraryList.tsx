@@ -225,7 +225,9 @@ function DayCard({ day, isToday, onPress }: { day: SeedDay; isToday?: boolean; o
 
       <View style={styles.cardFooter}>
         <Text numberOfLines={2} style={styles.cardSummary}>
-          {day.summary || day.accommodationName || 'Plan TBD'}
+          {/* Prefer the post-trip narrative recap (day_summary) over the bulleted Plan
+              for the day-card blurb. Falls back gracefully if neither is filled in. */}
+          {day.daySummary || day.summary || day.accommodationName || 'Plan TBD'}
         </Text>
         <View style={styles.cardFooterRow}>
           <View style={[styles.moneyPill, { backgroundColor: theme.light }]}>
