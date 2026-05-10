@@ -49,7 +49,7 @@ const DAY = {
       'Local Grab works for short hops within Patong/Kata',
     ],
     summary:
-      'Travel day — Bengaluru to Phuket. Flew Akasa Air QP 623 (₹44,969 booking) landing 15:05. Settled at Kata Hill Sea View (₹14,723 / 3 nights). Picked up a Sim card (฿500), grabbed McDonald\'s dinner at Patong (₹1,271), and ended with a Bangla Rd / beach walk. Cabs ate ₹4,887 today (airport→hotel + 2 evening Grab rides). Total day-1 ground spend ₹9,106.',
+      'Travel day — Bengaluru to Phuket. Akasa Air landed mid-afternoon. Settled at Kata Hill Sea View, picked up a SIM card, did a Bangla Rd / beach walk, and grabbed McDonald\'s in Patong for the easy first dinner.',
   },
   2: {
     plan: [
@@ -65,7 +65,7 @@ const DAY = {
       'Tour booked via Klook — voucher in Links tab',
     ],
     summary:
-      'Headline Phuket day — Phi Phi & Maya Bay speedboat tour (₹12,198 booked via Klook). Park fee ฿1,200 + activity ฿400 + tip ฿40 paid in cash. Lunch on the boat; ฿690 spent on dishes/drinks/water at the islands. Picked up a photo frame (฿200) and a small souvenir (฿500). Back at hotel by evening, total ground spend ₹8,817.',
+      'Headline Phuket day — Phi Phi & Maya Bay speedboat tour booked via Klook. Park fee paid in cash on arrival. Lunch on the boat. Picked up a photo frame and a small souvenir at one of the island stops; back at the hotel by evening, sun-tired in the best way.',
   },
   3: {
     plan: [
@@ -81,7 +81,7 @@ const DAY = {
       'Grab works for hotel → Old Town and back',
     ],
     summary:
-      'Phuket sightseeing on Grab — Kata Hill → Old Town (₹806) → temple (₹606) → Kata Beach (₹616). Lunch ฿720 (4 dishes + 2 drinks), 7-Eleven snacks ₹621, and pad thai dinner with a cold coffee ฿508. Light shopping: pearl wristband, tiger balm, dress, gift items (~฿800 combined). Recliner on the beach ฿100. Day total ₹10,131.',
+      'Phuket sightseeing on Grab — Old Town in the morning (Sino-Portuguese shophouses, café-hopping, easy 4-dish lunch), temple visit, then Kata Beach for the late afternoon. Pad thai with a cold coffee for dinner. Picked up the small things: pearl wristband, tiger balm, a dress, a few gift items.',
   },
   4: {
     plan: [
@@ -98,7 +98,7 @@ const DAY = {
       'Krabi Ao Nang taxi to Kokotel ~5 min walk from drop-off',
     ],
     summary:
-      'Travel day — Phuket → Krabi (Ao Nang). Booked transfer ₹6,793 (van + ferry). Checked into Kokotel Krabi Ao Nang (₹11,223 / 2 nights, room: 22 m², 1 double + 1 single). Settled in, swimsuit shopping for Dola (₹1,697), beach time, a massage ฿900, and ฿1,000 dinner. 7-Eleven runs (₹740 + ₹767) for snacks/water. Heavy day ₹13,304.',
+      'Travel day — Phuket → Krabi (Ao Nang). Combo van + ferry transfer in the morning, into Kokotel Krabi Ao Nang for two nights. Afternoon: swimsuit shopping for Dola, beach time, a massage to flatten out the morning of travel, and a relaxed dinner.',
   },
   5: {
     plan: [
@@ -114,7 +114,7 @@ const DAY = {
       'Hat / sunscreen / dry bag essential',
     ],
     summary:
-      'Krabi headline day — 4 Islands speedboat tour via Klook (₹9,595). Calm spend on the ground: ฿420 lunch (3 dishes), ฿440 ice cream, ฿290 drinks, plus 7-Eleven run ₹799. Light day, ₹4,146 ground spend.',
+      'Krabi headline day — 4 Islands speedboat tour via Klook. Phra Nang Cave, Poda, Chicken Island, Tup Island sandbar, Railay to finish. Calm afternoon back at the hotel; legs full of salt water, camera roll full.',
   },
   6: {
     plan: [
@@ -130,7 +130,7 @@ const DAY = {
       'Cinnamon Beach Villas — confirm 14:00 check-in or stash bags at the front desk',
     ],
     summary:
-      'Pure travel day — Krabi to Koh Samui via the Lomprayah-style combo (₹8,730). Checked into Cinnamon Beach Villas (₹22,462 / 3 nights). No ground spend logged today; all eating in-resort and crashed early.',
+      'Pure travel day — Krabi to Koh Samui via the Lomprayah-style combo (van + catamaran + van). Checked into Cinnamon Beach Villas for the next three nights. Ate in-resort and crashed early.',
   },
   7: {
     plan: [
@@ -146,7 +146,7 @@ const DAY = {
       'Carry water shoes for the rocky beaches (we bought ฿200 set today)',
     ],
     summary:
-      'Headline Samui day — Ang Thong Marine Park speedboat (₹16,413). Picked up water shoes ฿200 on the way. Activity entry/photo fee ฿900 + drinks ฿170. Easy ₹3,696 ground spend; everything else covered by the package.',
+      'Headline Samui day — Ang Thong Marine Park speedboat. 42 islands, the Emerald Lagoon (sweaty staircase up to the crater), kayaking the hidden mangrove, viewpoint hike at lunch. Picked up water shoes on the way out — the rocky beaches make them mandatory.',
   },
   8: {
     plan: [
@@ -162,7 +162,7 @@ const DAY = {
       'Big Buddha temple dress code: shoulders/knees covered',
     ],
     summary:
-      'Lazy Samui day — eating-heavy, no big tour. Three meals back-to-back: lunch ₹1,442, dinner ₹1,702 + a 3-day catch-up tab from Cinnamon (₹8,257), plus ₹200 minibar beer. Day total ₹11,601, all food. Beach time + minibar — perfect mid-trip reset.',
+      'Lazy Samui day on purpose — no tour, no early alarm, no pier. Three meals back-to-back, pool, beach, minibar. The mid-trip reset day every long trip needs.',
   },
   9: {
     plan: [
@@ -180,7 +180,7 @@ const DAY = {
       'DMK → Cassia Rama 9: Grab ~₹1,400, 45–60 min through Bangkok traffic',
     ],
     summary:
-      'Long travel day — Samui → Bangkok. Transfer combo to Surat Thani (₹7,682), AirAsia to Don Mueang (₹20,525). Airport meals ฿132 + ₹528. Cab from DMK to Cassia Rama 9 ₹1,415. Checked into Cassia (₹22,803 / 4 nights). Dinner + water ₹1,538 near hotel and crashed. ₹3,865 in ground spend.',
+      'Long travel day — Samui → Bangkok. Transfer combo to Surat Thani Airport, AirAsia to Don Mueang, Grab across Bangkok traffic to Cassia Rama 9 (the home for the last four nights). Light dinner near the hotel and crashed.',
   },
   10: {
     plan: [
@@ -198,7 +198,7 @@ const DAY = {
       'Cruise pickup at Asiatique pier — arrive 30 min early',
     ],
     summary:
-      'Bangkok temples + cruise. Grand Palace, Wat Pho, Wat Arun in the morning. Lots of Grab today: hostel→Grand Palace ₹447, ₹1,299 multi-leg (Nextopia → Asiatique + Grand Palace → Nextopia), Asiatique→MBK ₹361, MBK→hotel ฿300. Watch for Dola (₹2,694) + makeup material (₹1,059). Evening Chao Phraya Princess Dinner Cruise (₹7,437) at Asiatique. Day ₹9,908.',
+      'Bangkok temples + cruise. Grand Palace at 08:30 sharp, Wat Pho with the Reclining Buddha, the cross-river ferry to Wat Arun. Picked up a watch for Dola and some makeup material along the way. Evening Chao Phraya Princess dinner cruise out of Asiatique — illuminated temples sliding past the boat.',
   },
   11: {
     plan: [
@@ -214,7 +214,7 @@ const DAY = {
       'ICONSIAM is one ferry stop from Sathorn',
     ],
     summary:
-      'Bangkok day 2 — culture + height. Grand Palace tour (₹4,628). Skywalk + Skyverse with the meal coupon (₹10,767). Sky deck photograph ₹892. Cab heavy: hotel → Grand Palace ₹859, Khon → Skywalk ฿180, Skywalk → ICONSIAM ₹452, ICONSIAM → hotel ₹1,028. Dinner + breakfast ฿444 + ฿80 candies + ฿100 fruit box. ₹5,571 ground.',
+      'Bangkok day 2 — culture + height. Grand Palace tour with the Khon Masked Dance in the afternoon. Up the King Power MahaNakhon for the Skywalk + Skyverse package (the famous glass tray hanging off the side, 78 floors above the city). Sky-deck photograph as the souvenir of the moment. Cab-heavy day — the kind that bills the calves.',
   },
   12: {
     plan: [
@@ -232,7 +232,7 @@ const DAY = {
       'Confirm 04:30 Grab to Suvarnabhumi tonight',
     ],
     summary:
-      'Heaviest spend day — Bangkok shopping spree. Pratu Nam Market: clothes ₹1,660 + ฿970, money bag ฿200, souvenirs ฿340, suitcase battery+chocolates+fan ฿1,070, watch ₹1,240, battery bank ₹1,440. Plus juices ₹140 × 2, lunch ₹1,185, ฿1,240 nail art, and ₹1,881 final dinner. Cabs ₹536 (hostel→market) + ₹705 (back). Big day ₹20,043. Bags packed; 04:00 wake-up tomorrow.',
+      'Bangkok shopping day — Pratu Nam Market in the morning, street markets through the afternoon. Clothes, watches, an extra suitcase to take everything home in, a battery bank, nail art for Dola. Final blowout dinner in the evening, bags packed, 04:00 alarm set.',
   },
   13: {
     plan: [
@@ -248,7 +248,7 @@ const DAY = {
       'Carry passport + boarding pass printout; keep ₹500 for BLR airport taxi',
     ],
     summary:
-      'Going home. IndiGo 6E 1056 BKK → BLR (₹44,707). Hotel → Suvarnabhumi cab ₹1,289, BLR → home ₹1,349. Picked up one last souvenir at the airport ₹442. ₹3,080 spent today, end of trip.',
+      'Going home. 04:00 wake, 04:30 Grab to Suvarnabhumi, IndiGo 6E 1056 BKK → BLR landed at 10:15 local. One last airport souvenir, cab home, end of trip.',
   },
 };
 

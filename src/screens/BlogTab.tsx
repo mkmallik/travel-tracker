@@ -24,12 +24,21 @@ import type { ThemeColors } from '../theme/colors';
 import type { SeedDay } from '../data/types';
 import { themeForCity } from '../data/theme';
 
-function formatDate(iso: string): string {
-  if (!iso) return '';
-  try {
-    const d = new Date(iso + 'T00:00:00');
-    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  } catch { return iso; }
+// The sheet stores dates as either ISO ("2026-04-27") or pre-formatted
+// human strings ("Mon, Apr 27, 2026"). Display whatever's there cleanly,
+// never "Invalid Date".
+function formatDate(raw: string): string {
+  if (!raw) return '';
+  // If it's ISO, parse safely (no UTC drift) and format short.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    const [y, m, d] = raw.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    if (!isNaN(dt.getTime())) {
+      return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+  }
+  // Otherwise the sheet already gave us a human-readable string — show it.
+  return raw;
 }
 
 export function BlogTab() {
