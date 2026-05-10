@@ -5,6 +5,7 @@ export type ExpenseCategory =
   | 'Hotels'
   | 'Ferry'
   | 'Train'
+  | 'Transfers'
   | 'Cabs'
   | 'Food'
   | 'Shopping'
@@ -16,6 +17,7 @@ export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
   'Hotels',
   'Ferry',
   'Train',
+  'Transfers',
   'Cabs',
   'Food',
   'Shopping',
@@ -148,7 +150,7 @@ export const CATEGORY_FOR_BOOKING_TYPE: Record<BookingType, ExpenseCategory> = {
   hotel: 'Hotels',
   flight: 'Flights',
   activity: 'Activities',
-  transfer: 'Cabs',
+  transfer: 'Transfers',
 };
 
 export type TripLink = {

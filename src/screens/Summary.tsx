@@ -54,6 +54,7 @@ export function SummaryScreen() {
   const [fxOpen, setFxOpen] = useState(false);
   const [fxInput, setFxInput] = useState(String(fxInrPerThb));
   const [busy, setBusy] = useState(false);
+  const [dayFilter, setDayFilter] = useState<ExpenseCategory | 'All'>('All');
 
   const stamp = () => new Date().toISOString().slice(0, 10);
 
@@ -164,16 +165,19 @@ export function SummaryScreen() {
     const byDay = days.map((d) => {
       const dayExpThb = expenses
         .filter((e) => e.dayNum === d.dayNum)
+        .filter((e) => dayFilter === 'All' || e.category === dayFilter)
         .reduce((s, e) => s + toThb(e.amount, e.currency, fxInrPerThb), 0);
       const dayBookingThb = bookings
         .filter((b) => findDayNumForIso(costIsoForBooking(b), days) === d.dayNum)
+        .filter((b) => dayFilter === 'All' || CATEGORY_FOR_BOOKING_TYPE[b.type] === dayFilter)
         .reduce((s, b) => s + toThb(b.amount, b.currency, fxInrPerThb), 0);
       return { dayNum: d.dayNum, city: d.stayCity, thb: dayExpThb + dayBookingThb };
     });
     const maxDay = Math.max(1, ...byDay.map((d) => d.thb));
+    const byDayTotal = byDay.reduce((s, d) => s + d.thb, 0);
 
-    return { totalThb, totalInr, byCategory, maxCat, byDay, maxDay, entriesCount: expenses.length + bookings.length };
-  }, [expenses, bookings, days, fxInrPerThb]);
+    return { totalThb, totalInr, byCategory, maxCat, byDay, maxDay, byDayTotal, entriesCount: expenses.length + bookings.length };
+  }, [expenses, bookings, days, fxInrPerThb, dayFilter]);
 
   const saveFx = () => {
     const n = parseFloat(fxInput);
@@ -265,7 +269,47 @@ export function SummaryScreen() {
         })}
       </View>
 
-      <Text style={styles.sectionH}>By day</Text>
+      <View style={styles.byDayHeaderRow}>
+        <Text style={styles.sectionH}>By day</Text>
+        {dayFilter !== 'All' ? (
+          <Text style={styles.filterTotalTxt}>
+            {formatTHB(totals.byDayTotal)}
+          </Text>
+        ) : null}
+      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.filterScroll}
+        contentContainerStyle={styles.filterStrip}
+      >
+        {(['All', ...EXPENSE_CATEGORIES] as Array<ExpenseCategory | 'All'>).map((c) => {
+          const on = dayFilter === c;
+          const tint = c === 'All' ? colors.accent : (CATEGORY_COLORS[c as ExpenseCategory] ?? colors.accent);
+          return (
+            <Pressable
+              key={c}
+              style={[
+                styles.filterChip,
+                on && { backgroundColor: tint, borderColor: tint },
+              ]}
+              onPress={() => setDayFilter(c)}
+            >
+              {c !== 'All' ? (
+                <Icon
+                  name={CATEGORY_ICON_NAME[c as ExpenseCategory] ?? 'sparkles'}
+                  size={12}
+                  color={on ? '#fff' : colors.textMuted}
+                  strokeWidth={2.1}
+                />
+              ) : null}
+              <Text style={[styles.filterChipTxt, on && styles.filterChipTxtOn]}>
+                {c}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
       <View style={styles.card}>
         {totals.byDay.map((d, i) => {
           const pct = totals.maxDay > 0 ? (d.thb / totals.maxDay) * 100 : 0;
@@ -283,7 +327,11 @@ export function SummaryScreen() {
               </View>
               <View style={styles.bar}>
                 <LinearGradient
-                  colors={theme.gradient}
+                  colors={
+                    dayFilter === 'All'
+                      ? theme.gradient
+                      : ([CATEGORY_COLORS[dayFilter] ?? theme.accent, CATEGORY_COLORS[dayFilter] ?? theme.accent] as [string, string])
+                  }
                   start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                   style={[styles.barFill, { width: `${pct}%` }]}
                 />
@@ -446,6 +494,19 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     borderWidth: 1, borderColor: c.border,
     shadowColor: c.shadow, shadowOpacity: 0.04, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 1,
   },
+
+  byDayHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
+  filterTotalTxt: { fontSize: 13, fontWeight: '700', color: c.text, marginBottom: 10 },
+  filterScroll: { marginBottom: 10, flexGrow: 0 },
+  filterStrip: { gap: 6 as any, paddingRight: 16 },
+  filterChip: {
+    paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999,
+    backgroundColor: c.cardBg, borderWidth: 1, borderColor: c.border,
+    flexDirection: 'row', alignItems: 'center', gap: 6 as any,
+    marginRight: 6,
+  },
+  filterChipTxt: { fontSize: 12, fontWeight: '600', color: c.textMuted },
+  filterChipTxtOn: { color: '#fff' },
 
   catRow: { marginTop: 12 },
   catLabelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },

@@ -145,6 +145,7 @@ export const CATEGORY_ICON_NAME: Record<string, IconName> = {
   Hotels: 'hotel',
   Ferry: 'ship',
   Train: 'train',
+  Transfers: 'transfer',
   Cabs: 'transfer',
   Food: 'utensils',
   Shopping: 'bag',

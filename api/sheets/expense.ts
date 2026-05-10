@@ -18,7 +18,7 @@ type Expense = {
 };
 
 const ALLOWED_CATEGORIES = new Set([
-  'Flights', 'Hotels', 'Ferry', 'Train', 'Cabs', 'Food', 'Shopping', 'Activities', 'Others',
+  'Flights', 'Hotels', 'Ferry', 'Train', 'Transfers', 'Cabs', 'Food', 'Shopping', 'Activities', 'Others',
 ]);
 
 function genId(): string {
