@@ -129,7 +129,19 @@ export function LogExpenseScreen({ route }: Props) {
     setNote('');
   };
 
-  const recent = [...expenses].sort((a, b) => b.createdAt - a.createdAt).slice(0, 8);
+  // Full sortable + filterable expense list (replaces the old "recent 8" cap).
+  const [historyFilter, setHistoryFilter] = useState<ExpenseCategory | 'All'>('All');
+  const allExpenses = useMemo(
+    () =>
+      [...expenses]
+        .filter((e) => historyFilter === 'All' || e.category === historyFilter)
+        .sort((a, b) => {
+          // Newest by date first; tiebreak with createdAt for entries on the same day.
+          if (a.date && b.date && a.date !== b.date) return b.date.localeCompare(a.date);
+          return b.createdAt - a.createdAt;
+        }),
+    [expenses, historyFilter]
+  );
 
   const modeTabs: Array<{ key: LogMode; icon: IconName; label: string }> = [
     { key: 'expense', icon: 'wallet', label: 'Expense' },
@@ -319,33 +331,73 @@ export function LogExpenseScreen({ route }: Props) {
         </LinearGradient>
       </Pressable>
 
-      {recent.length > 0 ? (
+      {expenses.length > 0 ? (
         <View style={styles.recentWrap}>
-          <Text style={styles.label}>RECENT</Text>
-          {recent.map((e) => (
-            <Pressable key={e.id} style={styles.recentRow} onPress={() => setEditingExpense(e)}>
-              <View style={styles.recentIconWrap}>
-                <Icon name={CATEGORY_ICON_NAME[e.category] ?? 'sparkles'} size={16} color={colors.textMuted} strokeWidth={2} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.recentCat}>
-                  {e.category}
-                  {e.dayNum ? `  ·  Day ${e.dayNum}` : ''}
-                </Text>
-                <Text style={styles.recentSub}>
-                  {shortDate(e.date)}
-                  {e.note ? ` · ${e.note}` : ''}
-                </Text>
-              </View>
-              <Money amount={e.amount} currency={e.currency} style={styles.recentAmt} />
-              <Pressable
-                onPress={(ev) => { ev.stopPropagation?.(); removeExpense(e.id); }}
-                style={styles.delBtn}
-              >
-                <Icon name="close" size={14} color={colors.textMuted} strokeWidth={2.2} />
+          <View style={styles.allHeader}>
+            <Text style={styles.label}>ALL EXPENSES · {expenses.length}</Text>
+            {historyFilter !== 'All' ? (
+              <Pressable onPress={() => setHistoryFilter('All')}>
+                <Text style={styles.clearFilterTxt}>Clear filter</Text>
               </Pressable>
-            </Pressable>
-          ))}
+            ) : null}
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.histFilterScroll}
+            contentContainerStyle={styles.histFilterStrip}
+          >
+            {(['All', ...EXPENSE_CATEGORIES] as Array<ExpenseCategory | 'All'>).map((c) => {
+              const on = historyFilter === c;
+              return (
+                <Pressable
+                  key={c}
+                  style={[styles.histFilterChip, on && styles.histFilterChipOn]}
+                  onPress={() => setHistoryFilter(c)}
+                >
+                  {c !== 'All' ? (
+                    <Icon
+                      name={CATEGORY_ICON_NAME[c as ExpenseCategory] ?? 'sparkles'}
+                      size={12}
+                      color={on ? colors.bg : colors.textMuted}
+                      strokeWidth={2.1}
+                    />
+                  ) : null}
+                  <Text style={[styles.histFilterTxt, on && styles.histFilterTxtOn]}>{c}</Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+          {allExpenses.length === 0 ? (
+            <Text style={styles.emptyFilterTxt}>
+              No expenses match this filter.
+            </Text>
+          ) : (
+            allExpenses.map((e) => (
+              <Pressable key={e.id} style={styles.recentRow} onPress={() => setEditingExpense(e)}>
+                <View style={styles.recentIconWrap}>
+                  <Icon name={CATEGORY_ICON_NAME[e.category] ?? 'sparkles'} size={16} color={colors.textMuted} strokeWidth={2} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.recentCat}>
+                    {e.category}
+                    {e.dayNum ? `  ·  Day ${e.dayNum}` : ''}
+                  </Text>
+                  <Text style={styles.recentSub}>
+                    {shortDate(e.date)}
+                    {e.note ? ` · ${e.note}` : ''}
+                  </Text>
+                </View>
+                <Money amount={e.amount} currency={e.currency} style={styles.recentAmt} />
+                <Pressable
+                  onPress={(ev) => { ev.stopPropagation?.(); removeExpense(e.id); }}
+                  style={styles.delBtn}
+                >
+                  <Icon name="close" size={14} color={colors.textMuted} strokeWidth={2.2} />
+                </Pressable>
+              </Pressable>
+            ))
+          )}
         </View>
       ) : null}
 
@@ -449,6 +501,20 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
   saveTxt: { color: '#fff', fontSize: 16, fontWeight: '800', letterSpacing: 0.3 },
 
   recentWrap: { marginTop: 10 },
+  allHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  clearFilterTxt: { fontSize: 11, color: c.accent, fontWeight: '700', marginTop: 22, marginBottom: 10 },
+  histFilterScroll: { flexGrow: 0, marginBottom: 10 },
+  histFilterStrip: { gap: 6 as any, paddingRight: 16 },
+  histFilterChip: {
+    paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999,
+    backgroundColor: c.cardBg, borderWidth: 1, borderColor: c.border,
+    flexDirection: 'row', alignItems: 'center', gap: 6 as any,
+    marginRight: 6,
+  },
+  histFilterChipOn: { backgroundColor: c.borderStrong, borderColor: c.borderStrong },
+  histFilterTxt: { fontSize: 12, fontWeight: '600', color: c.textMuted },
+  histFilterTxtOn: { color: c.bg },
+  emptyFilterTxt: { fontSize: 13, color: c.textSubtle, fontStyle: 'italic', textAlign: 'center', paddingVertical: 16 },
   recentRow: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: c.cardBg, borderRadius: 14, padding: 12, marginBottom: 8,
