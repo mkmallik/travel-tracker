@@ -1,0 +1,2869 @@
+{
+  "bali-apr-2024": {
+    "links": [
+      {
+        "info": "TAXI",
+        "name": "Gojek",
+        "url": "https://play.google.com/store/apps/details?id=com.gojek.app&hl=en_IN&gl=US"
+      },
+      {
+        "info": "Taxi",
+        "name": "Grab",
+        "url": "https://www.grab.com/id/en/download/"
+      },
+      {
+        "info": "FERRY",
+        "name": "12 Go Asia",
+        "url": "https://12go.asia/"
+      },
+      {
+        "info": "FERRY",
+        "name": "Get you Gide",
+        "url": "https://www.getyourguide.com/"
+      },
+      {
+        "info": "FERRY",
+        "name": "Klook",
+        "url": "https://www.klook.com/en-IN/"
+      },
+      {
+        "info": "FERRY",
+        "name": "Blule water express",
+        "url": "https://bluewater-express.com/"
+      },
+      {
+        "info": "Info",
+        "name": "Things to know",
+        "url": "https://www.youtube.com/shorts/Wkm9X3EuTmk"
+      }
+    ],
+    "daily_details": [
+      {
+        "date": "2024-04-28",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 750.0
+      },
+      {
+        "date": "2024-04-28",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 250.0
+      },
+      {
+        "date": "2024-04-28",
+        "label": "",
+        "cat": "CAB",
+        "amount": 2350.0
+      },
+      {
+        "date": "2024-04-28",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 695.0
+      },
+      {
+        "date": "2024-04-28",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2593.0
+      },
+      {
+        "date": "2024-04-28",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1897.0
+      },
+      {
+        "date": "2024-04-28",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 605.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 500.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 300.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 625.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 100.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 2874.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2899.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 262.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "CAB",
+        "amount": 3876.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 370.0
+      },
+      {
+        "date": "2024-04-29",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1019.0
+      },
+      {
+        "date": "2024-04-30",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 1131.0
+      },
+      {
+        "date": "2024-04-30",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 258.0
+      },
+      {
+        "date": "2024-04-30",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 1029.0
+      },
+      {
+        "date": "2024-04-30",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 350.0
+      },
+      {
+        "date": "2024-04-30",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1131.0
+      },
+      {
+        "date": "2024-04-30",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2691.0
+      },
+      {
+        "date": "2024-04-30",
+        "label": "",
+        "cat": "CAB",
+        "amount": 2829.0
+      },
+      {
+        "date": "2024-04-30",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 514.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1056.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 668.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "CAB",
+        "amount": 4623.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 771.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 257.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 874.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 257.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 113.0
+      },
+      {
+        "date": "2024-05-01",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1207.0
+      },
+      {
+        "date": "2024-05-02",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1746.0
+      },
+      {
+        "date": "2024-05-02",
+        "label": "",
+        "cat": "CAB",
+        "amount": 822.0
+      },
+      {
+        "date": "2024-05-02",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 386.0
+      },
+      {
+        "date": "2024-05-02",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1164.0
+      },
+      {
+        "date": "2024-05-03",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 104.0
+      },
+      {
+        "date": "2024-05-03",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 104.0
+      },
+      {
+        "date": "2024-05-03",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2248.0
+      },
+      {
+        "date": "2024-05-03",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 310.0
+      },
+      {
+        "date": "2024-05-03",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 320.0
+      },
+      {
+        "date": "2024-05-03",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1485.0
+      },
+      {
+        "date": "2024-05-04",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2912.0
+      },
+      {
+        "date": "2024-05-04",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 546.0
+      },
+      {
+        "date": "2024-05-04",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 459.0
+      },
+      {
+        "date": "2024-05-04",
+        "label": "",
+        "cat": "CAB",
+        "amount": 3116.0
+      },
+      {
+        "date": "2024-05-03",
+        "label": "",
+        "cat": "CAB",
+        "amount": 3635.0
+      },
+      {
+        "date": "2024-05-04",
+        "label": "",
+        "cat": "CAB",
+        "amount": 208.0
+      },
+      {
+        "date": "2024-05-05",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 520.0
+      },
+      {
+        "date": "2024-05-05",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1506.0
+      },
+      {
+        "date": "2024-05-05",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 784.0
+      },
+      {
+        "date": "2024-05-05",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1605.0
+      },
+      {
+        "date": "2024-05-05",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 312.0
+      },
+      {
+        "date": "2024-05-06",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 624.0
+      },
+      {
+        "date": "2024-05-06",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 79.0
+      },
+      {
+        "date": "2024-05-06",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 598.0
+      },
+      {
+        "date": "2024-05-06",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2104.0
+      },
+      {
+        "date": "2024-05-06",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1116.0
+      },
+      {
+        "date": "2024-05-06",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 175.0
+      },
+      {
+        "date": "2024-05-07",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 4179.0
+      },
+      {
+        "date": "2024-05-07",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2273.0
+      },
+      {
+        "date": "2024-05-07",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 1936.0
+      },
+      {
+        "date": "2024-05-07",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2447.0
+      },
+      {
+        "date": "2024-05-08",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 313.0
+      },
+      {
+        "date": "2024-05-08",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 598.0
+      },
+      {
+        "date": "2024-05-08",
+        "label": "",
+        "cat": "CAB",
+        "amount": 638.0
+      },
+      {
+        "date": "2024-05-08",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2496.0
+      },
+      {
+        "date": "2024-05-08",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 284.0
+      },
+      {
+        "date": "2024-05-09",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 572.0
+      },
+      {
+        "date": "2024-05-09",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2855.0
+      },
+      {
+        "date": "2024-05-09",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 1925.0
+      },
+      {
+        "date": "2024-05-09",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 120.0
+      },
+      {
+        "date": "2024-05-09",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 260.0
+      },
+      {
+        "date": "2024-05-09",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 875.0
+      },
+      {
+        "date": "2024-05-09",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 486.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 325.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 2575.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 260.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 235.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 677.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 209.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1541.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "CAB",
+        "amount": 7292.0
+      },
+      {
+        "date": "2024-05-10",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 2674.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 729.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 261.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 105.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 105.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 325.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1613.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 1171.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 208.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 825.0
+      },
+      {
+        "date": "2024-05-11",
+        "label": "",
+        "cat": "ACTIVITY",
+        "amount": 1145.0
+      },
+      {
+        "date": "2024-05-12",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 833.0
+      },
+      {
+        "date": "2024-05-12",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 598.0
+      },
+      {
+        "date": "2024-05-12",
+        "label": "",
+        "cat": "OTHER",
+        "amount": 1040.0
+      },
+      {
+        "date": "2024-05-12",
+        "label": "",
+        "cat": "FOOD",
+        "amount": 105.0
+      },
+      {
+        "date": "2024-05-12",
+        "label": "",
+        "cat": "CAB",
+        "amount": 954.0
+      },
+      {
+        "date": "2024-04-28",
+        "label": "",
+        "cat": "CAB",
+        "amount": 1195.0
+      }
+    ],
+    "itinerary": [
+      {
+        "day_num": 1,
+        "date": "2024-04-28",
+        "stay": "Ubud",
+        "from": "Bengaluru",
+        "to": "Bali",
+        "travel": "International Flight\nPNR PRFJNF\nBLR-DPS, 6E-1605\nBangalore - Denpasar Bali\nSun, 28 Apr 2024 \u2022 Non stop \u2022 7h 0m duration\nBLR 00:50 hrs - 10:20 hrs DPS",
+        "summary": "Express check-in, Free WiFi, Breakfast, Parking",
+        "accom": "Sayong House",
+        "address": "Dewi Sita Street-Maruti Lane, Ubud, Bali, Indonesia, 80571",
+        "agent": "Agoda",
+        "payment": "Paid",
+        "hotels_amt": 9119.96,
+        "flights_amt": 58869.0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 2,
+        "date": "2024-04-29",
+        "stay": "Ubud",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Sayong House",
+        "address": "Dewi Sita Street-Maruti Lane, Ubud, Bali, Indonesia, 80572",
+        "agent": "",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 3,
+        "date": "2024-04-30",
+        "stay": "Ubud",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Sayong House",
+        "address": "Dewi Sita Street-Maruti Lane, Ubud, Bali, Indonesia, 80573",
+        "agent": "",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 4,
+        "date": "2024-05-01",
+        "stay": "Ubud",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Sayong House",
+        "address": "Dewi Sita Street-Maruti Lane, Ubud, Bali, Indonesia, 80574",
+        "agent": "",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 5,
+        "date": "2024-05-02",
+        "stay": "Nusa Penida",
+        "from": "Ubud",
+        "to": "Nusa Penida",
+        "travel": "",
+        "summary": "Free WiFi, Parking, Breakfast",
+        "accom": "Sea Terras Suite and Luxury",
+        "address": "Jalan Raya Batumulapan, 80771 Nusa Penida, Nusa Penida, Bali, Indonesia, 80771",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 10828.12,
+        "flights_amt": 0,
+        "ferry_amt": 3467.0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 6,
+        "date": "2024-05-03",
+        "stay": "Nusa Penida",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Sea Terras Suite and Luxury",
+        "address": "Jalan Raya Batumulapan, 80771 Nusa Penida, Nusa Penida, Bali, Indonesia, 80772",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 7,
+        "date": "2024-05-04",
+        "stay": "Nusa Penida",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Sea Terras Suite and Luxury",
+        "address": "Jalan Raya Batumulapan, 80771 Nusa Penida, Nusa Penida, Bali, Indonesia, 80773",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 8,
+        "date": "2024-05-05",
+        "stay": "Gilli T",
+        "from": "Nusa Penida",
+        "to": "Gilli T",
+        "travel": "",
+        "summary": "Express check-in, Free WiFi, Parking, Breakfast",
+        "accom": "Blu d' aMare",
+        "address": "Gili Trawangan, Lombok, Indonesia",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 14413.4,
+        "flights_amt": 0,
+        "ferry_amt": 5453.0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 9,
+        "date": "2024-05-06",
+        "stay": "Gilli T",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Blu d' aMare",
+        "address": "Gili Trawangan, Lombok, Indonesia",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 10,
+        "date": "2024-05-07",
+        "stay": "Gilli T",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Blu d' aMare",
+        "address": "Gili Trawangan, Lombok, Indonesia",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 11,
+        "date": "2024-05-08",
+        "stay": "Kuta",
+        "from": "Gilli T",
+        "to": "Kuta",
+        "travel": "",
+        "summary": "Drinking water, Parking, Coffee & tea, Breakfast, Free WiFi",
+        "accom": "FuramaXclusive Ocean Beach Hotel Seminyak",
+        "address": "JI Arjuna 88X Legian, Kuta, Seminyak, Bali, Indonesia, 80361",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 21946.61,
+        "flights_amt": 0,
+        "ferry_amt": 5462.0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 12,
+        "date": "2024-05-09",
+        "stay": "Kuta",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "FuramaXclusive Ocean Beach Hotel Seminyak",
+        "address": "JI Arjuna 88X Legian, Kuta, Seminyak, Bali, Indonesia, 80362",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 13,
+        "date": "2024-05-10",
+        "stay": "Kuta",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "FuramaXclusive Ocean Beach Hotel Seminyak",
+        "address": "JI Arjuna 88X Legian, Kuta, Seminyak, Bali, Indonesia, 80363",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 14,
+        "date": "2024-05-11",
+        "stay": "Kuta",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "FuramaXclusive Ocean Beach Hotel Seminyak",
+        "address": "JI Arjuna 88X Legian, Kuta, Seminyak, Bali, Indonesia, 80364",
+        "agent": "Agoda",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 15,
+        "date": "2024-05-12",
+        "stay": "Bangalore",
+        "from": "Bali",
+        "to": "Bengaluru",
+        "travel": "International Flight - SUN-12MAY2024\nPNR: CNN24Y - 6E 1606\nBali DPS11:20 - Bengaluru BLR15:15",
+        "summary": "",
+        "accom": "Mahindra Windchimes",
+        "address": "",
+        "agent": "EaseMyTrip",
+        "payment": "Paid",
+        "hotels_amt": 0,
+        "flights_amt": 74394.0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      }
+    ]
+  },
+  "vietnam-apr-2025": {
+    "links": [
+      {
+        "info": "TAXI",
+        "name": "Gojek",
+        "url": "https://play.google.com/store/apps/details?id=com.gojek.app&hl=en_IN&gl=US"
+      },
+      {
+        "info": "Taxi",
+        "name": "Grab",
+        "url": "https://www.grab.com/id/en/download/"
+      },
+      {
+        "info": "FERRY",
+        "name": "12 Go Asia",
+        "url": "https://12go.asia/"
+      },
+      {
+        "info": "FERRY",
+        "name": "Get you Gide",
+        "url": "https://www.getyourguide.com/"
+      },
+      {
+        "info": "FERRY",
+        "name": "Klook",
+        "url": "https://www.klook.com/en-IN/"
+      },
+      {
+        "info": "FERRY",
+        "name": "Blule water express",
+        "url": "https://bluewater-express.com/"
+      },
+      {
+        "info": "Info",
+        "name": "Things to know",
+        "url": "https://www.youtube.com/shorts/Wkm9X3EuTmk"
+      }
+    ],
+    "daily_details": [
+      {
+        "date": "2025-04-13",
+        "label": "Ninh Binh Day Tour",
+        "cat": "ACTIVITY",
+        "amount": 9965.0
+      },
+      {
+        "date": "2025-04-20",
+        "label": "4 Island Hopping Day Tour by Speedboat with Cable Car and Aquatopia Water Park Experience",
+        "cat": "ACTIVITY",
+        "amount": 14613.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Simcard",
+        "cat": "OTHER",
+        "amount": 1328.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Early Checkin",
+        "cat": "OTHER",
+        "amount": 3077.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Airtport to hotel",
+        "cat": "CAB",
+        "amount": 1000.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Brunch",
+        "cat": "FOOD",
+        "amount": 1527.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Egg Coffee",
+        "cat": "FOOD",
+        "amount": 500.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Water + Icecream",
+        "cat": "FOOD",
+        "amount": 276.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Water Puppet Show",
+        "cat": "ACTIVITY",
+        "amount": 1500.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Train Street",
+        "cat": "FOOD",
+        "amount": 1284.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Crepes for dinner",
+        "cat": "FOOD",
+        "amount": 340.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Ban Mi & Beer for dinner",
+        "cat": "FOOD",
+        "amount": 222.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Fake hair for Naisha",
+        "cat": "OTHER",
+        "amount": 340.0
+      },
+      {
+        "date": "2025-04-10",
+        "label": "Crocs for Naisha",
+        "cat": "OTHER",
+        "amount": 834.0
+      },
+      {
+        "date": "2025-04-11",
+        "label": "Cake & Icecream at Titop Island",
+        "cat": "FOOD",
+        "amount": 367.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Luan Cave tip",
+        "cat": "ACTIVITY",
+        "amount": 100.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Food on the Cruise",
+        "cat": "FOOD",
+        "amount": 2006.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Food on the way back from halong",
+        "cat": "FOOD",
+        "amount": 534.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Hop on Hop off buss tour",
+        "cat": "ACTIVITY",
+        "amount": 1500.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Beer street dinner",
+        "cat": "FOOD",
+        "amount": 1339.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Confectionary Item from shop",
+        "cat": "FOOD",
+        "amount": 869.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Beer",
+        "cat": "FOOD",
+        "amount": 50.0
+      },
+      {
+        "date": "2025-04-12",
+        "label": "Burger",
+        "cat": "FOOD",
+        "amount": 171.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Chips + Coffee on way to Ninh bihn",
+        "cat": "FOOD",
+        "amount": 467.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Coffee + chips",
+        "cat": "FOOD",
+        "amount": 237.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Beer while buffet lunch",
+        "cat": "FOOD",
+        "amount": 134.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Tip for boat trip",
+        "cat": "ACTIVITY",
+        "amount": 300.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Icecream afte boat trip",
+        "cat": "FOOD",
+        "amount": 250.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Chips while going back from ninh bhin",
+        "cat": "FOOD",
+        "amount": 100.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Ban Mi for dinner",
+        "cat": "FOOD",
+        "amount": 334.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Foot Message",
+        "cat": "ACTIVITY",
+        "amount": 1033.0
+      },
+      {
+        "date": "2025-04-13",
+        "label": "Water & Drinks",
+        "cat": "FOOD",
+        "amount": 134.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Cab",
+        "cat": "CAB",
+        "amount": 170.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Lotte Skydeck ticket",
+        "cat": "ACTIVITY",
+        "amount": 2807.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Lotte Paraglide simulateor",
+        "cat": "ACTIVITY",
+        "amount": 1203.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Lunch at Skydeck lotte",
+        "cat": "FOOD",
+        "amount": 1000.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Cab to Dong Xuan Market",
+        "cat": "CAB",
+        "amount": 178.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Bag",
+        "cat": "OTHER",
+        "amount": 667.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Coffee + Chocolate",
+        "cat": "OTHER",
+        "amount": 2500.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Chocolate",
+        "cat": "OTHER",
+        "amount": 500.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Souvinier",
+        "cat": "OTHER",
+        "amount": 767.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Souvinier",
+        "cat": "OTHER",
+        "amount": 667.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Souvinier",
+        "cat": "OTHER",
+        "amount": 400.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Dress",
+        "cat": "OTHER",
+        "amount": 1067.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Dress",
+        "cat": "OTHER",
+        "amount": 833.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "BanMi + Beer",
+        "cat": "FOOD",
+        "amount": 345.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Crepe",
+        "cat": "FOOD",
+        "amount": 167.0
+      },
+      {
+        "date": "2025-04-14",
+        "label": "Water + Crossiant",
+        "cat": "FOOD",
+        "amount": 234.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Cab to Hanoi Airport",
+        "cat": "CAB",
+        "amount": 1205.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Cab from Danang to Hoi An",
+        "cat": "CAB",
+        "amount": 1524.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Breakfast - Hoi An day1",
+        "cat": "FOOD",
+        "amount": 385.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Bamboo boat Tip",
+        "cat": "ACTIVITY",
+        "amount": 600.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Bamboo boat Tip",
+        "cat": "ACTIVITY",
+        "amount": 20.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Tuk tuk city tour",
+        "cat": "ACTIVITY",
+        "amount": 1000.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Bracelets",
+        "cat": "OTHER",
+        "amount": 334.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Dinner Day 1 Hoi An",
+        "cat": "FOOD",
+        "amount": 2034.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Lantern",
+        "cat": "OTHER",
+        "amount": 334.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Ice cream rolls",
+        "cat": "FOOD",
+        "amount": 467.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Fruits",
+        "cat": "FOOD",
+        "amount": 267.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Picture with lanterns",
+        "cat": "OTHER",
+        "amount": 67.0
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Cup Noodles",
+        "cat": "FOOD",
+        "amount": 234.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Beer + Sausage + coke + Sprite",
+        "cat": "FOOD",
+        "amount": 734.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Drinks + Ban mi",
+        "cat": "FOOD",
+        "amount": 600.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Grilled rice paper, mango rice, icecream roll",
+        "cat": "FOOD",
+        "amount": 867.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Girft items, pendent +",
+        "cat": "OTHER",
+        "amount": 500.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Ban mi + hoi an love cock tail",
+        "cat": "FOOD",
+        "amount": 600.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Apino coaster ride",
+        "cat": "ACTIVITY",
+        "amount": 696.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "10 d vr game",
+        "cat": "ACTIVITY",
+        "amount": 696.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Picture of roller coaster",
+        "cat": "OTHER",
+        "amount": 596.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Short dress top",
+        "cat": "OTHER",
+        "amount": 1056.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Paper art",
+        "cat": "OTHER",
+        "amount": 500.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Beer coconut pineapple juice",
+        "cat": "FOOD",
+        "amount": 534.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Lunch at sontra maria",
+        "cat": "FOOD",
+        "amount": 1308.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Marble mountain tickets",
+        "cat": "ACTIVITY",
+        "amount": 550.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Cab to sontra maria",
+        "cat": "CAB",
+        "amount": 286.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Cab from Sontra maria to my khe beach",
+        "cat": "CAB",
+        "amount": 307.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Breakfast",
+        "cat": "FOOD",
+        "amount": 800.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Breakfast",
+        "cat": "FOOD",
+        "amount": 700.0
+      },
+      {
+        "date": "2025-04-18",
+        "label": "Breakfast",
+        "cat": "FOOD",
+        "amount": 800.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Laundry",
+        "cat": "OTHER",
+        "amount": 467.0
+      },
+      {
+        "date": "2025-04-16",
+        "label": "Bana hills tour",
+        "cat": "ACTIVITY",
+        "amount": 14000.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Hoi an to marble mountain, daa nang, rwtun",
+        "cat": "CAB",
+        "amount": 2500.0
+      },
+      {
+        "date": "2025-04-18",
+        "label": "Hoi an to airport",
+        "cat": "CAB",
+        "amount": 1067.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Dinner",
+        "cat": "FOOD",
+        "amount": 2248.0
+      },
+      {
+        "date": "2025-04-17",
+        "label": "Icream rolls",
+        "cat": "FOOD",
+        "amount": 334.0
+      },
+      {
+        "date": "2025-04-19",
+        "label": "Boat to starfish beach",
+        "cat": "ACTIVITY",
+        "amount": 2000.0
+      },
+      {
+        "date": "2025-04-19",
+        "label": "Cab to starfish beach and grand word",
+        "cat": "CAB",
+        "amount": 2334.0
+      },
+      {
+        "date": "2025-04-19",
+        "label": "Coconut \u00d7 3",
+        "cat": "FOOD",
+        "amount": 300.0
+      },
+      {
+        "date": "2025-04-19",
+        "label": "Icecream + coconut",
+        "cat": "FOOD",
+        "amount": 734.0
+      },
+      {
+        "date": "2025-04-19",
+        "label": "Cab back to Amarin resort",
+        "cat": "CAB",
+        "amount": 1071.0
+      },
+      {
+        "date": "2025-04-21",
+        "label": "Burger + chicken",
+        "cat": "FOOD",
+        "amount": 690.0
+      },
+      {
+        "date": "2025-04-21",
+        "label": "Water + beer +  cream bun",
+        "cat": "FOOD",
+        "amount": 220.0
+      },
+      {
+        "date": "2025-04-21",
+        "label": "Cab from Saigon airport to hotel luna saigong",
+        "cat": "CAB",
+        "amount": 377.0
+      },
+      {
+        "date": "2025-04-21",
+        "label": "Food bil at Amarin, day1 lunch+ dinner, day 2 dinner, day3 dinner + snacks",
+        "cat": "FOOD",
+        "amount": 7763.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Ban mi breakfast",
+        "cat": "FOOD",
+        "amount": 320.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Coffee water melon juice",
+        "cat": "FOOD",
+        "amount": 434.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Chu Chi tunnels tour",
+        "cat": "ACTIVITY",
+        "amount": 3801.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Cup noodles",
+        "cat": "FOOD",
+        "amount": 134.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Iced tea",
+        "cat": "FOOD",
+        "amount": 200.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Suit case",
+        "cat": "OTHER",
+        "amount": 1567.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Crocs",
+        "cat": "OTHER",
+        "amount": 3534.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Suitcase",
+        "cat": "OTHER",
+        "amount": 1500.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Cake and water",
+        "cat": "FOOD",
+        "amount": 257.0
+      },
+      {
+        "date": "2025-04-22",
+        "label": "Dinner at walking street",
+        "cat": "FOOD",
+        "amount": 2820.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Coconut",
+        "cat": "FOOD",
+        "amount": 334.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "War Museum ticket",
+        "cat": "ACTIVITY",
+        "amount": 400.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Iced tea",
+        "cat": "FOOD",
+        "amount": 200.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Hotel to post office",
+        "cat": "CAB",
+        "amount": 137.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "From war Museum to hotel",
+        "cat": "CAB",
+        "amount": 107.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Hotel to airport",
+        "cat": "CAB",
+        "amount": 430.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Cab luggage didn't fit, cancel",
+        "cat": "CAB",
+        "amount": 93.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Chocolates at airport",
+        "cat": "OTHER",
+        "amount": 2512.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Lunch, pizza",
+        "cat": "FOOD",
+        "amount": 1273.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Cream bun for flight",
+        "cat": "FOOD",
+        "amount": 220.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Ban mi",
+        "cat": "FOOD",
+        "amount": 674.0
+      },
+      {
+        "date": "2025-04-23",
+        "label": "Cab from airport to home",
+        "cat": "CAB",
+        "amount": 2090.0
+      }
+    ],
+    "itinerary": [
+      {
+        "day_num": 1,
+        "date": "2025-04-10",
+        "stay": "Hanoi",
+        "from": "Bengaluru",
+        "to": "Hanoi",
+        "travel": "Bangalore 17:15, 09 Apr`25 - Kolkata 19:55, 09 Apr`25 - \nKolkata. 21:45, 09 Apr`25 - Hanoi 02:10, 10 Apr`25\nBooking ID - NN2ACF6X70696303238\nPNR - B1JWPM , IndiGo 6E-223 & 6E-1631\nBooked by Makemy trip",
+        "summary": "1. Hoan Kiem Lake 2. Ngoc Son Temple 3. Thang Long Water Puppet Theatre 4. St. Joseph\u2019s Cathedral 5. Dong Xuan Market 6. Hanoi Train Street 7. Ta Hien Beer Street 8. Bach Ma Temple 9. Long Bien Bridge 10. Local Street Food Alleys  11. Tran Quoc Pagoda (~35\u201340 min walk or 10-min ride)",
+        "accom": "Matilda Boutique Hotel And Spa Hanoi (Breakfast Included)",
+        "address": "73 Ma May Street, Hoan Kiem (Old Quarter), Hanoi, Vietnam, 100000, Hanoi\nContact :0989569417, +84989569417",
+        "agent": "Make My Trip NH24245384182162",
+        "payment": "Paid",
+        "hotels_amt": 4947.0,
+        "flights_amt": 54845.0,
+        "ferry_amt": 0.0,
+        "train_amt": 0.0
+      },
+      {
+        "day_num": 2,
+        "date": "2025-04-11",
+        "stay": "Halong Bay",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "Ha Long Bay Trip",
+        "accom": "2D1N Ha Long Bay Tour by Victory Star Cruise",
+        "address": "\"+84-914503503\"",
+        "agent": "Klook - USK796857",
+        "payment": "Paid",
+        "hotels_amt": 42141.0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 3,
+        "date": "2025-04-12",
+        "stay": "Hanoi",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "Ha Long Bay Trip, City Visit after coming back",
+        "accom": "Matilda Boutique Hotel And Spa Hanoi (Breakfast Included)",
+        "address": "73 Ma May Street, Hoan Kiem (Old Quarter), Hanoi, Vietnam, 100000, Hanoi\nContact :0989569417, +84989569417",
+        "agent": "Make My Trip  NH24179384181760",
+        "payment": "Paid",
+        "hotels_amt": 14841.0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 4,
+        "date": "2025-04-13",
+        "stay": "Ninh Bhin",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "Ninh Binh Day Tour from Ha Noi",
+        "accom": "Matilda Boutique Hotel And Spa Hanoi (Breakfast Included)",
+        "address": "73 Ma May Street, Hoan Kiem (Old Quarter), Hanoi, Vietnam, 100000, Hanoi\nContact :0989569417, +84989569417",
+        "agent": "Klook reference ID: CZW035288",
+        "payment": "Paid",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 5,
+        "date": "2025-04-14",
+        "stay": "Hanoi",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "City Visit",
+        "accom": "Matilda Boutique Hotel And Spa Hanoi (Breakfast Included)",
+        "address": "73 Ma May Street, Hoan Kiem (Old Quarter), Hanoi, Vietnam, 100000, Hanoi\nContact :0989569417, +84989569417",
+        "agent": "Make My Trip  NH24179384181762",
+        "payment": "Paid",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 6,
+        "date": "2025-04-15",
+        "stay": "Hoi - An",
+        "from": "Hanoi",
+        "to": "Da Nang",
+        "travel": "06:00 HANOI NOI BAI INTL, VN - Terminal: 1 -  07:25 DA NANG INTERNATIONAL, VN Terminal: 1\nVietnam Airlines - Booking ref: 6ZPY3W Seats - 32A, 32B, 32C baggage given in their website(10kg+23kg)",
+        "summary": "Town Visit",
+        "accom": "Threeway Riverside Villa",
+        "address": "74 Nguyen Du, 560000, Hoi An, VNM\n840905248446, +905248446",
+        "agent": "Dola Make My Trip NH24179384192852",
+        "payment": "Pay till 11 Apr",
+        "hotels_amt": 9355.0,
+        "flights_amt": 13950.0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 7,
+        "date": "2025-04-16",
+        "stay": "Hoi - An",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "Book Tickets on Klook for Ba Na Hills, Book cab to Ba-Na Hills",
+        "accom": "Threeway Riverside Villa",
+        "address": "74 Nguyen Du, 560000, Hoi An, VNM\n840905248446, +905248446",
+        "agent": "Dola Make My Trip NH24179384192853",
+        "payment": "Pay till 11 Apr",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 8,
+        "date": "2025-04-17",
+        "stay": "Hoi - An",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "Book tour from Hoi - An to Marble mountain and Da nang",
+        "accom": "Threeway Riverside Villa",
+        "address": "74 Nguyen Du, 560000, Hoi An, VNM\n840905248446, +905248446",
+        "agent": "Dola Make My Trip NH24179384192854",
+        "payment": "Pay till 11 Apr",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 9,
+        "date": "2025-04-18",
+        "stay": "Phu - Quoc",
+        "from": "Da Nang",
+        "to": "Phu Quoc",
+        "travel": "VJ719\n11:20  ( DAD ) Da Nang Airport - 11:45 (PQC ) Duong Dang Airport - 01h 45m\nVietjet Air -  PNR - VWTMS3 36A, 36B , 36C \nFlight changed from 10am to 1:05 am\nBooked via EaseMyTrip they didnt give VietJet itenary, but some other, but confirmed luggage",
+        "summary": "Flight changed please check 11:30 - 13:05",
+        "accom": "Amarin Resort,",
+        "address": "Tran Hung Dao, C\u1eeda L\u1ea5p, Phu Quoc Island",
+        "agent": "Manas Agoda: 1577429101",
+        "payment": "Paid",
+        "hotels_amt": 20297.0,
+        "flights_amt": 25508.0,
+        "ferry_amt": 0.0,
+        "train_amt": 0.0
+      },
+      {
+        "day_num": 10,
+        "date": "2025-04-19",
+        "stay": "Phu - Quoc",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "Activity\n1. Starfish beach\n2. Vinwonder\n3. Grand World",
+        "accom": "Amarin Resort,",
+        "address": "Tran Hung Dao, C\u1eeda L\u1ea5p, Phu Quoc Island",
+        "agent": "Manas Agoda: 1577429102",
+        "payment": "Paid",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 11,
+        "date": "2025-04-20",
+        "stay": "Phu - Quoc",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "4 Island Hopping Day Tour by Speedboat with Cable Car and Aquatopia Water Park Experience in Phu Quoc\nKlook Booking ID: CJJ472189\nOperator number: +84-0919200777",
+        "accom": "Amarin Resort,",
+        "address": "Tran Hung Dao, C\u1eeda L\u1ea5p, Phu Quoc Island",
+        "agent": "Manas Agoda: 1577429103",
+        "payment": "Paid",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 12,
+        "date": "2025-04-21",
+        "stay": "Phu - Quoc",
+        "from": "Phu Quoc",
+        "to": "Ho Chi Minh",
+        "travel": "15:50 (PQC) Phu Quoc - Duong Dong - 16:55 (SGN)  Ho Chi Minh City - Tan Son Nhut Terminal 1 \nVietJet Air - VJ - 330, PNR - 689D9J - 36A, 36B, 36C\nBooked via ClearTrip",
+        "summary": "",
+        "accom": "Luna Hotel Saigon Center",
+        "address": "69 Nguy\u1ec5n Th\u00e1i H\u1ecdc, Ph\u01b0\u1eddng C\u1ea7u \u00d4ng\nL\u00e3nh, Qu\u1eadn 1, Th\u00e0nh ph\u1ed1 H\u1ed3 Ch\u00ed Minh ,\nDistrict 1, Ho Chi Minh City, Vietnam,\n70000",
+        "agent": "Manas Agoda: 1577429104",
+        "payment": "Paid",
+        "hotels_amt": 0,
+        "flights_amt": 15530.0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 13,
+        "date": "2025-04-22",
+        "stay": "Ho chi Min",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "Cu Chi Tunnels Half Day Tour  Book Id: UTZ417893 Operator Number:+84-342260119 Operator email: operate@ssttravel.vn, did shopping in Ben Thang Market, TAKA plaza",
+        "accom": "Luna Hotel Saigon Center",
+        "address": "69 Nguy\u1ec5n Th\u00e1i H\u1ecdc, Ph\u01b0\u1eddng C\u1ea7u \u00d4ng\nL\u00e3nh, Qu\u1eadn 1, Th\u00e0nh ph\u1ed1 H\u1ed3 Ch\u00ed Minh ,\nDistrict 1, Ho Chi Minh City, Vietnam,\n70000",
+        "agent": "Dola Agoda 1534307769",
+        "payment": "Paid, 3992 card, check so that no double charging",
+        "hotels_amt": 5914.0,
+        "flights_amt": 0.0,
+        "ferry_amt": 0.0,
+        "train_amt": 0.0
+      },
+      {
+        "day_num": 14,
+        "date": "2025-04-23",
+        "stay": "Ho chi Min",
+        "from": "Ho Chi Minh",
+        "to": "Bangalore",
+        "travel": "19:20 Ho Chi Minh - Tan Son Nhat Airport - 22:30 Bangalore\nVitejet VJ1801 - 5A, 5B, 5C\nBooked via VietJet",
+        "summary": "",
+        "accom": "",
+        "address": "",
+        "agent": "Dola Agoda 1534307770",
+        "payment": "Paid, 3992 card, check so that no double charging",
+        "hotels_amt": 0,
+        "flights_amt": 40000.0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      }
+    ]
+  },
+  "greece-italy-apr-2023": {
+    "links": [
+      {
+        "info": "TAXI",
+        "name": "Pireaus Taxi  Athens",
+        "url": "https://www.piraeus.org/taxi.html"
+      },
+      {
+        "info": "BUS/TRAIN",
+        "name": "Airport Transport Athens",
+        "url": "https://www.athensairportbus.com/en/timetable/x95airporttoathensdowntown.html"
+      },
+      {
+        "info": "FERRY",
+        "name": "Ferryhopper, Greece, Global",
+        "url": "https://www.ferryhopper.com/en/"
+      },
+      {
+        "info": "FERRY",
+        "name": "Ferryscanner, Greece, Global",
+        "url": "https://www.ferryscanner.com/en/ferry"
+      },
+      {
+        "info": "TRAIN",
+        "name": "Milan, Europe",
+        "url": "https://www.raileurope.com/en"
+      },
+      {
+        "info": "TRAIN",
+        "name": "Italy",
+        "url": "https://www.italiarail.com/"
+      }
+    ],
+    "daily_details": [
+      {
+        "date": "2023-04-18",
+        "label": "Santorini: Volcanic Islands Cruise with Hot Springs Visit\nTicket: GetYourGuide",
+        "cat": "ACTIVITY",
+        "amount": 12513.0
+      },
+      {
+        "date": "2023-04-26",
+        "label": "Rome:Colosseum, Roman Forum & Palatine Hill with Multimedia Experience \nTicket: Tiqet",
+        "cat": "ACTIVITY",
+        "amount": 6250.0
+      },
+      {
+        "date": "2023-04-27",
+        "label": "Rome: Vatican Museums & Sistine Chapel: Skip The Line with Optional Audio Guide\nTicket: Tiqet",
+        "cat": "ACTIVITY",
+        "amount": 7000.0
+      },
+      {
+        "date": "2023-04-17",
+        "label": "Santorini: Akrotiri Archeological Site, Fira, \nTicket: Tiqet",
+        "cat": "ACTIVITY",
+        "amount": 4299.0
+      },
+      {
+        "date": "2023-04-28",
+        "label": "Florence: Galileo Museum: Skip The Line",
+        "cat": "ACTIVITY",
+        "amount": 3135.0
+      },
+      {
+        "date": "2023-04-28",
+        "label": "Florence: \nAccademia Gallery: Priority Entrance",
+        "cat": "ACTIVITY",
+        "amount": 5374.0
+      },
+      {
+        "date": "2023-04-29",
+        "label": "Pisa: The Leaning Tower of Pisa: Fast Track",
+        "cat": "ACTIVITY",
+        "amount": 5707.0
+      },
+      {
+        "date": "2023-05-01",
+        "label": "Milan: Leonardo3 - The World of Leonardo",
+        "cat": "ACTIVITY",
+        "amount": 3314.0
+      },
+      {
+        "date": "2023-04-22",
+        "label": "Acropolis of Athens: Skip The Line, Acropolis Museum: Skip The Line",
+        "cat": "ACTIVITY",
+        "amount": 10788.0
+      },
+      {
+        "date": "2023-04-15",
+        "label": "Kiara",
+        "cat": "OTHER",
+        "amount": 273.0
+      },
+      {
+        "date": "2023-04-15",
+        "label": "Athens airport to fotomara 14",
+        "cat": "CAB",
+        "amount": 4817.0
+      },
+      {
+        "date": "2023-04-15",
+        "label": "Dinner",
+        "cat": "FOOD",
+        "amount": 844.0
+      },
+      {
+        "date": "2023-04-15",
+        "label": "Good pack for tomorrow",
+        "cat": "FOOD",
+        "amount": 354.0
+      },
+      {
+        "date": "2023-04-16",
+        "label": "Taxi from Athina to Piraeus4",
+        "cat": "CAB",
+        "amount": 3185.0
+      },
+      {
+        "date": "2023-04-16",
+        "label": "Coffee",
+        "cat": "FOOD",
+        "amount": 445.0
+      },
+      {
+        "date": "2023-04-16",
+        "label": "Supermarket",
+        "cat": "FOOD",
+        "amount": 1202.0
+      },
+      {
+        "date": "2023-04-16",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 9621.0
+      },
+      {
+        "date": "2023-04-16",
+        "label": "Dinner",
+        "cat": "FOOD",
+        "amount": 2269.0
+      },
+      {
+        "date": "2023-04-17",
+        "label": "Bus to acrotiri return",
+        "cat": "CAB",
+        "amount": 983.0
+      },
+      {
+        "date": "2023-04-17",
+        "label": "Misc food - lunch",
+        "cat": "FOOD",
+        "amount": 663.0
+      },
+      {
+        "date": "2023-04-16",
+        "label": "Transfer to tjekos hotel",
+        "cat": "CAB",
+        "amount": 4095.0
+      },
+      {
+        "date": "2023-04-17",
+        "label": "Bus to kamari and return",
+        "cat": "CAB",
+        "amount": 874.0
+      },
+      {
+        "date": "2023-04-17",
+        "label": "Dinner",
+        "cat": "FOOD",
+        "amount": 3586.0
+      },
+      {
+        "date": "2023-04-17",
+        "label": "Water and drinks",
+        "cat": "FOOD",
+        "amount": 728.0
+      },
+      {
+        "date": "2023-04-17",
+        "label": "Gifts & Sovinier",
+        "cat": "OTHER",
+        "amount": 2070.0
+      },
+      {
+        "date": "2023-04-17",
+        "label": "Jacket for Dola",
+        "cat": "OTHER",
+        "amount": 3177.0
+      },
+      {
+        "date": "2023-04-18",
+        "label": "Rope way to Fira",
+        "cat": "CAB",
+        "amount": 1353.0
+      },
+      {
+        "date": "2023-04-18",
+        "label": "Bus to oia and return",
+        "cat": "CAB",
+        "amount": 910.0
+      },
+      {
+        "date": "2023-04-18",
+        "label": "Dinner",
+        "cat": "FOOD",
+        "amount": 3157.0
+      },
+      {
+        "date": "2023-04-18",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 3247.0
+      },
+      {
+        "date": "2023-04-18",
+        "label": "Coffee",
+        "cat": "FOOD",
+        "amount": 1262.0
+      },
+      {
+        "date": "2023-04-18",
+        "label": "Toilet",
+        "cat": "OTHER",
+        "amount": 273.0
+      },
+      {
+        "date": "2023-04-18",
+        "label": "Vodafone sim",
+        "cat": "OTHER",
+        "amount": 3608.0
+      },
+      {
+        "date": "2023-04-19",
+        "label": "Tip",
+        "cat": "OTHER",
+        "amount": 455.0
+      },
+      {
+        "date": "2023-04-19",
+        "label": "Bus ticket",
+        "cat": "CAB",
+        "amount": 546.0
+      },
+      {
+        "date": "2023-04-19",
+        "label": "Dinner",
+        "cat": "FOOD",
+        "amount": 4691.0
+      },
+      {
+        "date": "2023-04-19",
+        "label": "Port to Magic view suites",
+        "cat": "CAB",
+        "amount": 2275.0
+      },
+      {
+        "date": "2023-04-19",
+        "label": "Evening drinks and snacks",
+        "cat": "FOOD",
+        "amount": 2121.0
+      },
+      {
+        "date": "2023-04-20",
+        "label": "Gelato",
+        "cat": "FOOD",
+        "amount": 950.0
+      },
+      {
+        "date": "2023-04-20",
+        "label": "Brunch",
+        "cat": "FOOD",
+        "amount": 5245.0
+      },
+      {
+        "date": "2023-04-20",
+        "label": "Sovinier + water",
+        "cat": "OTHER",
+        "amount": 634.0
+      },
+      {
+        "date": "2023-04-20",
+        "label": "Beer",
+        "cat": "FOOD",
+        "amount": 272.0
+      },
+      {
+        "date": "2023-04-20",
+        "label": "Dinner items from bakery",
+        "cat": "FOOD",
+        "amount": 2007.0
+      },
+      {
+        "date": "2023-04-20",
+        "label": "Cup Noodles",
+        "cat": "FOOD",
+        "amount": 453.0
+      },
+      {
+        "date": "2023-04-20",
+        "label": "Sovinier",
+        "cat": "OTHER",
+        "amount": 361.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Breakfast",
+        "cat": "FOOD",
+        "amount": 851.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 1558.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Souvenir",
+        "cat": "OTHER",
+        "amount": 1908.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Lunch additional",
+        "cat": "FOOD",
+        "amount": 362.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Coffee",
+        "cat": "FOOD",
+        "amount": 742.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Seabus",
+        "cat": "CAB",
+        "amount": 546.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Cup Noodles",
+        "cat": "FOOD",
+        "amount": 593.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Cab from Port to airbnb",
+        "cat": "CAB",
+        "amount": 1365.0
+      },
+      {
+        "date": "2023-04-21",
+        "label": "Water",
+        "cat": "FOOD",
+        "amount": 146.0
+      },
+      {
+        "date": "2023-04-23",
+        "label": "Airbnb to Athens Airport",
+        "cat": "CAB",
+        "amount": 4550.0
+      },
+      {
+        "date": "2023-04-23",
+        "label": "Naples airport to Amalfi coast",
+        "cat": "CAB",
+        "amount": 10920.0
+      },
+      {
+        "date": "2023-04-23",
+        "label": "City tax",
+        "cat": "OTHER",
+        "amount": 1275.0
+      },
+      {
+        "date": "2023-04-23",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 2397.0
+      },
+      {
+        "date": "2023-04-23",
+        "label": "Coffee and water at airport",
+        "cat": "FOOD",
+        "amount": 254.0
+      },
+      {
+        "date": "2023-04-22",
+        "label": "Noodles and Cocolate",
+        "cat": "FOOD",
+        "amount": 550.0
+      },
+      {
+        "date": "2023-04-22",
+        "label": "Lunch dinner",
+        "cat": "FOOD",
+        "amount": 2514.0
+      },
+      {
+        "date": "2023-04-22",
+        "label": "Sovinier",
+        "cat": "OTHER",
+        "amount": 253.0
+      },
+      {
+        "date": "2023-04-22",
+        "label": "Breakfast",
+        "cat": "FOOD",
+        "amount": 1761.0
+      },
+      {
+        "date": "2023-04-22",
+        "label": "Scam + Misc food",
+        "cat": "OTHER",
+        "amount": 541.0
+      },
+      {
+        "date": "2023-04-24",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 3076.0
+      },
+      {
+        "date": "2023-04-24",
+        "label": "Food material for dinner, fruit, pastries, lemon cello",
+        "cat": "FOOD",
+        "amount": 3094.0
+      },
+      {
+        "date": "2023-04-24",
+        "label": "Sovinier",
+        "cat": "OTHER",
+        "amount": 546.0
+      },
+      {
+        "date": "2023-04-25",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 2366.0
+      },
+      {
+        "date": "2023-04-25",
+        "label": "Gelato",
+        "cat": "FOOD",
+        "amount": 819.0
+      },
+      {
+        "date": "2023-04-25",
+        "label": "Item for dinner and next breakfast",
+        "cat": "FOOD",
+        "amount": 1775.0
+      },
+      {
+        "date": "2023-04-26",
+        "label": "Cab Amalfi to Naples",
+        "cat": "CAB",
+        "amount": 11830.0
+      },
+      {
+        "date": "2023-04-26",
+        "label": "Metro ticket",
+        "cat": "CAB",
+        "amount": 410.0
+      },
+      {
+        "date": "2023-04-26",
+        "label": "Food items",
+        "cat": "FOOD",
+        "amount": 3595.0
+      },
+      {
+        "date": "2023-04-26",
+        "label": "Full experience Colosseum",
+        "cat": "ACTIVITY",
+        "amount": 1356.0
+      },
+      {
+        "date": "2023-04-27",
+        "label": "Souvenir",
+        "cat": "OTHER",
+        "amount": 1274.0
+      },
+      {
+        "date": "2023-04-27",
+        "label": "Metro for Vatican",
+        "cat": "CAB",
+        "amount": 819.0
+      },
+      {
+        "date": "2023-04-27",
+        "label": "Breakfast items",
+        "cat": "FOOD",
+        "amount": 1083.0
+      },
+      {
+        "date": "2023-04-27",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 3276.0
+      },
+      {
+        "date": "2023-04-27",
+        "label": "Souvenir",
+        "cat": "OTHER",
+        "amount": 410.0
+      },
+      {
+        "date": "2023-04-28",
+        "label": "Metro to termini",
+        "cat": "CAB",
+        "amount": 410.0
+      },
+      {
+        "date": "2023-04-28",
+        "label": "City tax",
+        "cat": "OTHER",
+        "amount": 1638.0
+      },
+      {
+        "date": "2023-04-28",
+        "label": "Dinner material",
+        "cat": "FOOD",
+        "amount": 1896.0
+      },
+      {
+        "date": "2023-04-28",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 2048.0
+      },
+      {
+        "date": "2023-04-28",
+        "label": "Breakfast",
+        "cat": "FOOD",
+        "amount": 1589.0
+      },
+      {
+        "date": "2023-04-29",
+        "label": "Breakfast",
+        "cat": "FOOD",
+        "amount": 2048.0
+      },
+      {
+        "date": "2023-04-29",
+        "label": "Souvenir",
+        "cat": "OTHER",
+        "amount": 1365.0
+      },
+      {
+        "date": "2023-04-29",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 728.0
+      },
+      {
+        "date": "2023-04-29",
+        "label": "Souvenir",
+        "cat": "OTHER",
+        "amount": 637.0
+      },
+      {
+        "date": "2023-04-29",
+        "label": "Water",
+        "cat": "FOOD",
+        "amount": 273.0
+      },
+      {
+        "date": "2023-04-29",
+        "label": "Dinner",
+        "cat": "FOOD",
+        "amount": 3504.0
+      },
+      {
+        "date": "2023-04-30",
+        "label": "Breakfast",
+        "cat": "FOOD",
+        "amount": 2093.0
+      },
+      {
+        "date": "2023-04-30",
+        "label": "Food items",
+        "cat": "FOOD",
+        "amount": 1065.0
+      },
+      {
+        "date": "2023-04-30",
+        "label": "Sovinier",
+        "cat": "OTHER",
+        "amount": 1274.0
+      },
+      {
+        "date": "2023-04-30",
+        "label": "Sovinier",
+        "cat": "OTHER",
+        "amount": 455.0
+      },
+      {
+        "date": "2023-05-01",
+        "label": "Coffee",
+        "cat": "FOOD",
+        "amount": 437.0
+      },
+      {
+        "date": "2023-05-01",
+        "label": "Metro to Duomo  and return",
+        "cat": "CAB",
+        "amount": 1202.0
+      },
+      {
+        "date": "2023-05-01",
+        "label": "Lunch",
+        "cat": "FOOD",
+        "amount": 3003.0
+      },
+      {
+        "date": "2023-05-01",
+        "label": "Water and chocolate",
+        "cat": "FOOD",
+        "amount": 455.0
+      },
+      {
+        "date": "2023-05-01",
+        "label": "Water & Chocolate",
+        "cat": "FOOD",
+        "amount": 455.0
+      },
+      {
+        "date": "2023-05-01",
+        "label": "Dinner",
+        "cat": "FOOD",
+        "amount": 1448.0
+      },
+      {
+        "date": "2023-05-02",
+        "label": "Chocolate duty free",
+        "cat": "FOOD",
+        "amount": 3003.0
+      },
+      {
+        "date": "2023-05-02",
+        "label": "Aperol Spirit",
+        "cat": "FOOD",
+        "amount": 1138.0
+      },
+      {
+        "date": "2023-05-02",
+        "label": "Malon & Chocolate",
+        "cat": "FOOD",
+        "amount": 2162.0
+      },
+      {
+        "date": "2023-05-02",
+        "label": "Barbie",
+        "cat": "OTHER",
+        "amount": 710.0
+      },
+      {
+        "date": "2023-05-02",
+        "label": "Cab to home",
+        "cat": "CAB",
+        "amount": 1490.0
+      },
+      {
+        "date": "2023-04-15",
+        "label": "Cab to airport from home",
+        "cat": "CAB",
+        "amount": 1529.0
+      }
+    ],
+    "itinerary": [
+      {
+        "day_num": 1,
+        "date": "2023-04-15",
+        "stay": "Athens",
+        "from": "Bengaluru",
+        "to": "Athens",
+        "travel": "International Flight\nPNR EWCIDM\nGULF AIR GF-283 \nBENGALURU  04:45 - 06:55 BAHRAIN \nGULF AIR GF-41\nBAHRAIN 09:45 - 14:15 ATHENS",
+        "summary": "",
+        "accom": "Studio Near Acropolis",
+        "address": "Fotomara 22, Athina, 117 43, Greece",
+        "agent": "MakeMyTrip\nAirbnb: HMQBFAPR8Z",
+        "payment": "Paid",
+        "hotels_amt": 5561.0,
+        "flights_amt": 132490.0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 2,
+        "date": "2023-04-16",
+        "stay": "Santorini",
+        "from": "Athens",
+        "to": "Santorini",
+        "travel": "Ferry to Santorini\nPiraeus \u2192 Santorini, \nWORLDCHAMPION JET, \nSEAJETS 07:00 \u00b7\u00b7 4h 40m \u00b7\u00b7 11:40\nFerryhopper code: FH56HR5441CF\nEticket: 7736TAGPF / MALLIK\nReservation code: 7736TAGPF\nCompany code: 7736TAGPF",
+        "summary": "",
+        "accom": "Tzekos Villas Hotel",
+        "address": "Hotel Tzekos Villas, Fira, \u03a6\u03b7\u03c1\u03ac, Fira 847 00, Greece\n+302286022755\ntzekosv@otenet.gr",
+        "agent": "Agoda, Dola: 903087117",
+        "payment": "Paid",
+        "hotels_amt": 39129.0,
+        "flights_amt": 0,
+        "ferry_amt": 19665.05,
+        "train_amt": 0
+      },
+      {
+        "day_num": 3,
+        "date": "2023-04-17",
+        "stay": "Santorini",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "1. Santorini: Traditional Sightseeing Bus Tour with Oia Sunset => Will do this manually\n2. Tickets Booked: Akrotiri - Minoan Bronze Age settlement buried by volcanic Ash in 17th century BC\n3. Emporio village: Explore this quaint village with hilltop windmills\n4. Perissa Beach: most popular black sand beach\n5. Santorini Winery: Tour a traditional winery and taste Santorini\u2019s distinctive wines\n6. Profitis Ilias: Monastery, Visit the island\u2019s highest peak\n7. Oia sunset: Enjoy free",
+        "accom": "Tzekos Villas Hotel",
+        "address": "Hotel Tzekos Villas, Fira, \u03a6\u03b7\u03c1\u03ac, Fira 847 00, Greece\n+302286022755\ntzekosv@otenet.gr",
+        "agent": "Agoda, Dola: 903087118",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 4,
+        "date": "2023-04-18",
+        "stay": "Santorini",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "9:45am - Santorini: Volcanic Islands Cruise with Hot Springs Visit, Pickup: Donkey Way To Fira, Ormos Firon 847 00, Greece",
+        "accom": "Tzekos Villas Hotel",
+        "address": "Hotel Tzekos Villas, Fira, \u03a6\u03b7\u03c1\u03ac, Fira 847 00, Greece\n+302286022755\ntzekosv@otenet.gr",
+        "agent": "Agoda, Dola: 903087119",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 5,
+        "date": "2023-04-19",
+        "stay": "Mykonos",
+        "from": "Santorini",
+        "to": "Mykonos",
+        "travel": "Ferry: Santorini \u2192 Mykonos\nWORLDCHAMPION JET, \nSEAJETS 12:00 \u00b7\u00b7 2h 5m \u00b7\u00b7 14:05\nFerryhopper code: FH60WS6509PI\nEticket: 7736TAGPL / MALLIK\nReservation code: 7736TAGPL\nCompany code: 7736TAGPL",
+        "summary": "",
+        "accom": "Magic View Suites Mykonos #3 Down town",
+        "address": "Magic View Suites Mykonos, Mikonos, Greece",
+        "agent": "Airbnb: HMTY8KQ9BH",
+        "payment": "Paid",
+        "hotels_amt": 18249.0,
+        "flights_amt": 0,
+        "ferry_amt": 19551.08,
+        "train_amt": 0
+      },
+      {
+        "day_num": 6,
+        "date": "2023-04-20",
+        "stay": "Mykonos",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Magic View Suites Mykonos #3 Down town",
+        "address": "Magic View Suites Mykonos, Mikonos, Greece",
+        "agent": "Airbnb",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 7,
+        "date": "2023-04-21",
+        "stay": "Athens",
+        "from": "Mykonos",
+        "to": "Athens",
+        "travel": "Ferry: Mykonos \u2192 Piraeus\nBLUE STAR NAXOS\nBLUE STAR FERRIES 14:15 \u00b7\u00b7 5h 30m \u00b7\u00b7 19:45\nFerryhopper code: FH73XH2563HM\nEticket: 58982496 / 498175\nReservation code: 0262929173\nCompany code: 58982496",
+        "summary": "",
+        "accom": "10 Min. Walk to Acropolis, Central Apt.",
+        "address": "Mpotsari Tousa 10, Athina, 117 41, Greece",
+        "agent": "Airbnb",
+        "payment": "Paid",
+        "hotels_amt": 11900.0,
+        "flights_amt": 0,
+        "ferry_amt": 11353.65,
+        "train_amt": 0
+      },
+      {
+        "day_num": 8,
+        "date": "2023-04-22",
+        "stay": "Athens",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "1. Acropolis & Acroplis Meuseum\n2. Ancient Agora",
+        "accom": "10 Min. Walk to Acropolis, Central Apt.",
+        "address": "Mpotsari Tousa 10, Athina, 117 41, Greece",
+        "agent": "",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 9,
+        "date": "2023-04-23",
+        "stay": "Amalfi",
+        "from": "Athens",
+        "to": "Naples",
+        "travel": "International Flight\nPNR OUEP3S\nAegean Airlines A3680\nATHENS  08:05 - 08:50 NAPLES",
+        "summary": "Flight",
+        "accom": "Amalfi Panoramic Coast",
+        "address": "Via Maestra dei Villaggi, Amalfi, Italy\nAmalfi, Italia",
+        "agent": "Agean Airlines, Agoda(Dola):\n901990405",
+        "payment": "Paid",
+        "hotels_amt": 41000.0,
+        "flights_amt": 36813.0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 10,
+        "date": "2023-04-24",
+        "stay": "Amalfi",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Amalfi Panoramic Coast",
+        "address": "Via Maestra dei Villaggi, Amalfi, Italy\nAmalfi, Italia",
+        "agent": "Agoda(Dola):\n901990405",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 11,
+        "date": "2023-04-25",
+        "stay": "Amalfi",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "",
+        "accom": "Amalfi Panoramic Coast",
+        "address": "Via Maestra dei Villaggi, Amalfi, Italy\nAmalfi, Italia",
+        "agent": "Agoda(Dola):\n901990405",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 12,
+        "date": "2023-04-26",
+        "stay": "Rome",
+        "from": "Naples",
+        "to": "Rome",
+        "travel": "Train to Rome\nNapoli Centrale \u00b7 12:09 CET\nFrecciarossa \u00b7 9422 \u00b7 1h 11m\nRoma Termini \u00b7 13:20 CET\nPNR:MHQJ9N\nSeat: 01 BUSINESS, Coach 3: 12A,12B,11A\nTicket: 1859386799, 1859386798, 1859386797",
+        "summary": "1. Roman Forum \n2. Time 16:00 Colosseum & Palatine Hill",
+        "accom": "Trevi Fountain Guesthouse",
+        "address": "Via delle Quattro Fontane, 159, Rome, Lazio 00187, Italy",
+        "agent": "AirBnb: HMFNH8W4X2",
+        "payment": "Paid",
+        "hotels_amt": 28146.0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 5280.0
+      },
+      {
+        "day_num": 13,
+        "date": "2023-04-27",
+        "stay": "Rome",
+        "from": "",
+        "to": "",
+        "travel": "",
+        "summary": "1. Piazza Navona (Underground area)\n2. Trevi Fountain (Underground area)\n3. Spanish Steps (skip)\n4. Pantheon\n5. TIme 11:00 Vatican City (the Vatican Museums, the Sistine Chapel, and St. Peter\u2019s Basilica.)BORGHESE GALLERY",
+        "accom": "Trevi Fountain Guesthouse",
+        "address": "Via delle Quattro Fontane, 159, Rome, Lazio 00187, Italy",
+        "agent": "AirBnb: HMFNH8W4X3",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      },
+      {
+        "day_num": 14,
+        "date": "2023-04-28",
+        "stay": "Florence",
+        "from": "Rome",
+        "to": "Florence",
+        "travel": "Train to Florence\nRoma Termini \u00b7 07:25 CET \nFrecciarossa \u00b7 9304 \u00b7 1h 36m \nFirenze Santa Maria Novella \u00b7 09:01 CET\nPNR: MKU4BN\nSeat: 02 STANDARD, Coach 6: 4A, 3A, 4B\nTicket: 1859426334, 1859426333, 1859426332",
+        "summary": "1. Ponte Vecchio (bridge)\n2. Piazza Della Signoria(Palazzo Vecchio)\n3. San lorenzo market(can skip)\n4. Ticket: Galileo Museum\n5. Time 15:00 Ticket: Acedemia galarey & David of Michealangelo\n6. Walls & Gates of florance\n8. Basilica di san lorenzo\n9. Boboli Gardens\n10 Piazz Del Duomo\n11. Florence Cathedral",
+        "accom": "Hotel St. James",
+        "address": "Via XXVII Aprile 18, Florence, IT\n390554684201",
+        "agent": "Makemytrip: NH22123245213908",
+        "payment": "Paid",
+        "hotels_amt": 19686.0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 5280.0
+      },
+      {
+        "day_num": 15,
+        "date": "2023-04-29",
+        "stay": "Florence",
+        "from": "Florence",
+        "to": "Pisa/Return",
+        "travel": "Train to Pisa and Return\nClass: RE 02 CLASSE\nSeat: Sit in any vacant seats\nFirenze Santa Maria Novella \u00b7 07:28 CET \nRegional \u00b7 4013 \u00b7 1h 6m \nPisa Centrale  \u00b7 08:34 CET\nTicket: 1859506660,1859506659,1859506658\n------------\nPisa Centrale \u00b7 13:32 CET \nRegional \u00b7 18300 \u00b7 1h 1m \nFirenze Santa Maria Novella \u00b7 14:33 CET\nTicket: 1859507792, 1859507791, 1859507790",
+        "summary": "",
+        "accom": "Hotel St. James",
+        "address": "Via XXVII Aprile 18, Florence, IT\n390554684201",
+        "agent": "Makemytrip: NH22123245213909",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 4606.0
+      },
+      {
+        "day_num": 16,
+        "date": "2023-04-30",
+        "stay": "Venice",
+        "from": "Florence",
+        "to": "Venice",
+        "travel": "Train to Venice\nFirenze Santa Maria Novella \u00b7 07:20 CET \nFrecciarossa \u00b7 9400 \u00b7 2h 14m \nVenezia San Lucia \u00b7 09:34 CET\nPNR: MK6EZN\nSEAT: 02 PREMIUM: Coach 4: 9A, 8A, 9B\nTicket: 1859430646, 1859430646, 1859430646",
+        "summary": "1. St Marks Square\n    Basilica San Markx\n    Campanile\n    Clock Tower\n    Doge's Palace\n2. Gandola ride\n3. Grand Canal - Rialto Bridge",
+        "accom": "Hotel Locanda Salieri",
+        "address": "Fondamenta Minotto,160, Santa Croce,\nVenice, Italy, 30135\n+39041710035",
+        "agent": "Agoda: 902878057",
+        "payment": "Paid",
+        "hotels_amt": 11775.0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 7256.0
+      },
+      {
+        "day_num": 17,
+        "date": "2023-05-01",
+        "stay": "Milan",
+        "from": "Venice",
+        "to": "Milan",
+        "travel": "Train to Milan \nVenezia San Lucia \u00b7 06:48 CET\nFrecciarossa \u00b7 9706 \u00b7 2h 27m \nMilano Centrale \u00b7 May 01, 2023 \u00b7 09:15 CET\nPNR:MLD6CN\nSeat: 02 STANDARD: Coach 6: 13D, 12D, 12C\nTicket: 1859434147, 1859434146, 1859434145",
+        "summary": "1. Leanardo3 - Refectory of Convent of Santa Maria delle Grazie =>  last supper\n2. Milan Cathedral\n3. Palazzo Barrera\n4. Milan's measuem of science and tec",
+        "accom": "Hotel Terminal",
+        "address": "38 Ponte Seveso Street, Stazione Centrale, Milan, Italy, 20124\n+390266711381",
+        "agent": "Agoda: 902714081",
+        "payment": "Paid",
+        "hotels_amt": 7450.0,
+        "flights_amt": 0,
+        "ferry_amt": 0,
+        "train_amt": 4834.0
+      },
+      {
+        "day_num": 18,
+        "date": "2023-05-02",
+        "stay": "Blr",
+        "from": "Milan",
+        "to": "Bangalore",
+        "travel": "International Flight\nPNR KSLKKD\nEtihad Airways EY-88\nMilan  10:10 - 18:05 Abu Dhabi \nEtihad Airways EY-216\nAbu Dhabi 21:50 - 03:15 Bangalore",
+        "summary": "",
+        "accom": "",
+        "address": "",
+        "agent": "EaseMyTrip",
+        "payment": "",
+        "hotels_amt": 0,
+        "flights_amt": 144241.0,
+        "ferry_amt": 0,
+        "train_amt": 0
+      }
+    ]
+  }
+}
