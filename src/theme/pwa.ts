@@ -38,15 +38,20 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
   addLink('icon', '/icon-512.png', { type: 'image/png', sizes: '512x512' });
 
   // Theme + install hints
-  addMeta('theme-color', '#0F172A');
+  addMeta('theme-color', '#3A5BD9');
   addMeta('mobile-web-app-capable', 'yes');
   addMeta('apple-mobile-web-app-capable', 'yes');
   addMeta('apple-mobile-web-app-status-bar-style', 'black-translucent');
-  addMeta('apple-mobile-web-app-title', 'Travel');
+  addMeta('apple-mobile-web-app-title', 'Atlas');
 
   // OpenGraph + Twitter for link previews when shared
-  addMeta('og:title', 'Travel Tracker', true);
-  addMeta('og:description', 'Itinerary, bookings, and expenses for your trips.', true);
+  addMeta('og:title', 'Atlas — Trips', true);
+  addMeta('og:description', 'Personal trip companion — itinerary, bookings, expenses, and a journal.', true);
   addMeta('og:type', 'website', true);
   addMeta('twitter:card', 'summary');
+
+  // Browser tab title
+  if (typeof document !== 'undefined') {
+    document.title = 'Atlas — Trips';
+  }
 }

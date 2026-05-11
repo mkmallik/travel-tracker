@@ -46,9 +46,9 @@ export function LoginScreen({ onSuccess }: Props) {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.wrap}
       >
-        <Text style={styles.flag}>🇹🇭</Text>
-        <Text style={styles.title}>Thailand Trip</Text>
-        <Text style={styles.sub}>Enter password to continue</Text>
+        <Text style={styles.flag}>🧭</Text>
+        <Text style={styles.title}>Atlas</Text>
+        <Text style={styles.sub}>Your trip companion. Enter password to continue.</Text>
 
         <View style={styles.card}>
           <TextInput
