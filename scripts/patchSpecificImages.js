@@ -31,10 +31,9 @@ const QS = '?auto=format&fit=crop&w=1600&q=75';
 // `trips:<id>` → updates the trip cover image
 // `<trip_id>:<day_num>` → updates a specific itinerary day image
 const PATCHES = {
-  // Bangkok Day 12 — Pratunam / Platinum Fashion Mall (user-supplied)
-  'thailand-apr-2026:12': 'https://www.agoda.com/wp-content/uploads/2019/11/Pratunam-Platinum-Fashion-Mall.jpg',
-  // Bangkok Day 13 — busy Bangkok street (user-supplied via Sanity CDN)
-  'thailand-apr-2026:13': 'https://cdn.sanity.io/images/nxpteyfv/goguides/43d4bd7fa049ae9062730f0b5a479ddfbf2cd77a-1600x1066.jpg',
+  // Trip covers — user-supplied direct URLs
+  'trips:vietnam-apr-2025': 'https://hblimg.mmtcdn.com/content/hubble/img/vietnam/mmt/destination/m_destination-vietnam-landscape_l_400_640.jpg',
+  'trips:bali-apr-2024':    'https://media.digitalnomads.world/wp-content/uploads/2021/01/20120709/bali-for-digital-nomads.jpg',
 };
 // ─────────────────────────────────────────────────────────────────────
 
