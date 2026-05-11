@@ -44,15 +44,27 @@ function fmtRange(start: string, end: string): string {
     : `${monthDay(s)} ${s.getFullYear()} – ${monthDay(e)} ${e.getFullYear()}`;
 }
 
-function statusLabel(s: TripStatus): string {
-  if (s === 'active') return 'ACTIVE';
-  if (s === 'planning') return 'PLANNING';
-  return 'COMPLETED';
-}
-function statusColor(s: TripStatus): string {
-  if (s === 'active') return '#10B981';
-  if (s === 'planning') return '#3B82F6';
-  return '#94A3B8';
+// Status is derived from dates first (so a finished trip auto-flips from
+// "active" → "completed" the morning after it ends, with no need to
+// manually edit the sheet). The stored `t.status` field is honoured only
+// for trips that are clearly in the future ("planning") or when dates
+// are missing entirely.
+function statusFor(t: { startDate: string; endDate: string; status: TripStatus }): {
+  label: string;
+  color: string;
+} {
+  const today = new Date().toISOString().slice(0, 10);
+  const hasDates = /^\d{4}-\d{2}-\d{2}$/.test(t.startDate) && /^\d{4}-\d{2}-\d{2}$/.test(t.endDate);
+  if (hasDates) {
+    if (today > t.endDate)   return { label: 'COMPLETED', color: '#94A3B8' };
+    if (today >= t.startDate) return { label: 'ACTIVE',    color: '#10B981' };
+    // today < startDate → upcoming
+    return { label: 'UPCOMING', color: '#3B82F6' };
+  }
+  // No dates — fall back to the stored status.
+  if (t.status === 'active')   return { label: 'ACTIVE',    color: '#10B981' };
+  if (t.status === 'planning') return { label: 'PLANNING',  color: '#3B82F6' };
+  return { label: 'COMPLETED', color: '#94A3B8' };
 }
 
 function tripDays(start: string, end: string): number {
@@ -122,11 +134,16 @@ export function TripsTab() {
             ]}
           >
             <HeroImage uri={t.coverImageUrl} gradient={gradient} style={styles.hero}>
-              {/* Top-left — status */}
+              {/* Top-left — status, auto-derived from dates */}
               <View style={styles.heroTopRow}>
-                <View style={[styles.statusPill, { backgroundColor: statusColor(t.status) }]}>
-                  <Text style={styles.statusTxt}>{statusLabel(t.status)}</Text>
-                </View>
+                {(() => {
+                  const s = statusFor(t);
+                  return (
+                    <View style={[styles.statusPill, { backgroundColor: s.color }]}>
+                      <Text style={styles.statusTxt}>{s.label}</Text>
+                    </View>
+                  );
+                })()}
                 {isActive ? (
                   <View style={styles.activePill}>
                     <Icon name="check" size={11} color="#fff" strokeWidth={3} />
