@@ -31,14 +31,10 @@ const QS = '?auto=format&fit=crop&w=1600&q=75';
 // `trips:<id>` → updates the trip cover image
 // `<trip_id>:<day_num>` → updates a specific itinerary day image
 const PATCHES = {
-  // Bali cover — was Ubud-ish but user said unrelated; trying a Bali
-  // beach/temple shot from a different ID. Swap to a Google Photos link
-  // any time for a more authentic photo.
-  'trips:bali-apr-2024': `https://images.unsplash.com/photo-1604999565976-8913ad2ddb7c${QS}`,
-  // Bangkok Day 12 — skyscrapers retry
-  'thailand-apr-2026:12': `https://images.unsplash.com/photo-1503152394-c571994fd383${QS}`,
-  // Bangkok Day 13 — busy streets retry
-  'thailand-apr-2026:13': `https://images.unsplash.com/photo-1517502884422-41eaead166d4${QS}`,
+  // Bangkok Day 12 — Pratunam / Platinum Fashion Mall (user-supplied)
+  'thailand-apr-2026:12': 'https://www.agoda.com/wp-content/uploads/2019/11/Pratunam-Platinum-Fashion-Mall.jpg',
+  // Bangkok Day 13 — busy Bangkok street (user-supplied via Sanity CDN)
+  'thailand-apr-2026:13': 'https://cdn.sanity.io/images/nxpteyfv/goguides/43d4bd7fa049ae9062730f0b5a479ddfbf2cd77a-1600x1066.jpg',
 };
 // ─────────────────────────────────────────────────────────────────────
 
