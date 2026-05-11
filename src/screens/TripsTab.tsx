@@ -67,6 +67,17 @@ function statusFor(t: { startDate: string; endDate: string; status: TripStatus }
   return { label: 'COMPLETED', color: '#94A3B8' };
 }
 
+// Trip titles in the sheet carry the date range too ("Thailand — Apr 27 to
+// May 9, 2026") so they read well in lists that don't have a separate date
+// field. The Trips card already shows the date range as its own pill below
+// the title, so strip the suffix here to avoid duplicating it.
+function cleanTitle(title: string): string {
+  if (!title) return '';
+  // Cut at the first em-dash / en-dash / " - " separator and keep the head.
+  const idx = title.search(/\s+[—–]\s+|\s+-\s+/);
+  return (idx > 0 ? title.slice(0, idx) : title).trim();
+}
+
 function tripDays(start: string, end: string): number {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(start) || !/^\d{4}-\d{2}-\d{2}$/.test(end)) return 0;
   const s = new Date(start), e = new Date(end);
@@ -155,7 +166,7 @@ export function TripsTab() {
               {/* Bottom — title + dates + spend */}
               <View style={styles.heroBottom}>
                 <Text style={styles.cardTitle} numberOfLines={2}>
-                  {t.title}
+                  {cleanTitle(t.title)}
                 </Text>
                 <View style={styles.metaRow}>
                   <View style={styles.metaPill}>
