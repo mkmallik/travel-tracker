@@ -67,7 +67,14 @@ export function ItineraryListScreen({ navigation }: Props) {
   }, [todayIndex]);
 
   return (
-    <FlatList
+    <View style={styles.scroll}>
+      {/* Sticky strip — visible at all times so the user has a visual
+          anchor even after they've scrolled past the hero. */}
+      <View style={[styles.stickyHeader, { paddingTop: insets.top + 12 }]}>
+        <Text style={styles.kickerSticky}>{tripFlagEmoji(heroTitle)}  YOUR TRIP</Text>
+        <Text style={styles.h1Sticky}>{heroTitle}</Text>
+      </View>
+      <FlatList
       ref={listRef}
       style={styles.list}
       contentContainerStyle={{ paddingBottom: 32 }}
@@ -86,7 +93,7 @@ export function ItineraryListScreen({ navigation }: Props) {
           <HeroImage
             uri={heroImageUrl}
             gradient={['#0EA5E9', '#7C3AED']}
-            style={[styles.topHero, { paddingTop: insets.top + 12 }]}
+            style={styles.topHero}
           >
             {/* Trip-switcher pill removed — the dedicated Trips tab is the
                 primary entry point for switching trips now. */}
@@ -130,8 +137,23 @@ export function ItineraryListScreen({ navigation }: Props) {
           }
         />
       )}
-    />
+      />
+    </View>
   );
+}
+
+// Best-effort flag emoji for the sticky strip — falls back to a generic
+// travel icon when the country isn't one we know.
+function tripFlagEmoji(title: string): string {
+  const t = (title || '').toLowerCase();
+  if (t.includes('thai')) return '🇹🇭';
+  if (t.includes('bali') || t.includes('indonesia')) return '🇮🇩';
+  if (t.includes('vietnam')) return '🇻🇳';
+  if (t.includes('greece') || t.includes('italy')) return '🇪🇺';
+  if (t.includes('japan')) return '🇯🇵';
+  if (t.includes('india')) return '🇮🇳';
+  if (t.includes('uae') || t.includes('dubai')) return '🇦🇪';
+  return '🗺️';
 }
 
 // Takes "Mon, Apr 27, 2026" and returns the compact form "Mon, Apr 27" —
@@ -250,7 +272,17 @@ function DayCard({ day, isToday, onPress }: { day: SeedDay; isToday?: boolean; o
 }
 
 const makeStyles = (c: ThemeColors) => StyleSheet.create({
+  scroll: { flex: 1, backgroundColor: c.bg },
   list: { flex: 1, backgroundColor: c.bg },
+  stickyHeader: {
+    paddingHorizontal: 18,
+    paddingBottom: 12,
+    backgroundColor: c.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: c.border,
+  },
+  kickerSticky: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
+  h1Sticky: { fontSize: 22, fontWeight: '800', color: c.text, marginTop: 2 },
 
   topHero: { height: 300, justifyContent: 'flex-end' },
   topHeroTop: { position: 'absolute', top: 0, left: 14, right: 14, zIndex: 2, flexDirection: 'row' },
