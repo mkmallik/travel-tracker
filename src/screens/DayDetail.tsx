@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   Modal,
+  PanResponder,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -92,8 +93,36 @@ export function DayDetailScreen({ navigation, route }: Props) {
   const stayBookingRef = stayBooking?.bookingRef || '';
   const stayStatus = day.paymentStatus;
 
+  // Swipe navigation: left → next day, right → previous day. We expose the
+  // current next/prev pair through a ref so the PanResponder (built once)
+  // always reads the latest values without re-creating on every render.
+  const sortedDays = useMemo(() => [...days].sort((a, b) => a.dayNum - b.dayNum), [days]);
+  const currentIdx = sortedDays.findIndex((d) => d.dayNum === day.dayNum);
+  const prevDay = currentIdx > 0 ? sortedDays[currentIdx - 1] : null;
+  const nextDay = currentIdx >= 0 && currentIdx < sortedDays.length - 1 ? sortedDays[currentIdx + 1] : null;
+  const navRef = useRef({ navigate: navigation.navigate, prev: prevDay, next: nextDay });
+  navRef.current = { navigate: navigation.navigate, prev: prevDay, next: nextDay };
+  const panResponder = useRef(
+    PanResponder.create({
+      // Only claim the gesture when the user is clearly swiping sideways —
+      // otherwise vertical scrolling stays smooth.
+      onMoveShouldSetPanResponder: (_, g) =>
+        Math.abs(g.dx) > 24 && Math.abs(g.dx) > Math.abs(g.dy) * 1.6,
+      onPanResponderRelease: (_, g) => {
+        const SWIPE = 70;
+        const { navigate, prev, next } = navRef.current;
+        if (g.dx < -SWIPE && next) navigate('DayDetail', { dayNum: next.dayNum });
+        else if (g.dx > SWIPE && prev) navigate('DayDetail', { dayNum: prev.dayNum });
+      },
+    })
+  ).current;
+
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 48 }}>
+    <ScrollView
+      style={styles.scroll}
+      contentContainerStyle={{ paddingBottom: 48 }}
+      {...panResponder.panHandlers}
+    >
       <HeroImage
         uri={day.imageUrl}
         gradient={theme.gradient}

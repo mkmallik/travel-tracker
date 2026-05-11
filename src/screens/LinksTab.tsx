@@ -39,13 +39,14 @@ export function LinksTab() {
   const sorted = [...links].sort((a, b) => b.createdAt - a.createdAt);
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={{ paddingTop: insets.top + 14, paddingBottom: 90, paddingHorizontal: 18 }}
-    >
-      <Text style={styles.kicker}>TRIP</Text>
-      <Text style={styles.h1}>Links</Text>
-
+    <View style={styles.scroll}>
+      <View style={[styles.stickyHeader, { paddingTop: insets.top + 14 }]}>
+        <Text style={styles.kicker}>TRIP</Text>
+        <Text style={styles.h1}>Links</Text>
+      </View>
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 14, paddingBottom: 90, paddingHorizontal: 18 }}
+      >
       {sorted.length === 0 ? (
         <View style={styles.emptyCard}>
           <Icon name="bag" size={28} color={colors.textSubtle} strokeWidth={1.7} />
@@ -114,7 +115,8 @@ export function LinksTab() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -222,8 +224,15 @@ function prettyHost(url: string): string {
 
 const makeStyles = (c: ThemeColors) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: c.bg },
+  stickyHeader: {
+    paddingHorizontal: 18,
+    paddingBottom: 14,
+    backgroundColor: c.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: c.border,
+  },
   kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
-  h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2, marginBottom: 18 },
+  h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2 },
 
   emptyCard: {
     backgroundColor: c.cardBg, borderRadius: 18, padding: 28, alignItems: 'center',

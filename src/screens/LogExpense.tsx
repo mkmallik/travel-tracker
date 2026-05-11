@@ -194,15 +194,16 @@ export function LogExpenseScreen({ route }: Props) {
   }
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 56, paddingHorizontal: 18 }}
-      keyboardShouldPersistTaps="handled"
-    >
-      {modeStrip}
-      <Text style={styles.kicker}>NEW ENTRY</Text>
-      <Text style={styles.h1}>Log expense</Text>
-
+    <View style={styles.scroll}>
+      <View style={[styles.stickyHeader, { paddingTop: insets.top + 14 }]}>
+        {modeStrip}
+        <Text style={styles.kicker}>NEW ENTRY</Text>
+        <Text style={styles.h1}>Log expense</Text>
+      </View>
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 14, paddingBottom: 56, paddingHorizontal: 18 }}
+        keyboardShouldPersistTaps="handled"
+      >
       <View style={styles.amountCard}>
         <View style={styles.amountRow}>
           <Text style={styles.amountCurrencySymbol}>{currency === 'THB' ? '฿' : '₹'}</Text>
@@ -419,15 +420,23 @@ export function LogExpenseScreen({ route }: Props) {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const makeStyles = (c: ThemeColors) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: c.bg },
+  stickyHeader: {
+    paddingHorizontal: 18,
+    paddingBottom: 14,
+    backgroundColor: c.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: c.border,
+  },
 
   kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
-  h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2, marginBottom: 16 },
+  h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2 },
   label: { fontSize: 11, color: c.textSubtle, fontWeight: '800', letterSpacing: 1.2, marginTop: 22, marginBottom: 10 },
 
   amountCard: {

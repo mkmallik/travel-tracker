@@ -57,18 +57,19 @@ export function BlogTab() {
   const withBlog = useMemo(() => sorted.filter((d) => !!(d.blog && d.blog.trim())), [sorted]);
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={{ paddingTop: insets.top + 14, paddingBottom: 90, paddingHorizontal: 18 }}
-    >
-      <Text style={styles.kicker}>TRIP BLOG</Text>
-      <Text style={styles.h1}>The journal</Text>
-      <Text style={styles.sub}>
-        {view === 'byDay'
-          ? "A day-by-day record. Tap any day's pencil to edit."
-          : 'The whole trip, top to tail. Switch back to By day to edit individual entries.'}
-      </Text>
-
+    <View style={styles.scroll}>
+      <View style={[styles.stickyHeader, { paddingTop: insets.top + 14 }]}>
+        <Text style={styles.kicker}>TRIP BLOG</Text>
+        <Text style={styles.h1}>The journal</Text>
+        <Text style={styles.sub}>
+          {view === 'byDay'
+            ? "A day-by-day record. Tap any day's pencil to edit."
+            : 'The whole trip, top to tail. Switch back to By day to edit individual entries.'}
+        </Text>
+      </View>
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 14, paddingBottom: 90, paddingHorizontal: 18 }}
+      >
       {/* Pill toggle: By day | Full trip */}
       <View style={styles.toggleRow}>
         <Pressable
@@ -186,7 +187,8 @@ export function BlogTab() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -254,9 +256,16 @@ function BlogEditor({
 
 const makeStyles = (c: ThemeColors) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: c.bg },
+  stickyHeader: {
+    paddingHorizontal: 18,
+    paddingBottom: 14,
+    backgroundColor: c.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: c.border,
+  },
   kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
   h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2 },
-  sub: { fontSize: 13, color: c.textMuted, marginTop: 4, marginBottom: 18, lineHeight: 19 },
+  sub: { fontSize: 13, color: c.textMuted, marginTop: 4, lineHeight: 19 },
 
   toggleRow: {
     flexDirection: 'row', gap: 8 as any, marginBottom: 16,

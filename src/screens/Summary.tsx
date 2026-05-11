@@ -197,21 +197,22 @@ export function SummaryScreen() {
   }, [totals]);
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={{ paddingTop: insets.top + 14, paddingBottom: 56, paddingHorizontal: 18 }}
-    >
-      <View style={styles.headerRow}>
-        <View>
-          <Text style={styles.kicker}>TRIP SPEND</Text>
-          <Text style={styles.h1}>Summary</Text>
+    <View style={styles.scroll}>
+      <View style={[styles.stickyHeader, { paddingTop: insets.top + 14 }]}>
+        <View style={styles.headerRow}>
+          <View>
+            <Text style={styles.kicker}>TRIP SPEND</Text>
+            <Text style={styles.h1}>Summary</Text>
+          </View>
+          <Pressable style={styles.fxBtn} onPress={() => setFxOpen(true)}>
+            <Text style={styles.fxLabel}>FX</Text>
+            <Text style={styles.fxBtnTxt}>{fxInrPerThb.toFixed(2)}</Text>
+          </Pressable>
         </View>
-        <Pressable style={styles.fxBtn} onPress={() => setFxOpen(true)}>
-          <Text style={styles.fxLabel}>FX</Text>
-          <Text style={styles.fxBtnTxt}>{fxInrPerThb.toFixed(2)}</Text>
-        </Pressable>
       </View>
-
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 14, paddingBottom: 56, paddingHorizontal: 18 }}
+      >
       <LinearGradient
         colors={['#3A5BD9', '#7C3AED', '#EC4899']}
         start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
@@ -438,7 +439,8 @@ export function SummaryScreen() {
           </Pressable>
         </Pressable>
       </Modal>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -462,8 +464,15 @@ function DataBtn({
 
 const makeStyles = (c: ThemeColors) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: c.bg },
+  stickyHeader: {
+    paddingHorizontal: 18,
+    paddingBottom: 14,
+    backgroundColor: c.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: c.border,
+  },
 
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
   h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2 },
 

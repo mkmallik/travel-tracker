@@ -57,13 +57,14 @@ export function BookingsScreen() {
   const totalInr = bookings.reduce((s, b) => s + toInr(b.amount, b.currency, fxInrPerThb), 0);
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={{ paddingTop: insets.top + 14, paddingBottom: 48, paddingHorizontal: 18 }}
-    >
-      <Text style={styles.kicker}>TRIP</Text>
-      <Text style={styles.h1}>Bookings</Text>
-
+    <View style={styles.scroll}>
+      <View style={[styles.stickyHeader, { paddingTop: insets.top + 14 }]}>
+        <Text style={styles.kicker}>TRIP</Text>
+        <Text style={styles.h1}>Bookings</Text>
+      </View>
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 14, paddingBottom: 48, paddingHorizontal: 18 }}
+      >
       <View style={styles.totalCard}>
         <View style={{ flex: 1 }}>
           <Text style={styles.totalLabel}>{bookings.length} booking{bookings.length === 1 ? '' : 's'}</Text>
@@ -134,7 +135,8 @@ export function BookingsScreen() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -230,9 +232,16 @@ function timeRange(b: Booking): string {
 
 const makeStyles = (c: ThemeColors) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: c.bg },
+  stickyHeader: {
+    paddingHorizontal: 18,
+    paddingBottom: 14,
+    backgroundColor: c.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: c.border,
+  },
 
   kicker: { fontSize: 11, fontWeight: '800', color: c.textSubtle, letterSpacing: 1.5 },
-  h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2, marginBottom: 14 },
+  h1: { fontSize: 28, fontWeight: '800', color: c.text, marginTop: 2 },
 
   totalCard: {
     backgroundColor: c.cardBg, borderRadius: 16, padding: 16, marginBottom: 18,

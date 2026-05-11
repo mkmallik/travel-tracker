@@ -20,7 +20,6 @@ import type { SeedDay } from '../data/types';
 import { formatTHB, formatINR } from '../utils/fx';
 import { useThemedStyles } from '../theme/styles';
 import type { ThemeColors } from '../theme/colors';
-import { TripSwitcher } from '../components/TripSwitcher';
 import { dayIsoFromSeed, todayIso } from '../utils/date';
 
 type Props = {
@@ -89,9 +88,8 @@ export function ItineraryListScreen({ navigation }: Props) {
             gradient={['#0EA5E9', '#7C3AED']}
             style={[styles.topHero, { paddingTop: insets.top + 12 }]}
           >
-            <View style={[styles.topHeroTop, { paddingTop: insets.top + 8 }]}>
-              <TripSwitcher />
-            </View>
+            {/* Trip-switcher pill removed — the dedicated Trips tab is the
+                primary entry point for switching trips now. */}
             <View style={styles.topHeroInner}>
               <Text style={styles.kicker}>🇹🇭  YOUR TRIP</Text>
               <Text style={styles.heroTitle}>{heroTitle}</Text>
