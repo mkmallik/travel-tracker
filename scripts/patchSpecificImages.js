@@ -31,9 +31,13 @@ const QS = '?auto=format&fit=crop&w=1600&q=75';
 // `trips:<id>` → updates the trip cover image
 // `<trip_id>:<day_num>` → updates a specific itinerary day image
 const PATCHES = {
-  // Trip covers — user-supplied direct URLs
-  'trips:vietnam-apr-2025': 'https://hblimg.mmtcdn.com/content/hubble/img/vietnam/mmt/destination/m_destination-vietnam-landscape_l_400_640.jpg',
-  'trips:bali-apr-2024':    'https://media.digitalnomads.world/wp-content/uploads/2021/01/20120709/bali-for-digital-nomads.jpg',
+  // Vietnam day images (user-supplied) — Day 3's old Halong photo moves
+  // to Day 2 so Day 3 can take the Hanoi shot.
+  'vietnam-apr-2025:2': 'https://pandaphukettour.com/wp-content/smush-webp/2024/06/Halong-Bay-en-Hanoi-Vietnam-2.jpg.webp',
+  'vietnam-apr-2025:3': 'https://hblimg.mmtcdn.com/content/hubble/img/tvdestinationimages/mmt/activities/m_Hanoi_tv_destination_img_1_l_667_1000.jpg',
+  'vietnam-apr-2025:4': 'https://avgtravels.com/au/wp-content/uploads/sites/4/Ninh-Binh-Halong-Bay-on-Land-1.jpg',
+  'vietnam-apr-2025:8': 'https://aravindatravel.com/wp-content/uploads/2025/11/My-Khe-Beach.jpg',
+  'vietnam-apr-2025:9': 'https://pix10.agoda.net/hotelImages/1899419/-1/0e300872cf219f271150a5c97b75f03d.jpg',
 };
 // ─────────────────────────────────────────────────────────────────────
 
