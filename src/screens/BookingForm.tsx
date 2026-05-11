@@ -13,6 +13,7 @@ import { useAppStore } from '../store/useAppStore';
 import { BOOKING_LABELS } from '../utils/bookings';
 import { Icon, BOOKING_ICON_NAME } from '../components/Icon';
 import { todayIso, findDayNumForIso, dayIsoFromSeed } from '../utils/date';
+import { getActiveLocalCurrency, symbolFor } from '../utils/fx';
 import type {
   Booking,
   BookingExtras,
@@ -352,19 +353,29 @@ export function BookingForm({
           placeholderTextColor={colors.placeholder}
           keyboardType="decimal-pad"
         />
-        <View style={styles.curToggle}>
-          {(['THB', 'INR'] as Currency[]).map((c) => (
-            <Pressable
-              key={c}
-              style={[styles.curBtn, currency === c && styles.curBtnOn]}
-              onPress={() => setCurrency(c)}
-            >
-              <Text style={[styles.curBtnTxt, currency === c && styles.curBtnTxtOn]}>
-                {c === 'THB' ? '฿ THB' : '₹ INR'}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+        {/* Toggle labels follow the active trip's local currency
+            (Bali → Rp IDR, Vietnam → ₫ VND, ...). Internal currency
+            discriminator stays THB|INR for fx-rate math. */}
+        {(() => {
+          const localCode = getActiveLocalCurrency();
+          const localSym = symbolFor(localCode).trim();
+          const inrSym = symbolFor('INR').trim();
+          return (
+            <View style={styles.curToggle}>
+              {(['THB', 'INR'] as Currency[]).map((c) => (
+                <Pressable
+                  key={c}
+                  style={[styles.curBtn, currency === c && styles.curBtnOn]}
+                  onPress={() => setCurrency(c)}
+                >
+                  <Text style={[styles.curBtnTxt, currency === c && styles.curBtnTxtOn]}>
+                    {c === 'THB' ? `${localSym} ${localCode}` : `${inrSym} INR`}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          );
+        })()}
       </View>
 
       {type === 'hotel' && startDate !== endDate ? (

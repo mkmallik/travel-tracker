@@ -21,6 +21,7 @@ import {
   todayIso,
 } from '../utils/date';
 import { themeForCity } from '../data/theme';
+import { getActiveLocalCurrency, symbolFor } from '../utils/fx';
 import { DatePicker } from '../components/DatePicker';
 import { BookingForm } from './BookingForm';
 import { ExpenseForm } from './ExpenseForm';
@@ -204,32 +205,42 @@ export function LogExpenseScreen({ route }: Props) {
         contentContainerStyle={{ paddingTop: 14, paddingBottom: 56, paddingHorizontal: 18 }}
         keyboardShouldPersistTaps="handled"
       >
-      <View style={styles.amountCard}>
-        <View style={styles.amountRow}>
-          <Text style={styles.amountCurrencySymbol}>{currency === 'THB' ? '฿' : '₹'}</Text>
-          <TextInput
-            style={styles.amountInput}
-            placeholder="0"
-            placeholderTextColor={colors.placeholder}
-            keyboardType="decimal-pad"
-            value={amount}
-            onChangeText={setAmount}
-          />
-        </View>
-        <View style={styles.curToggle}>
-          {(['THB', 'INR'] as Currency[]).map((c) => (
-            <Pressable
-              key={c}
-              style={[styles.curBtn, currency === c && styles.curBtnOn]}
-              onPress={() => setCurrency(c)}
-            >
-              <Text style={[styles.curBtnTxt, currency === c && styles.curBtnTxtOn]}>
-                {c === 'THB' ? '฿ THB' : '₹ INR'}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      </View>
+      {/* Currency labels follow the active trip — Thailand keeps ฿ THB,
+          Bali shows Rp IDR, Vietnam ₫ VND, etc. The internal currency
+          discriminator stays 'THB'|'INR' (drives fx-rate math). */}
+      {(() => {
+        const localCode = getActiveLocalCurrency();
+        const localSym = symbolFor(localCode).trim();
+        const inrSym = symbolFor('INR').trim();
+        return (
+          <View style={styles.amountCard}>
+            <View style={styles.amountRow}>
+              <Text style={styles.amountCurrencySymbol}>{currency === 'THB' ? localSym : inrSym}</Text>
+              <TextInput
+                style={styles.amountInput}
+                placeholder="0"
+                placeholderTextColor={colors.placeholder}
+                keyboardType="decimal-pad"
+                value={amount}
+                onChangeText={setAmount}
+              />
+            </View>
+            <View style={styles.curToggle}>
+              {(['THB', 'INR'] as Currency[]).map((c) => (
+                <Pressable
+                  key={c}
+                  style={[styles.curBtn, currency === c && styles.curBtnOn]}
+                  onPress={() => setCurrency(c)}
+                >
+                  <Text style={[styles.curBtnTxt, currency === c && styles.curBtnTxtOn]}>
+                    {c === 'THB' ? `${localSym} ${localCode}` : `${inrSym} INR`}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        );
+      })()}
 
       <Text style={styles.label}>CATEGORY</Text>
       <View style={styles.catWrap}>

@@ -28,21 +28,26 @@ export function setActiveLocalCurrency(code: string | undefined | null) {
 }
 export function getActiveLocalCurrency(): string { return LOCAL_CODE; }
 
-const SYMBOL_MAP: Record<string, string> = {
-  THB: '฿',
-  INR: '₹',
-  IDR: 'Rp',
-  VND: '₫',
-  EUR: '€',
-  USD: '$',
-  GBP: '£',
-  JPY: '¥',
-  AED: 'د.إ',
+// Glyph + spacing per currency. Single-glyph symbols hug the number ("₹100");
+// multi-letter codes like "Rp" and Arabic-script "د.إ" get a thin gap so they
+// don't run into the digits.
+const SYMBOL_MAP: Record<string, { sym: string; spaced: boolean }> = {
+  THB: { sym: '฿',   spaced: false },
+  INR: { sym: '₹',   spaced: false },
+  IDR: { sym: 'Rp',  spaced: true  },
+  VND: { sym: '₫',   spaced: false },
+  EUR: { sym: '€',   spaced: false },
+  USD: { sym: '$',   spaced: false },
+  GBP: { sym: '£',   spaced: false },
+  JPY: { sym: '¥',   spaced: false },
+  AED: { sym: 'د.إ', spaced: true  },
 };
 
-function symbolFor(code: string): string {
+export function symbolFor(code: string): string {
   const c = (code || '').toUpperCase();
-  return SYMBOL_MAP[c] ?? `${c} `;
+  const m = SYMBOL_MAP[c];
+  if (!m) return `${c} `; // unknown code → print the ISO letters with a space
+  return m.spaced ? `${m.sym} ` : m.sym;
 }
 
 export function formatLocal(n: number, code: string = LOCAL_CODE): string {
